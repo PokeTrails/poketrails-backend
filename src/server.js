@@ -1,7 +1,7 @@
 const dotenv = require("dotenv");
 dotenv.config();
 const express = require("express");
-const { logger } = require("./middelware/logger.js");
+const { logger } = require("./middleware/logger.js");
 
 const port = process.env.PORT || 8000;
 const app = express();
