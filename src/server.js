@@ -1,14 +1,11 @@
+const { app } = require("./app");
 const dotenv = require("dotenv");
+const { connectDB } = require("./config/database");
 dotenv.config();
-const express = require("express");
-const { logger } = require("./middleware/logger.js");
 
-const port = process.env.PORT || 8000;
-const app = express();
+const PORT = process.env.PORT || 8000;
 
-// Logger middleware
-app.use(logger);
-
-app.listen(port, () => {
-    console.log(`Server is running on port ${port}`);
+app.listen(PORT, () => {
+    connectDB();
+    console.log(`Server is running on port ${PORT}`);
 });
