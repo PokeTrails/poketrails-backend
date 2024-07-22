@@ -14,6 +14,14 @@ npm install
 PORT=8080
 ```
 
+## Start MongoDB (WSL Users)
+
+If you're using Windows Subsystem for Linux (WSL), you need to start MongoDB with the following command:
+
+```sh
+sudo systemctl start mongod
+```
+
 ## Start the server in development mode
 
 ```sh
