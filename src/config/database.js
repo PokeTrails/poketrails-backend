@@ -9,6 +9,20 @@ async function connectDB() {
     console.log("Database connecting completed");
 }
 
+async function closeDB(){
+    // Disconnect from database
+    await mongoose.connection.close();
+    console.log("DB is disconnected!");
+}
+
+async function clearDB(){
+    // Clear data present on database
+    await mongoose.connection.dropDatabase();
+    console.log("Data has been wiped!")
+}
+
 module.exports = {
-    connectDB
+    connectDB,
+    closeDB,
+    clearDB
 };
