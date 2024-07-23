@@ -13,6 +13,10 @@ app.get("/", (req, res, next) => {
     });
 });
 
+// User Router
+const userRouter = require("./routes/UserRouter.js");
+app.use("/user", userRouter);
+
 // Generic error handling for any error that happens on the server
 app.use((error, req, res, next) => {
     res.status(500).json({
