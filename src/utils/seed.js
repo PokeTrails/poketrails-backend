@@ -1,4 +1,4 @@
-const { connectDB } = require("../config/database");
+const { connectDB, clearDB, closeDB } = require("../config/database");
 const { UserModel } = require("../models/UserModel");
 
 
