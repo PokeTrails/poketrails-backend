@@ -43,6 +43,16 @@ router.post("/create", async (request, response, next) => {
     }
 });
 
+// Route to find user with matching ID
+router.delete("/:id", async (request, response, next) => {
+
+    let result = await UserModel.findById(request.params.id).exec();
+
+    response.json({
+        message:"User deleted successfully",
+        result: result
+    });
+});
 
 
 module.exports = router;
