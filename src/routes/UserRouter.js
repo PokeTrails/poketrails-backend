@@ -25,6 +25,24 @@ router.get("/:id", async (request, response, next) => {
     });
 });
 
+// Route to create a user
+router.post("/create", async (request, response, next) => {
+
+    try {
+        const newUser = new UserModel(request.body);
+        const result = await newUser.save();
+        response.json({
+            message: "User created successfully",
+            result: result
+        });
+    } 
+    
+    catch (error) {
+        error.status = 400;
+        next(error);
+    }
+});
+
 
 
 module.exports = router;

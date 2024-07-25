@@ -3,8 +3,12 @@ const { logger } = require("./middleware/logger.js");
 
 const app = express();
 
+
 // Logger middleware
 app.use(logger);
+
+// Allows POST requests
+app.use(express.json());
 
 // Test route
 app.get("/", (req, res, next) => {
