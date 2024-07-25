@@ -3,7 +3,7 @@ const router = express.Router();
 const { UserModel } = require("../models/UserModel")
 
 
-// Route to find all active users
+// Route to find all  users
 router.get("/", async (request, response, next) => {
 
     let result = await UserModel.find({}).exec();
@@ -43,13 +43,30 @@ router.post("/create", async (request, response, next) => {
     }
 });
 
-// Route to find user with matching ID
+// Route to find user with matching ID and delete
 router.delete("/:id", async (request, response, next) => {
 
-    let result = await UserModel.findById(request.params.id).exec();
+    let result = await UserModel.findByIdAndDelete(request.params.id).exec();
 
     response.json({
         message:"User deleted successfully",
+        result: result
+    });
+});
+
+// Route to edit user with matching ID
+router.patch("/patch/:id", async (request, response, next) => {
+
+    let result = await UserModel.findByIdAndUpdate(
+        request.params.id, 
+        request.body,
+        {
+            returnDocument: "after"
+        }
+    )
+
+    response.json({
+        message:"User updated",
         result: result
     });
 });
