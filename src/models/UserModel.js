@@ -10,7 +10,7 @@ const userSchema = mongoose.Schema({
     secretQuestion:{ type: String, required: true},
     secretAnswer:{type: String, required: true},
     userExperience:{type: Number, default: 0, required: true},
-    playerLevel:{type: Number, default: 1, requried: true},
+    playerLevel:{type: Number, default: 1, required: true},
     isFirstLogin:{type: Boolean, default: true},
     balance:{type: Number, default: 0, required: true},   
     eggVoucher:{type: Number, default: 0, required: true}
