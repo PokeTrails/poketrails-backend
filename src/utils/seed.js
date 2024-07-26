@@ -7,7 +7,6 @@ const { UserModel } = require("../models/UserModel");
 async function seedUsers(){
     let userData1 = {
             username: "pokeking",
-            email: "pickachu12@gmail.com",
             password: "password",
     };
 
@@ -16,7 +15,6 @@ async function seedUsers(){
 
     let userData2 = {
         username: "JakeTheKing",
-        email: "maokai@gmail.com",
         password: "sapling",
     };
 
