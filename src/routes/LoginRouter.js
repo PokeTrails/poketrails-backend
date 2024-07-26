@@ -1,10 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const jwt = require("jsonwebtoken");
-const bcrypt = require("bcryptjs");
 
-const { comparePasswords, createJwt } = require("../utils/authHelper");
-const { UserModel } = require("../models/UserModel")
+const { comparePasswords, createJWT } = require("../utils/authHelper")
+const { UserModel } = require("../models/UserModel");
 
 
 
@@ -27,7 +25,7 @@ router.post("/", async (request, response, next) => {
 	// Create a JWT based on foundUser._id 
 	if (isPasswordCorrect){
 
-		newJwt = createJwt(foundUser._id);
+		newJwt = createJWT(foundUser._id);
 
 		response.json({
 			jwt: newJwt
@@ -36,5 +34,6 @@ router.post("/", async (request, response, next) => {
 		return next(new Error("Incorrect password."));
 	}
 
-	
 })
+
+module.exports = router;
