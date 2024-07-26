@@ -17,10 +17,11 @@ router.post("/", async (request, response, next) => {
 	let foundUser = await UserModel.findOne({username: request.body.username}).exec();
 
 	console.log(request.body, foundUser);
+	let isPasswordCorrect = false;
 
 	// Compare request.body.password to foundUser.password using the compare function
     if (foundUser){ 
-	    let isPasswordCorrect = await comparePasswords(request.body.password, foundUser.password);
+	    isPasswordCorrect = await comparePasswords(request.body.password, foundUser.password);
     }
     else{
         return next(new Error("Incorrect username."));
