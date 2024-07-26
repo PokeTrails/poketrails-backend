@@ -18,9 +18,13 @@ router.post("/", async (request, response, next) => {
 
 	console.log(request.body, foundUser);
 
-	// Compare request.body.password to foundUser.password using the compare function 
-	let isPasswordCorrect = await comparePasswords(request.body.password, foundUser.password);
-
+	// Compare request.body.password to foundUser.password using the compare function
+    if (foundUser){ 
+	    let isPasswordCorrect = await comparePasswords(request.body.password, foundUser.password);
+    }
+    else{
+        return next(new Error("Incorrect username."));
+    }
 
 	// Create a JWT based on foundUser._id 
 	if (isPasswordCorrect){
