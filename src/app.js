@@ -27,6 +27,10 @@ app.get("/", (req, res, next) => {
 const userRouter = require("./routes/UserRouter.js");
 app.use("/user", userRouter);
 
+// Login Router
+const loginRouter = require("./routes/LoginRouter.js")
+app.use("/login", loginRouter)
+
 // Generic error handling for any error that happens on the server
 app.use((error, req, res, next) => {
     res.status(500).json({

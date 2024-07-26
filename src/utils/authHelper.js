@@ -44,3 +44,9 @@ function validateJWT(jwtToValidate){
     
     return isJwtValid;
 }
+
+module.exports = {
+    comparePasswords,
+    createJWT,
+    validateJWT
+}
