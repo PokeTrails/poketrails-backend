@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { UserModel } = require("../models/UserModel")
-
+const { createJWT } = require("../utils/authHelper");
 
 // Route to find all  users
 router.get("/", async (request, response, next) => {
@@ -31,14 +31,18 @@ router.post("/create", async (request, response, next) => {
     try {
         const newUser = new UserModel(request.body);
         const result = await newUser.save();
+
+        const jwt = createJWT(result._id);
+
         response.json({
             message: "User created successfully",
-            result: result
+            result: result,
+            jwt: jwt
         });
     } 
     
     catch (error) {
-        error.status = 400;
+        response.status.json = 400;
         next(error);
     }
 });
