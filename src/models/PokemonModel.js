@@ -4,7 +4,6 @@ const pokemonSchema = mongoose.Schema(
     {
         species: { type: String },
         nickname: { type: String },
-        happiness: { type: Number },
         current_level: { type: Number, default: 0 },
         max_level: { type: Number },
         defaultSprite: { type: String },
