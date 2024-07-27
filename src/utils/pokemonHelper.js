@@ -162,4 +162,4 @@ async function selectPath(paths) {
     }
 }
 
-getPokemon();
+module.exports = { getPokemon };

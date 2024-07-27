@@ -12,7 +12,7 @@ const pokemonSchema = mongoose.Schema(
         cries: { type: String },
         type: { type: String },
         base_happiness: { type: Number, default: 50 },
-        flavour_text: { type: [string] },
+        flavour_text: { type: [String] },
         is_mythical: { type: Boolean },
         is_legendary: { type: Boolean },
         evolution: [
