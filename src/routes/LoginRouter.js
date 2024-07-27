@@ -13,14 +13,16 @@ router.post("/", async (request, response, next) => {
 		return next(new Error("Missing login details in login request."));
 	}
 
-	// Find user by username in DB
+	try {
+		// Find user by username in DB
 	let foundUser = await UserModel.findOne({username: request.body.username}).exec();
 
 	console.log(request.body, foundUser);
+	let isPasswordCorrect = false;
 
 	// Compare request.body.password to foundUser.password using the compare function
     if (foundUser){ 
-	    let isPasswordCorrect = await comparePasswords(request.body.password, foundUser.password);
+	    isPasswordCorrect = await comparePasswords(request.body.password, foundUser.password);
     }
     else{
         return next(new Error("Incorrect username."));
@@ -36,6 +38,9 @@ router.post("/", async (request, response, next) => {
 		});
 	} else {
 		return next(new Error("Incorrect password."));
+	}
+	} catch (error){
+		return next(error);
 	}
 
 })

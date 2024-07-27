@@ -7,6 +7,7 @@ const { UserModel } = require("../models/UserModel");
 async function seedUsers(){
     let userData1 = {
             username: "pokeking",
+            trainerName: "PokeKing",
             password: "password",
     };
 
@@ -15,6 +16,7 @@ async function seedUsers(){
 
     let userData2 = {
         username: "JakeTheKing",
+        trainerName: "Jake Long",
         password: "sapling",
     };
 
