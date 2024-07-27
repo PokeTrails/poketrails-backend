@@ -13,7 +13,7 @@ const userSchema = mongoose.Schema({
     isFirstLogin:{type: Boolean, default: true},
     balance:{type: Number, default: 0, required: true},   
     eggVoucher:{type: Number, default: 0, required: true},
-    trainerSprite:{type: String, default: "Male"}
+    trainerSprite:{type: String, required: true},
     // party:{
     //     partyID:{},
     //     slots:{type:[partySlotSchema]}, Will import seperate schema for the party slots
