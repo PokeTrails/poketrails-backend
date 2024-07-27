@@ -69,11 +69,11 @@ async function getPokemon() {
             flavour_text: types.flavour_text
         });
     }
-    console.log(evolution_data);
+    // Return the evolution data
     return {
         species: evolution_data[0].name,
         current_level: evolution_data[0].level,
-        max_level: evolution_data[loc_array.length - 1].level,
+        max_level: evolution_data[evolution_data.length - 1].level,
         defaultSprite: evolution_data[0].defaultSprite,
         shinySprite: evolution_data[0].shinySprite,
         poke_id: evolution_data[0].poke_id,
@@ -84,7 +84,7 @@ async function getPokemon() {
         is_mythical: evolution_data[0].is_mythical,
         is_legendary: evolution_data[0].is_legendary,
         evolution: evolution_data
-    }; // Return the evolution data
+    };
 }
 
 // Function to get type information for a Pokemon

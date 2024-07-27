@@ -1,8 +1,8 @@
 const express = require("express");
+const pokemonRouter = require("./routes/PokemonRouter.js");
 const { logger } = require("./middleware/logger.js");
 
 const app = express();
-
 
 // Logger middleware
 app.use(logger);
@@ -20,6 +20,9 @@ app.get("/", (req, res, next) => {
 // User Router
 const userRouter = require("./routes/UserRouter.js");
 app.use("/user", userRouter);
+
+// Pokemon Router
+app.use("/api/pokemon", pokemonRouter);
 
 // Generic error handling for any error that happens on the server
 app.use((error, req, res, next) => {

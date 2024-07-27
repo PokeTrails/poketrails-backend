@@ -27,8 +27,8 @@ const pokemonSchema = mongoose.Schema(
                 base_happiness: { type: Number },
                 flavour_text: { type: [String] }
             }
-        ],
-        user: { type: Schema.Types.ObjectId, ref: "user" }
+        ]
+        // user: { type: Schema.Types.ObjectId, ref: "user" }
     },
     {
         timestamps: true
@@ -36,4 +36,4 @@ const pokemonSchema = mongoose.Schema(
 );
 const PokemonModel = mongoose.model("Pokemon", pokemonSchema);
 
-module.exports = { PokemonModel };
+module.exports = PokemonModel;
