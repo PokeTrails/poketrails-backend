@@ -71,7 +71,7 @@ async function getPokemon() {
     }
     console.log(evolution_data);
     return {
-        species: evolution_data[0].name ,
+        species: evolution_data[0].name,
         current_level: evolution_data[0].level,
         max_level: evolution_data[loc_array.length - 1].level,
         defaultSprite: evolution_data[0].defaultSprite,
@@ -83,7 +83,8 @@ async function getPokemon() {
         flavour_text: evolution_data[0].flavour_text,
         is_mythical: evolution_data[0].is_mythical,
         is_legendary: evolution_data[0].is_legendary,
-        evolution: evolution_data}; // Return the evolution data
+        evolution: evolution_data
+    }; // Return the evolution data
 }
 
 // Function to get type information for a Pokemon
@@ -162,21 +163,3 @@ async function selectPath(paths) {
 }
 
 getPokemon();
-
-
-{
-    species: { type: String },
-    nickname: { type: String },
-    happiness: { type: Number },
-    current_level: { type: Number, default: 0 },
-    max_level: { type: Number },
-    defaultSprite: { type: String },
-    shinySprite: { type: String },
-    poke_id: { type: Number },
-    cries: { type: String },
-    type: { type: String },
-    base_happiness: { type: Number, default: 50 },
-    flavour_text: { type: [string] },
-    is_mythical: { type: Boolean },
-    is_legendary: { type: Boolean },
-    evolution: }
