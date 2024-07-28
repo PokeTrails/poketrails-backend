@@ -27,8 +27,8 @@ const pokemonSchema = mongoose.Schema(
                 base_happiness: { type: Number },
                 flavour_text: { type: [String] }
             }
-        ]
-        // user: { type: Schema.Types.ObjectId, ref: "user" }
+        ],
+        user: { type: mongoose.Schema.Types.ObjectId, ref: "user" }
     },
     {
         timestamps: true

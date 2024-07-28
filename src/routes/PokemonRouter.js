@@ -1,7 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const pokemonController = require("../controllers/PokemonController");
+const auth = require("../middleware/auth");
 
-router.post("/", pokemonController.createPokemon);
+router.post("/", auth, pokemonController.createPokemon);
+router.get("/", auth, pokemonController.getAllPokemon);
 
 module.exports = router;
