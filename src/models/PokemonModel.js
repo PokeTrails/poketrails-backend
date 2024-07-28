@@ -12,7 +12,7 @@ const pokemonSchema = mongoose.Schema(
         cries: { type: String },
         type: { type: String },
         base_happiness: { type: Number, default: 50 },
-        flavour_text: { type: [String] },
+        flavour_text: { type: String },
         is_mythical: { type: Boolean },
         is_legendary: { type: Boolean },
         evolution: [
@@ -25,7 +25,7 @@ const pokemonSchema = mongoose.Schema(
                 cries: { type: String },
                 type: { type: String },
                 base_happiness: { type: Number },
-                flavour_text: { type: [String] }
+                flavour_text: { type: String }
             }
         ],
         user: { type: mongoose.Schema.Types.ObjectId, ref: "user" }
