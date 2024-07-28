@@ -100,7 +100,7 @@ async function pokemontype(url) {
     return {
         is_legendary: data.is_legendary,
         is_mythical: data.is_mythical,
-        flavour_text: flavourText,
+        flavour_text: flavourText.slice(-1),
         base_happiness: data.base_happiness
     };
 }
