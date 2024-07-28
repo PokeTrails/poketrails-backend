@@ -1,5 +1,4 @@
 const express = require("express");
-const pokemonRouter = require("./routes/PokemonRouter.js");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 
@@ -28,7 +27,12 @@ const userRouter = require("./routes/UserRouter.js");
 app.use("/user", userRouter);
 
 // Pokemon Router
+const pokemonRouter = require("./routes/PokemonRouter.js");
 app.use("/api/pokemon", pokemonRouter);
+
+//Party Router
+const partyRouter = require("./routes/PartyRouter.js");
+app.use("/api/party", partyRouter);
 
 // Login Router
 const loginRouter = require("./routes/LoginRouter.js");

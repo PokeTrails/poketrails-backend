@@ -36,17 +36,16 @@ userSchema.pre("save", async function (next) {
 
     this.password = hash;
 
-    next();
-});
-
-userSchema.post("save", async function (next) {
     const newParty = new PartyModel({
-        user: doc._id,
+        user: this._id,
         slots: [],
         buffs: []
     });
     await newParty.save();
+    next();
 });
+
+// userSchema.post("save", async function () {});
 
 const UserModel = mongoose.model("User", userSchema);
 
