@@ -1,48 +1,52 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
+const PartyModel = require("./PartyModel");
 
 const userSchema = mongoose.Schema({
-
-    username:{type: String, required: true, unique: true},
-    trainerName:{type: String, required: true},
-    password:{type: String, required: true, unique: false},
-    secretQuestion:{ type: String},
-    secretAnswer:{type: String},
-    userExperience:{type: Number, default: 0, required: true},
-    playerLevel:{type: Number, default: 1, required: true},
-    isFirstLogin:{type: Boolean, default: true},
-    balance:{type: Number, default: 0, required: true},   
-    eggVoucher:{type: Number, default: 0, required: true},
-    trainerSprite:{type: String, required: true},
+    username: { type: String, required: true, unique: true },
+    trainerName: { type: String, required: true },
+    password: { type: String, required: true, unique: false },
+    secretQuestion: { type: String },
+    secretAnswer: { type: String },
+    userExperience: { type: Number, default: 0, required: true },
+    playerLevel: { type: Number, default: 1, required: true },
+    isFirstLogin: { type: Boolean, default: true },
+    balance: { type: Number, default: 0, required: true },
+    eggVoucher: { type: Number, default: 0, required: true },
+    trainerSprite: { type: String, required: true }
     // party:{
     //     partyID:{},
     //     slots:{type:[partySlotSchema]}, Will import seperate schema for the party slots
     //     isOnTrail:{},
     //     partyBuff:{},
     // }
-})
+});
 
-userSchema.pre(
-    "save",
-    async function (next) {
-        const user = this;
-        console.log("Pre-save hook running");
-        
-        if (!user.isModified("password")){
-            return;
-        }
-        console.log("Raw password is: " + this.password);
+userSchema.pre("save", async function (next) {
+    const user = this;
+    console.log("Pre-save hook running");
 
-        const hash = await bcrypt.hash(this.password, 10);
-        console.log("Hashed and encrypted and salted password is: " + hash);
-
-        this.password = hash;
-
-        next();
+    if (!user.isModified("password")) {
+        return;
     }
-)
+    console.log("Raw password is: " + this.password);
 
-const UserModel = mongoose.model("User", userSchema)
+    const hash = await bcrypt.hash(this.password, 10);
+    console.log("Hashed and encrypted and salted password is: " + hash);
 
-module.exports = { UserModel }
+    this.password = hash;
 
+    const newParty = new PartyModel({
+        user: this._id,
+        slots: [],
+        buffs: []
+    });
+    await newParty.save();
+    next();
+});
+
+// userSchema.post("save", async function () {});
+
+const UserModel = mongoose.model("User", userSchema);
+
+module.exports = { UserModel };

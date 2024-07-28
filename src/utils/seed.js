@@ -1,14 +1,12 @@
 const { connectDB, clearDB, closeDB } = require("../config/database");
 const { UserModel } = require("../models/UserModel");
 
-
-
-
-async function seedUsers(){
+async function seedUsers() {
     let userData1 = {
-            username: "pokeking",
-            trainerName: "PokeKing",
-            password: "password",
+        username: "pokeking",
+        trainerName: "PokeKing",
+        password: "password",
+        trainerSprite: "hello"
     };
 
     let user1 = await UserModel.create(userData1);
@@ -18,6 +16,7 @@ async function seedUsers(){
         username: "JakeTheKing",
         trainerName: "Jake Long",
         password: "sapling",
+        trainerSprite: "hello"
     };
 
     let user2 = await UserModel.create(userData2);
@@ -28,18 +27,15 @@ async function seedUsers(){
     return result;
 }
 
-
-async function seed(){
-
+async function seed() {
     await connectDB();
     await clearDB();
 
     let newUsers = await seedUsers();
-    console.log("The new users are: ")
-    console.log(newUsers)
+    console.log("The new users are: ");
+    console.log(newUsers);
 
     await closeDB();
-
 }
 
 seed();

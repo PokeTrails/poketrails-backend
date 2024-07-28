@@ -27,3 +27,40 @@ sudo systemctl start mongod
 ```sh
 npm run dev
 ```
+
+## Seed data to the db
+
+```sh
+npm run seed
+```
+
+# Endpoints
+
+## Login Route
+
+- URL `http://localhost:8080/login`
+- Method: `POST`
+- Body:`{"username": "abc",  "password": "abc"}`
+
+## Pokemon Route
+
+### Create a New Pokémon
+
+- URL `http://localhost:8080/api/pokemon`
+
+- Method: `POST`
+- Access: Protected (requires JWT token)
+
+### Get All Pokémon for the Authenticated User
+
+- URL `http://localhost:8080/api/pokemon`
+- Method: `GET`
+- Access: Protected (requires JWT token)
+
+## Party Route
+
+### Get party details for the Authenticated User
+
+- URL `http://localhost:8080/api/party`
+- Method: `GET`
+- Access: Protected (requires JWT token)
