@@ -1,6 +1,7 @@
 const express = require("express");
-const cors = require('cors');
-const bodyParser = require('body-parser');
+const pokemonRouter = require("./routes/PokemonRouter.js");
+const cors = require("cors");
+const bodyParser = require("body-parser");
 
 const { logger } = require("./middleware/logger.js");
 
@@ -8,7 +9,6 @@ const app = express();
 
 app.use(cors());
 app.use(bodyParser.json());
-
 
 // Logger middleware
 app.use(logger);
@@ -27,9 +27,12 @@ app.get("/", (req, res, next) => {
 const userRouter = require("./routes/UserRouter.js");
 app.use("/user", userRouter);
 
+// Pokemon Router
+app.use("/api/pokemon", pokemonRouter);
+
 // Login Router
-const loginRouter = require("./routes/LoginRouter.js")
-app.use("/login", loginRouter)
+const loginRouter = require("./routes/LoginRouter.js");
+app.use("/login", loginRouter);
 
 // Generic error handling for any error that happens on the server
 app.use((error, req, res, next) => {
