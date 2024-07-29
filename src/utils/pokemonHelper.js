@@ -23,7 +23,7 @@ async function getPokemon() {
         evolution_data.push({
             level: 2,
             poke_id: id,
-            name: name,
+            species: name,
             sprite: chanceShiny <= 10 ? sprites.shinySprite : sprites.defaultSprite,
             cries: sprites.cries,
             type: sprites.types,
@@ -45,7 +45,7 @@ async function getPokemon() {
         evolution_data.push({
             level: 3,
             poke_id: id,
-            name: name,
+            species: name,
             sprite: chanceShiny <= 10 ? sprites.shinySprite : sprites.defaultSprite,
             cries: sprites.cries,
             type: sprites.types,
