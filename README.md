@@ -64,3 +64,34 @@ npm run seed
 - URL `http://localhost:8080/api/party`
 - Method: `GET`
 - Access: Protected (requires JWT token)
+
+## User Route
+
+### Create a New user
+- URL `http://localhost:8080/user/create`
+
+- Method: `POST`
+
+### Delete a User
+- URL `http://localhost:8080/user/(userID)`
+
+- Method: `DELETE`
+
+- Access: Protected (requires JWT token)
+
+### Edit a User
+- URL `http://localhost:8080/user/(userID)`
+
+- Method: `PATCH`
+
+- Access: Protected (requires JWT token)
+
+### Find a User
+- URL `http://localhost:8080/user/(userID)`
+
+- Method: `GET`
+
+## Find all Users
+- URL `http://localhost:8080/user`
+
+- Method: `GET`
