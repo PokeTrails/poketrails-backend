@@ -39,4 +39,16 @@ const getAllPokemon = async (req, res, next) => {
     }
 };
 
-module.exports = { createPokemon, getAllPokemon };
+const getPokemonByID = async (req, res, next) => {
+    try {
+        const pokemon = await PokemonModel.findOne({ _id: req.params.id, user: req.userId });
+        if (!pokemon) {
+            return res.status(404).json({ message: `User does not own a pokemon with id ${req.params.id}` });
+        }
+        return res.status(200).json(pokemon);
+    } catch (error) {
+        next(error);
+    }
+};
+
+module.exports = { createPokemon, getAllPokemon, getPokemonByID };
