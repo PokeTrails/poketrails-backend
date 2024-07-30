@@ -1,5 +1,6 @@
 const { connectDB, clearDB, closeDB } = require("../config/database");
 const { UserModel } = require("../models/UserModel");
+const { PartyModel } = require("../models/PartyModel");
 
 async function seedUsers() {
     let userData1 = {
@@ -22,8 +23,18 @@ async function seedUsers() {
     let user2 = await UserModel.create(userData2);
     await user2.save();
 
-    result = [user1, user2];
+    let party1 = await PartyModel.create({
+        slots: [],
+        user: user1._id,
+        buffs: []
+    });
 
+    let party2 = await PartyModel.create({
+        slots: [],
+        user: user2._id,
+        buffs: []
+    });
+    result = [user1, party1, user2, party2];
     return result;
 }
 
@@ -31,9 +42,9 @@ async function seed() {
     await connectDB();
     await clearDB();
 
-    let newUsers = await seedUsers();
-    console.log("The new users are: ");
-    console.log(newUsers);
+    let seededData = await seedUsers();
+    console.log("Seeded Data: ");
+    console.log(seededData);
 
     await closeDB();
 }
