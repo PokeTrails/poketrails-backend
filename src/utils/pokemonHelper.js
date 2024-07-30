@@ -8,21 +8,7 @@ async function getPokemon() {
     let detailURL = pokemon.chain.species.url; // Get the URL for detailed species data
     let sprites = await getPokemonSprites(name); // Get the sprites for the base Pokemon
     let types = await pokemontype(detailURL); // Get the type information for the base Pokemon
-
-    evolution_data.push({
-        level: 1,
-        poke_id: id,
-        name: name,
-        defaultSprite: sprites.defaultSprite,
-        shinySprite: sprites.shinySprite,
-        cries: sprites.cries,
-        type: sprites.types,
-        is_mythical: types.is_mythical,
-        is_legendary: types.is_legendary,
-        base_happiness: types.base_happiness,
-        flavour_text: types.flavour_text
-    });
-
+    const chanceShiny = Math.floor(Math.random() * 100) + 1;
     // Level 2
     let levelTwoPath = (await selectPath(pokemon.chain.evolves_to)) || 0; // Select a random evolution path for level 2
 
@@ -30,19 +16,18 @@ async function getPokemon() {
         // If the Pokemon at level 2 exists and is from Generation 5
         let name = pokemon.chain.evolves_to[levelTwoPath].species.name; // Get the name of the level 2 Pokemon
         let id = await getPokemonId(name); // Get the ID of the level 2 Pokemon
-        detailURL = pokemon.chain.evolves_to[levelTwoPath].species.url; // Get the URL for detailed species data
+        let detailURL = pokemon.chain.evolves_to[levelTwoPath].species.url; // Get the URL for detailed species data
         let sprites = await getPokemonSprites(name); // Get the sprites for the level 2 Pokemon
         let types = await pokemontype(detailURL); // Get the type information for the level 2 Pokemon
 
         evolution_data.push({
             level: 2,
             poke_id: id,
-            name: name,
-            defaultSprite: sprites.defaultSprite,
-            shinySprite: sprites.shinySprite,
+            species: name,
+            sprite: chanceShiny <= 10 ? sprites.shinySprite : sprites.defaultSprite,
             cries: sprites.cries,
             type: sprites.types,
-            base_happiness: types.base_happiness,
+            target_happiness: 100,
             flavour_text: types.flavour_text
         });
     }
@@ -60,29 +45,28 @@ async function getPokemon() {
         evolution_data.push({
             level: 3,
             poke_id: id,
-            name: name,
-            defaultSprite: sprites.defaultSprite,
-            shinySprite: sprites.shinySprite,
+            species: name,
+            sprite: chanceShiny <= 10 ? sprites.shinySprite : sprites.defaultSprite,
             cries: sprites.cries,
             type: sprites.types,
-            base_happiness: types.base_happiness,
+            target_happiness: 200,
             flavour_text: types.flavour_text
         });
     }
     // Return the evolution data
     return {
-        species: evolution_data[0].name,
-        current_level: evolution_data[0].level,
-        max_level: evolution_data[evolution_data.length - 1].level,
-        defaultSprite: evolution_data[0].defaultSprite,
-        shinySprite: evolution_data[0].shinySprite,
-        poke_id: evolution_data[0].poke_id,
-        cries: evolution_data[0].cries,
-        type: evolution_data[0].type,
-        base_happiness: evolution_data[0].base_happiness,
-        flavour_text: evolution_data[0].flavour_text,
-        is_mythical: evolution_data[0].is_mythical,
-        is_legendary: evolution_data[0].is_legendary,
+        species: name,
+        current_level: 1,
+        max_level: evolution_data[evolution_data.length - 1]?.level || 1,
+        sprite: chanceShiny <= 10 ? sprites.shinySprite : sprites.defaultSprite,
+        isShiny: chanceShiny <= 10 ? true : false,
+        poke_id: id,
+        cries: sprites.cries,
+        type: sprites.types,
+        target_happiness: 50,
+        flavour_text: types.flavour_text,
+        is_mythical: types.is_mythical,
+        is_legendary: types.is_legendary,
         evolution: evolution_data
     };
 }
@@ -100,7 +84,7 @@ async function pokemontype(url) {
     return {
         is_legendary: data.is_legendary,
         is_mythical: data.is_mythical,
-        flavour_text: flavourText,
+        flavour_text: flavourText.at(-1),
         base_happiness: data.base_happiness
     };
 }
@@ -120,7 +104,7 @@ async function getPokemonSprites(name) {
 // Function to select a random Pokemon from Generation 5
 async function selectPokemon() {
     let data;
-    let validPokemon = false; // Flag to check if a valid Pokemon is found
+    let validPokemon = false; // Flag to check if a val id Pokemon is found
     while (!validPokemon) {
         let random = Math.floor(Math.random() * 336); // Generate a random number
         const response = await fetch(`https://pokeapi.co/api/v2/evolution-chain/${random}`); // Fetch the evolution chain data
@@ -139,7 +123,6 @@ async function isGenFivePokemon(name) {
     if (response.ok) {
         let data = await response.json();
         if (parseInt(data.id) <= 649) {
-            // Check if the Pokemon ID is within the Generation 5 range
             return true; // Return true if the Pokemon is from Generation 5
         }
     }
