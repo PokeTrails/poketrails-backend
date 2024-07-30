@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
-const PartyModel = require("./PartyModel");
 
 const userSchema = mongoose.Schema({
     username: { type: String, required: true, unique: true },
@@ -36,12 +35,6 @@ userSchema.pre("save", async function (next) {
 
     this.password = hash;
 
-    const newParty = new PartyModel({
-        user: this._id,
-        slots: [],
-        buffs: []
-    });
-    await newParty.save();
     next();
 });
 
