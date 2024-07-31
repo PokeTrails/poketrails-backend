@@ -1,8 +1,10 @@
 const express = require("express");
-const Party = require("../models/PartyModel");
+const { PartyModel } = require("../models/PartyModel");
 
 const getAllParties = async (req, res) => {
-    const parties = await Party.findOne({ user: req.userId });
+    // const parties = await Party.findOne({ user: req.userId });
+    console.log(req.userId);
+    const parties = await PartyModel.findOne({ user: req.userId });
     if (!parties) {
         return res.status(404).json({
             error: "user does not have a party"

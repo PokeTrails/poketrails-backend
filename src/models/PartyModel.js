@@ -8,4 +8,4 @@ const partySchema = mongoose.Schema({
 
 const PartyModel = mongoose.model("Party", partySchema);
 
-module.exports = PartyModel;
+module.exports = { PartyModel };
