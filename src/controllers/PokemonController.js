@@ -51,4 +51,25 @@ const getPokemonByID = async (req, res, next) => {
     }
 };
 
-module.exports = { createPokemon, getAllPokemon, getPokemonByID };
+const editPokemonByID = async (req, res, next) => {
+    try {
+        if (!req.body.nickname) {
+            return res.status(400).json({ message: "Nickname is required" });
+        }
+        const updatedPokemon = await PokemonModel.findByIdAndUpdate(
+            { _id: req.params.id, user: req.userId },
+            { nickname: req.body.nickname },
+            { new: true }
+        );
+        if (!updatedPokemon) {
+            return res.status(404).json({
+                message: `User does not own a pokemon with id ${req.params.id}`
+            });
+        }
+        return res.status(200).json({ nickname: updatedPokemon.nickname });
+    } catch (error) {
+        next(error);
+    }
+};
+
+module.exports = { createPokemon, getAllPokemon, getPokemonByID, editPokemonByID };

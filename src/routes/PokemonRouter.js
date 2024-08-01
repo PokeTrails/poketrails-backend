@@ -6,5 +6,6 @@ const auth = require("../middleware/auth");
 router.post("/", auth, pokemonController.createPokemon);
 router.get("/", auth, pokemonController.getAllPokemon);
 router.get("/:id", auth, pokemonController.getPokemonByID);
+router.patch("/:id", auth, pokemonController.editPokemonByID);
 
 module.exports = router;
