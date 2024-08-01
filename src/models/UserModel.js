@@ -13,6 +13,10 @@ const userSchema = mongoose.Schema({
     balance: { type: Number, default: 0, required: true },
     eggVoucher: { type: Number, default: 0, required: true },
     trainerSprite: { type: String, required: true },
+    happinesMulti: { type: Number, default: 1, required: true},
+    shinyMulti: { type: Number, default: 1, required: true},
+    trailMulti: { type: Number, default: 1, required: true},
+    moneyMulti: { type: Number, default: 1, required: true},
     shopItems: [{
         itemName: { type: String, required: true },
         price: { type: Number, required: true },
