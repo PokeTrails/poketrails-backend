@@ -45,7 +45,40 @@ const getPokemonByID = async (req, res, next) => {
         if (!pokemon) {
             return res.status(404).json({ message: `User does not own a pokemon with id ${req.params.id}` });
         }
-        return res.status(200).json(pokemon);
+        // If the egg has already hatched, return the details
+        if (pokemon.eggHatched) {
+            return res.status(200).json(pokemon);
+        } else {
+            // Determine hours to add based on properties (mythical, legendary, or shiny)
+            let hoursToAdd = pokemon.is_mythical || pokemon.is_legendary || pokemon.isShiny ? 8 : 6;
+            // Convert the created time to a Date object
+            let ISO = new Date(pokemon.createdAt);
+            // Convert the additional hours to milliseconds
+            let millisecondsToAdd = hoursToAdd * 60 * 60 * 1000;
+            // Calculate the hatch ETA by adding milliseconds to the creation time
+            let hatchETA = ISO.getTime() + millisecondsToAdd;
+            // Get the current time in milliseconds
+            let current = Date.now();
+            // Check if the hatch ETA has passed
+            if (hatchETA <= current) {
+                // If the hatch ETA has passed, mark the egg as hatched
+                pokemon.eggHatched = true;
+                // Save the updated object to the database
+                const updatePokemon = await pokemon.save();
+                // Return the updated details
+                return res.status(200).json(updatePokemon);
+            } else {
+                // Calculate the remaining time in milliseconds
+                let milliSecondsLeft = hatchETA - current;
+                // Convert the remaining time to hours, minutes, and seconds
+                let hours = Math.floor(milliSecondsLeft / (60 * 60 * 1000));
+                let minutes = Math.floor((milliSecondsLeft % (60 * 60 * 1000)) / (60 * 1000));
+                let seconds = Math.floor((milliSecondsLeft % (60 * 1000)) / 1000);
+
+                // Return the time left to hatch in HH:MM:SS format
+                return res.status(200).json({ ["time left to hatch"]: `${hours}:${minutes}:${seconds}` });
+            }
+        }
     } catch (error) {
         next(error);
     }
