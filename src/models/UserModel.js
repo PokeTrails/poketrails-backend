@@ -20,7 +20,8 @@ const userSchema = mongoose.Schema({
     shopItems: [{
         itemName: { type: String, required: true },
         price: { type: Number, required: true },
-        level: { type: Number, required: true }
+        level: { type: Number, required: true },
+        owned: { type: Boolean, default: false, required: true}
     }]
 });
 
