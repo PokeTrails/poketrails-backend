@@ -12,14 +12,20 @@ const userSchema = mongoose.Schema({
     isFirstLogin: { type: Boolean, default: true },
     balance: { type: Number, default: 0, required: true },
     eggVoucher: { type: Number, default: 0, required: true },
-    trainerSprite: { type: String, required: true }
-    // party:{
-    //     partyID:{},
-    //     slots:{type:[partySlotSchema]}, Will import seperate schema for the party slots
-    //     isOnTrail:{},
-    //     partyBuff:{},
-    // }
+    trainerSprite: { type: String, required: true },
+    shopItems: [{
+        itemName: { type: String, required: true },
+        price: { type: Number, required: true },
+        level: { type: Number, required: true }
+    }]
 });
+
+const defaultShopItems = [
+    { itemName: 'expShare', price: 600, level: 1 },
+    { itemName: 'shinyCharm', price: 600, level: 1 },
+    { itemName: 'runningShoes', price: 600, level: 1 },
+    { itemName: 'amuletCoin', price: 600, level: 1 }
+];
 
 userSchema.pre("save", async function (next) {
     const user = this;
@@ -34,6 +40,12 @@ userSchema.pre("save", async function (next) {
     console.log("Hashed and encrypted and salted password is: " + hash);
 
     this.password = hash;
+
+    if (this.shopItems && this.shopItems.length === 0) {
+        this.shopItems = defaultShopItems;
+    }
+
+    console.log( "New user has these items:" + this.shopItems);
 
     next();
 });
