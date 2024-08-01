@@ -29,11 +29,11 @@ app.use("/user", userRouter);
 
 // Pokemon Router
 const pokemonRouter = require("./routes/PokemonRouter.js");
-app.use("/api/pokemon", pokemonRouter);
+app.use("/pokemon", pokemonRouter);
 
 //Party Router
 const partyRouter = require("./routes/PartyRouter.js");
-app.use("/api/party", partyRouter);
+app.use("/party", partyRouter);
 
 // Login Router
 const loginRouter = require("./routes/LoginRouter.js");
