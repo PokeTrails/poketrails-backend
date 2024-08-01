@@ -31,7 +31,7 @@ router.post("/", async (request, response, next) => {
 	// Create a JWT based on foundUser._id 
 	if (isPasswordCorrect){
 
-		newJwt = createJWT(foundUser._id);
+		newJwt = createJWT(foundUser);
 
 		response.json({
 			jwt: newJwt

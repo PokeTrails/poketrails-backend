@@ -23,6 +23,17 @@ async function seedUsers() {
     let user2 = await UserModel.create(userData2);
     await user2.save();
 
+    let userData3 = {
+        admin: true,
+        username: "dev",
+        trainerName: "dev",
+        password: "admin",
+        trainerSprite: "hello"
+    };
+
+    let user3 = await UserModel.create(userData3);
+    await user3.save();
+
     let party1 = await PartyModel.create({
         slots: [],
         user: user1._id,
@@ -34,7 +45,13 @@ async function seedUsers() {
         user: user2._id,
         buffs: []
     });
-    result = [user1, party1, user2, party2];
+
+    let party3 = await PartyModel.create({
+        slots: [],
+        user: user2._id,
+        buffs: []
+    });
+    result = [user1, party1, user2, party2, user3, party3];
     return result;
 }
 

@@ -12,10 +12,13 @@ async function comparePasswords(plaintextPassword, encryptedPassword) {
 }
 
 
-function createJWT(userID){
+function createJWT(user){
     let newJwt = jwt.sign(
         // Payloard of data
-        {id: userID},
+        {
+            id: user._id,
+            admin: user.admin
+        },
         // Secret key for JWT signature
         process.env.JWT_KEY,
 
