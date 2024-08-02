@@ -2,6 +2,8 @@ const mongoose = require("mongoose");
 
 const pokemonSchema = mongoose.Schema(
     {
+        eggHatched: { type: Boolean, default: false },
+        donated: { type: Boolean, default: false },
         species: { type: String },
         nickname: { type: String },
         current_level: { type: Number, default: 0 },

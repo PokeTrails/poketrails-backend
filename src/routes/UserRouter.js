@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { UserModel } = require("../models/UserModel");
 const { createJWT } = require("../utils/authHelper");
-const PartyModel = require("../models/PartyModel");
+const { PartyModel } = require("../models/PartyModel");
 
 // Route to find all  users
 router.get("/", async (request, response, next) => {

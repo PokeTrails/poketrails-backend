@@ -46,33 +46,48 @@ npm run seed
 
 ### Create a New Pokémon
 
-- URL `http://localhost:8080/api/pokemon`
+- URL `http://localhost:8080/pokemon`
 
 - Method: `POST`
 - Access: Protected (requires JWT token)
 
 ### Get All Pokémon for the Authenticated User
 
-- URL `http://localhost:8080/api/pokemon`
+- URL `http://localhost:8080/pokemon`
 - Method: `GET`
 - Access: Protected (requires JWT token)
+
+### Get Pokémon by ID
+
+- URL `http://localhost:8080/:pokemonID`
+- Method: `GET`
+- Access: Protected (requires JWT token)
+
+### set/edit Pokémon Nickname by Pokémon ID
+
+- URL `http://localhost:8080/:pokemonID`
+- Method: PATCH
+- Access: Protected (requires JWT token)
+- Body: `{"nickname": "<NewNickname>"}`
 
 ## Party Route
 
 ### Get party details for the Authenticated User
 
-- URL `http://localhost:8080/api/party`
+- URL `http://localhost:8080/party`
 - Method: `GET`
 - Access: Protected (requires JWT token)
 
 ## User Route
 
 ### Create a New user
+
 - URL `http://localhost:8080/user/create`
 
 - Method: `POST`
 
 ### Delete a User
+
 - URL `http://localhost:8080/user/(userID)`
 
 - Method: `DELETE`
@@ -80,6 +95,7 @@ npm run seed
 - Access: Protected (requires JWT token)
 
 ### Edit a User
+
 - URL `http://localhost:8080/user/(userID)`
 
 - Method: `PATCH`
@@ -87,11 +103,13 @@ npm run seed
 - Access: Protected (requires JWT token)
 
 ### Find a User
+
 - URL `http://localhost:8080/user/(userID)`
 
 - Method: `GET`
 
 ## Find all Users
+
 - URL `http://localhost:8080/user`
 
 - Method: `GET`
