@@ -105,4 +105,22 @@ const editPokemonByID = async (req, res, next) => {
     }
 };
 
-module.exports = { createPokemon, getAllPokemon, getPokemonByID, editPokemonByID };
+const hatchPokemonByID = async (req, res, next) => {
+    try {
+        const updatedPokemon = await PokemonModel.findByIdAndUpdate(
+            { _id: req.params.id, user: req.userId },
+            { eggHatched: true },
+            { new: true }
+        );
+        if (!updatedPokemon) {
+            return res.status(404).json({
+                message: `User does not own a pokemon with id ${req.params.id}`
+            });
+        }
+        return res.status(200).json({ msg: "egg hatched" });
+    } catch (error) {
+        next(error);
+    }
+};
+
+module.exports = { createPokemon, getAllPokemon, getPokemonByID, editPokemonByID, hatchPokemonByID };
