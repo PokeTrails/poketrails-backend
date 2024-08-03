@@ -41,7 +41,11 @@ const getAllPokemon = async (req, res, next) => {
 
 const getPokemonByID = async (req, res, next) => {
     try {
-        const pokemon = await PokemonModel.findOne({ _id: req.params.id, user: req.userId });
+        const pokemon = await PokemonModel.findOne(
+            { _id: req.params.id, user: req.userId },
+            //exclude below items from response
+            { evolution: 0, user: 0, createdAt: 0, updatedAt: 0, __v: 0, donated: 0 }
+        );
         if (!pokemon) {
             return res.status(404).json({ message: `User does not own a pokemon with id ${req.params.id}` });
         }
