@@ -19,6 +19,10 @@ const pokemonSchema = mongoose.Schema(
         sprite: { type: String },
         cries: { type: String },
         flavour_text: { type: String },
+        lastTalked: { type: Date },
+        lastPlayed: { type: Date },
+        lastFeed: { type: Date },
+        negativeInteractioncount: { type: Number, default: 0 },
         evolution: [
             {
                 level: { type: String },
