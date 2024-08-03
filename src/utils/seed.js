@@ -1,6 +1,8 @@
 const { connectDB, clearDB, closeDB } = require("../config/database");
 const { UserModel } = require("../models/UserModel");
 const { PartyModel } = require("../models/PartyModel");
+const { getPokemon } = require("./pokemonHelper");
+const PokemonModel = require("../models/PokemonModel");
 
 async function seedUsers() {
     let userData1 = {
@@ -35,7 +37,55 @@ async function seedUsers() {
         buffs: []
     });
     result = [user1, party1, user2, party2];
+
+    let data = [];
+    for (i = 1; i <= 4; i++) {
+        let user = await UserModel.create({
+            username: `user${i}`,
+            trainerName: `user${i}`,
+            password: `user${i}`,
+            trainerSprite: `user${i}`
+        });
+        const party = await PartyModel.create({
+            slots: [],
+            user: user._id,
+            buffs: []
+        });
+        if (i == 1) {
+            egg = 1;
+            hatched = 0;
+        } else if (i == 2) {
+            egg = 3;
+            hatched = 3;
+        } else if (i == 3) {
+            egg = 6;
+            hatched = 5;
+        } else if (i == 4) {
+            egg = 0;
+            hatched = 0;
+        }
+        await assignPokemon(user, egg, party, hatched);
+    }
     return result;
+}
+
+async function assignPokemon(user, egg, party, hatched) {
+    let hatchedCount = 0;
+    for (a = 1; a <= egg; a++) {
+        const pokemonData = await getPokemon();
+        //Create a new Pokemon
+        const newPokemon = await PokemonModel.create(pokemonData);
+        newPokemon.user = user._id;
+        if (hatchedCount < hatched) {
+            newPokemon.eggHatched = true;
+            hatchedCount++;
+        }
+        //SavePokemon
+        const savedPokemon = await newPokemon.save();
+        // Add the new Pokémon to the user's party
+        party.slots.push(savedPokemon._id);
+        await party.save();
+    }
 }
 
 async function seed() {
@@ -43,8 +93,8 @@ async function seed() {
     await clearDB();
 
     let seededData = await seedUsers();
-    console.log("Seeded Data: ");
-    console.log(seededData);
+    // console.log("Seeded Data: ");
+    // console.log(seededData);
 
     await closeDB();
 }

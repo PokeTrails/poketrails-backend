@@ -9,6 +9,8 @@ async function getPokemon() {
     let sprites = await getPokemonSprites(name); // Get the sprites for the base Pokemon
     let types = await pokemontype(detailURL); // Get the type information for the base Pokemon
     const chanceShiny = Math.floor(Math.random() * 100) + 1;
+    // Shiny %
+    let shinyChance = 10;
     // Level 2
     let levelTwoPath = (await selectPath(pokemon.chain.evolves_to)) || 0; // Select a random evolution path for level 2
 
@@ -27,7 +29,7 @@ async function getPokemon() {
             level: 2,
             poke_id: id,
             species: name,
-            sprite: chanceShiny <= 10 ? sprites.shinySprite : sprites.defaultSprite,
+            sprite: chanceShiny <= shinyChance ? sprites.shinySprite : sprites.defaultSprite,
             cries: sprites.cries,
             type: sprites.types,
             target_happiness: 100,
@@ -52,7 +54,7 @@ async function getPokemon() {
             level: 3,
             poke_id: id,
             species: name,
-            sprite: chanceShiny <= 10 ? sprites.shinySprite : sprites.defaultSprite,
+            sprite: chanceShiny <= shinyChance ? sprites.shinySprite : sprites.defaultSprite,
             cries: sprites.cries,
             type: sprites.types,
             target_happiness: 200,
@@ -65,8 +67,8 @@ async function getPokemon() {
         nickname: name,
         current_level: 1,
         max_level: evolution_data[evolution_data.length - 1]?.level || 1,
-        sprite: chanceShiny <= 10 ? sprites.shinySprite : sprites.defaultSprite,
-        isShiny: chanceShiny <= 10 ? true : false,
+        sprite: chanceShiny <= shinyChance ? sprites.shinySprite : sprites.defaultSprite,
+        isShiny: chanceShiny <= shinyChance ? true : false,
         poke_id: id,
         cries: sprites.cries,
         type: sprites.types,
