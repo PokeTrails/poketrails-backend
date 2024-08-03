@@ -71,12 +71,12 @@ const getPokemonByID = async (req, res, next) => {
                 // Calculate the remaining time in milliseconds
                 let milliSecondsLeft = hatchETA - current;
                 // Convert the remaining time to hours, minutes, and seconds
-                let hours = Math.floor(milliSecondsLeft / (60 * 60 * 1000));
-                let minutes = Math.floor((milliSecondsLeft % (60 * 60 * 1000)) / (60 * 1000));
-                let seconds = Math.floor((milliSecondsLeft % (60 * 1000)) / 1000);
+                // let hours = Math.floor(milliSecondsLeft / (60 * 60 * 1000));
+                // let minutes = Math.floor((milliSecondsLeft % (60 * 60 * 1000)) / (60 * 1000));
+                // let seconds = Math.floor((milliSecondsLeft % (60 * 1000)) / 1000);
 
                 // Return the time left to hatch in HH:MM:SS format
-                return res.status(200).json({ ["time left to hatch"]: `${hours}:${minutes}:${seconds}` });
+                return res.status(200).json({ ["time left to hatch"]: `${milliSecondsLeft}` });
             }
         }
     } catch (error) {
