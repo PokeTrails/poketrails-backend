@@ -60,34 +60,28 @@ const getPokemonByID = async (req, res, next) => {
                 donated: pokemon.donated
             });
         } else {
-            // Determine hours to add based on properties (mythical, legendary, or shiny)
             let hoursToAdd = pokemon.is_mythical || pokemon.is_legendary || pokemon.isShiny ? 8 : 6;
             // Convert the created time to a Date object
             let ISO = new Date(pokemon.createdAt);
             // Convert the additional hours to milliseconds
-            let millisecondsToAdd = hoursToAdd * 60 * 60 * 1000;
+            let millisecondsToAdd = 0.1 * 60 * 60 * 1000;
             // Calculate the hatch ETA by adding milliseconds to the creation time
             let hatchETA = ISO.getTime() + millisecondsToAdd;
             // Get the current time in milliseconds
             let current = Date.now();
             // Check if the hatch ETA has passed
-            if (hatchETA <= current) {
-                // If the hatch ETA has passed, mark the egg as hatched
-                pokemon.eggHatched = true;
-                // Save the updated object to the database
-                const updatePokemon = await pokemon.save();
-                // Return the updated details
-                return res.status(200).json(updatePokemon);
-            } else {
+            if (hatchETA >= current) {
                 // Calculate the remaining time in milliseconds
                 let milliSecondsLeft = hatchETA - current;
-
                 // Return the time left to hatch in HH:MM:SS format
                 return res.status(200).json({
                     eggHatched: pokemon.eggHatched,
                     timeLeft: milliSecondsLeft
                 });
             }
+            return res.status(200).json({
+                eggHatched: pokemon.eggHatched
+            });
         }
     } catch (error) {
         next(error);
@@ -119,17 +113,45 @@ const editPokemonNicknameByID = async (req, res, next) => {
 //Admin Route - to be nullififed later
 const hatchPokemonByID = async (req, res, next) => {
     try {
-        const updatedPokemon = await PokemonModel.findByIdAndUpdate(
+        const pokemon = await PokemonModel.findOne(
             { _id: req.params.id, user: req.userId },
-            { eggHatched: true },
-            { new: true }
+            //exclude below items from response
+            { evolution: 0, user: 0, updatedAt: 0, __v: 0 }
         );
-        if (!updatedPokemon) {
-            return res.status(404).json({
-                message: `User does not own a pokemon with id ${req.params.id}`
+        if (!pokemon) {
+            return res.status(404).json({ message: `User does not own a pokemon with id ${req.params.id}` });
+        }
+        if (pokemon.eggHatched) {
+            return res.status(400).json({ message: `Pokemon with ${req.params.id} is already hatched` });
+        }
+        // Determine hours to add based on properties (mythical, legendary, or shiny)
+        let hoursToAdd = pokemon.is_mythical || pokemon.is_legendary || pokemon.isShiny ? 8 : 6;
+        // Convert the created time to a Date object
+        let ISO = new Date(pokemon.createdAt);
+        // Convert the additional hours to milliseconds
+        let millisecondsToAdd = hoursToAdd * 60 * 60 * 1000;
+        // Calculate the hatch ETA by adding milliseconds to the creation time
+        let hatchETA = ISO.getTime() + millisecondsToAdd;
+        // Get the current time in milliseconds
+        let current = Date.now();
+        // Check if the hatch ETA has passed
+        if (hatchETA >= current) {
+            // Calculate the remaining time in milliseconds
+            let milliSecondsLeft = hatchETA - current;
+            // Return the time left to hatch in HH:MM:SS format
+            return res.status(400).json({
+                message: `There is still ${(milliSecondsLeft / 60000).toFixed(2)} minutes left for this pokemon to hatch`
+            });
+        } else {
+            const updatedPokemon = await PokemonModel.findByIdAndUpdate({ _id: req.params.id }, { eggHatched: true }, { new: true });
+            return res.status(200).json({
+                eggHatched: updatedPokemon.eggHatched,
+                species: updatedPokemon.species,
+                sprite: updatedPokemon.sprite,
+                is_mythical: updatedPokemon.is_mythical,
+                is_legendary: updatedPokemon.is_legendary
             });
         }
-        return res.status(200).json({ msg: "egg hatched" });
     } catch (error) {
         next(error);
     }
@@ -171,11 +193,7 @@ const donatePokemonByID = async (req, res, next) => {
             reward = levelReward + 100;
         }
 
-        const user = await UserModel.findByIdAndUpdate(
-            { _id: req.userId },
-            { $inc: { balance: reward } },
-            { new: true }
-        );
+        const user = await UserModel.findByIdAndUpdate({ _id: req.userId }, { $inc: { balance: reward } }, { new: true });
 
         const party = await PartyModel.findOneAndUpdate({ user: req.userId }, { $pull: { slots: req.params.id } });
         return res.status(200).json({
