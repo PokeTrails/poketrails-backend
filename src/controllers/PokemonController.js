@@ -64,7 +64,7 @@ const getPokemonByID = async (req, res, next) => {
             // Convert the created time to a Date object
             let ISO = new Date(pokemon.createdAt);
             // Convert the additional hours to milliseconds
-            let millisecondsToAdd = 0.1 * 60 * 60 * 1000;
+            let millisecondsToAdd = hoursToAdd * 60 * 60 * 1000;
             // Calculate the hatch ETA by adding milliseconds to the creation time
             let hatchETA = ISO.getTime() + millisecondsToAdd;
             // Get the current time in milliseconds
