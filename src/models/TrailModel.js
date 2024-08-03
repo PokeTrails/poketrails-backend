@@ -24,7 +24,7 @@ const pokemonTypes =  [
 
 const TrailSchema = mongoose.Schema({
     title: {type: String, required: true},
-    trailLog: [{type: mongoose.Schema.Types.ObjectId, ref: 'TrailLogModel', required: true}],
+    onTrail: [{type: mongoose.Schema.Types.ObjectId, ref: 'Pokemon', required: true}],
     buffedTypes: {type: String, required: true},
     enum: {pokemonTypes}
 })
