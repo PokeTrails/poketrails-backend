@@ -9,5 +9,8 @@ router.get("/:id", auth, pokemonController.getPokemonByID);
 router.patch("/nickname/:id", auth, pokemonController.editPokemonNicknameByID);
 router.patch("/hatch/:id", auth, pokemonController.hatchPokemonByID);
 router.patch("/donate/:id", auth, pokemonController.donatePokemonByID);
+router.patch("/talk/:id", auth, pokemonController.pokemonInteractionTalk);
+router.patch("/play/:id", auth, pokemonController.pokemonInteractionPlay);
+router.patch("/feed/:id", auth, pokemonController.pokemonInteractionFeed);
 
 module.exports = router;

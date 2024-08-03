@@ -5,6 +5,7 @@ const { getPokemon } = require("./pokemonHelper");
 const PokemonModel = require("../models/PokemonModel");
 
 async function seedUsers() {
+    console.log("Seeding Data");
     let userData1 = {
         username: "pokeking",
         trainerName: "PokeKing",
@@ -37,8 +38,6 @@ async function seedUsers() {
         buffs: []
     });
     result = [user1, party1, user2, party2];
-
-    let data = [];
     for (i = 1; i <= 4; i++) {
         let user = await UserModel.create({
             username: `user${i}`,
@@ -66,6 +65,7 @@ async function seedUsers() {
         }
         await assignPokemon(user, egg, party, hatched);
     }
+    console.log("Seeding Complete");
     return result;
 }
 
@@ -93,8 +93,6 @@ async function seed() {
     await clearDB();
 
     let seededData = await seedUsers();
-    // console.log("Seeded Data: ");
-    // console.log(seededData);
 
     await closeDB();
 }

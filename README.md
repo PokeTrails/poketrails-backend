@@ -82,6 +82,24 @@ npm run seed
 - Method: PATCH
 - Access: Protected (requires JWT token)
 
+### Talk with Pokémon by Pokémon ID
+
+- URL `http://localhost:8080/talk/:pokemonID`
+- Method: PATCH
+- Access: Protected (requires JWT token)
+
+### Play with Pokémon by Pokémon ID
+
+- URL `http://localhost:8080/play/:pokemonID`
+- Method: PATCH
+- Access: Protected (requires JWT token)
+
+### Feed with Pokémon by Pokémon ID
+
+- URL `http://localhost:8080/feed/:pokemonID`
+- Method: PATCH
+- Access: Protected (requires JWT token)
+
 ## Party Route
 
 ### Get party details for the Authenticated User
