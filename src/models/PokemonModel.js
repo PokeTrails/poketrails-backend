@@ -4,6 +4,7 @@ const pokemonSchema = mongoose.Schema(
     {
         eggHatched: { type: Boolean, default: false },
         donated: { type: Boolean, default: false },
+        donatedDate: { type: Date },
         species: { type: String },
         nickname: { type: String },
         current_level: { type: Number, default: 0 },
