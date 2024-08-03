@@ -22,7 +22,7 @@ const pokemonSchema = mongoose.Schema(
         lastTalked: { type: Date },
         lastPlayed: { type: Date },
         lastFeed: { type: Date },
-        negativeInteractioncount: { type: Number, default: 0 },
+        negativeInteractionCount: { type: Number, default: 0 },
         evolution: [
             {
                 level: { type: String },

@@ -50,9 +50,7 @@ const getPokemonByID = async (req, res, next) => {
             { evolution: 0, user: 0, updatedAt: 0, __v: 0 }
         );
         if (!pokemon) {
-            return res
-                .status(404)
-                .json({ message: `User does not own a pokemon with id ${req.params.id}` });
+            return res.status(404).json({ message: `User does not own a pokemon with id ${req.params.id}` });
         }
         // If the egg has already hatched, return the details
         if (pokemon.eggHatched && !pokemon.donated) {
@@ -121,14 +119,10 @@ const hatchPokemonByID = async (req, res, next) => {
             { evolution: 0, user: 0, updatedAt: 0, __v: 0 }
         );
         if (!pokemon) {
-            return res
-                .status(404)
-                .json({ message: `User does not own a pokemon with id ${req.params.id}` });
+            return res.status(404).json({ message: `User does not own a pokemon with id ${req.params.id}` });
         }
         if (pokemon.eggHatched) {
-            return res
-                .status(400)
-                .json({ message: `Pokemon with ${req.params.id} is already hatched` });
+            return res.status(400).json({ message: `Pokemon with ${req.params.id} is already hatched` });
         }
         // Determine hours to add based on properties (mythical, legendary, or shiny)
         let hoursToAdd = pokemon.is_mythical || pokemon.is_legendary || pokemon.isShiny ? 8 : 6;
@@ -220,10 +214,7 @@ const donatePokemonByID = async (req, res, next) => {
             { new: true }
         );
 
-        const party = await PartyModel.findOneAndUpdate(
-            { user: req.userId },
-            { $pull: { slots: req.params.id } }
-        );
+        const party = await PartyModel.findOneAndUpdate({ user: req.userId }, { $pull: { slots: req.params.id } });
         return res.status(200).json({
             message: `Pokemon with id: ${updatedPokemon._id} has been sucessfully donated`
         });
@@ -234,43 +225,51 @@ const donatePokemonByID = async (req, res, next) => {
 
 const pokemonInteractionTalk = async (req, res, next) => {
     try {
-        const Pokemon = await PokemonModel.findById({ _id: req.params.id, user: req.userId });
+        const Pokemon = await PokemonModel.findOne({ _id: req.params.id, user: req.userId });
         if (!Pokemon) {
             return res.status(404).json({
                 message: `User does not own a pokemon with id ${req.params.id}`
             });
         }
         if (!Pokemon.eggHatched) {
-            return res.status(404).json({
+            return res.status(400).json({
                 message: `Interaction cannot be performed with an egg`
             });
         }
         let timeDifference = (Date.now() - Pokemon.lastTalked) / (1000 * 60 * 60);
         if (!Pokemon.lastTalked || timeDifference > 3) {
-            Pokemon.current_happiness += 5;
-            Pokemon.negativeInteractioncount = 0;
+            if (Pokemon.current_happiness >= Pokemon.target_happiness) {
+                return res.status(200).json({
+                    message: "Max happiness reached",
+                    current_happiness: Pokemon.current_happiness
+                });
+            }
+            let pointsNeededToMax = Pokemon.target_happiness - Pokemon.current_happiness;
+            const happinessAwarded = Math.min(pointsNeededToMax, 5);
+            Pokemon.current_happiness += happinessAwarded;
+            Pokemon.negativeInteractionCount = 0;
             Pokemon.lastTalked = Date.now();
             await Pokemon.save();
             return res.status(200).json({
-                message: "Pokemon liked talking",
-                happiness_increased: 5,
+                message: "Pokemon loved talking",
+                happiness_increased: happinessAwarded,
                 current_happiness: Pokemon.current_happiness
             });
-        } else if (Pokemon.negativeInteractioncount > 10) {
-            Pokemon.negativeInteractioncount += 1;
-            Pokemon.current_happiness -= Math.max(Pokemon.current_happiness - 5, 0);
+        } else if (Pokemon.negativeInteractionCount > 10) {
+            Pokemon.negativeInteractionCount += 1;
+            let happinessReduced = Pokemon.current_happiness == 5 ? 5 : Math.max(Pokemon.current_happiness - 5, 0);
+            Pokemon.current_happiness -= happinessReduced;
             await Pokemon.save();
             return res.status(200).json({
                 message: "Unwanted interaction thresshold reached",
-                happiness_reduced: 5,
+                happiness_reduced: happinessReduced,
                 current_happiness: Pokemon.current_happiness
             });
         } else {
-            Pokemon.negativeInteractioncount += 1;
+            Pokemon.negativeInteractionCount += 1;
             await Pokemon.save();
             return res.status(200).json({
-                message:
-                    "Be careful excessive unwanted interaction can lead for the pokemon to lose happiness"
+                message: "Be careful excessive unwanted interaction can lead the pokemon to lose happiness"
             });
         }
     } catch (error) {
@@ -279,43 +278,51 @@ const pokemonInteractionTalk = async (req, res, next) => {
 };
 const pokemonInteractionPlay = async (req, res, next) => {
     try {
-        const Pokemon = await PokemonModel.findById({ _id: req.params.id, user: req.userId });
+        const Pokemon = await PokemonModel.findOne({ _id: req.params.id, user: req.userId });
         if (!Pokemon) {
             return res.status(404).json({
                 message: `User does not own a pokemon with id ${req.params.id}`
             });
         }
         if (!Pokemon.eggHatched) {
-            return res.status(404).json({
+            return res.status(400).json({
                 message: `Interaction cannot be performed with an egg`
             });
         }
         let timeDifference = (Date.now() - Pokemon.lastPlayed) / (1000 * 60 * 60);
         if (!Pokemon.lastPlayed || timeDifference > 5) {
-            Pokemon.current_happiness += 10;
-            Pokemon.negativeInteractioncount = 0;
+            if (Pokemon.current_happiness >= Pokemon.target_happiness) {
+                return res.status(200).json({
+                    message: "Max happiness reached",
+                    current_happiness: Pokemon.current_happiness
+                });
+            }
+            let pointsNeededToMax = Pokemon.target_happiness - Pokemon.current_happiness;
+            const happinessAwarded = Math.min(pointsNeededToMax, 10);
+            Pokemon.current_happiness += happinessAwarded;
+            Pokemon.negativeInteractionCount = 0;
             Pokemon.lastPlayed = Date.now();
             await Pokemon.save();
             return res.status(200).json({
-                message: "Pokemon liked talking",
-                happiness_increased: 10,
+                message: "Pokemon loved playing",
+                happiness_increased: happinessAwarded,
                 current_happiness: Pokemon.current_happiness
             });
-        } else if (Pokemon.negativeInteractioncount > 10) {
-            Pokemon.negativeInteractioncount += 1;
-            Pokemon.current_happiness -= Math.max(Pokemon.current_happiness - 5, 0);
+        } else if (Pokemon.negativeInteractionCount > 10) {
+            Pokemon.negativeInteractionCount += 1;
+            let happinessReduced = Pokemon.current_happiness == 5 ? 5 : Math.max(Pokemon.current_happiness - 5, 0);
+            Pokemon.current_happiness -= happinessReduced;
             await Pokemon.save();
             return res.status(200).json({
                 message: "Unwanted interaction thresshold reached",
-                happiness_reduced: 5,
+                happiness_reduced: happinessReduced,
                 current_happiness: Pokemon.current_happiness
             });
         } else {
-            Pokemon.negativeInteractioncount += 1;
+            Pokemon.negativeInteractionCount += 1;
             await Pokemon.save();
             return res.status(200).json({
-                message:
-                    "Be careful excessive unwanted interaction can lead for the pokemon to lose happiness"
+                message: "Be careful excessive unwanted interaction can lead the pokemon to lose happiness"
             });
         }
     } catch (error) {
@@ -324,43 +331,51 @@ const pokemonInteractionPlay = async (req, res, next) => {
 };
 const pokemonInteractionFeed = async (req, res, next) => {
     try {
-        const Pokemon = await PokemonModel.findById({ _id: req.params.id, user: req.userId });
+        const Pokemon = await PokemonModel.findOne({ _id: req.params.id, user: req.userId });
         if (!Pokemon) {
             return res.status(404).json({
                 message: `User does not own a pokemon with id ${req.params.id}`
             });
         }
         if (!Pokemon.eggHatched) {
-            return res.status(404).json({
+            return res.status(400).json({
                 message: `Interaction cannot be performed with an egg`
             });
         }
         let timeDifference = (Date.now() - Pokemon.lastFeed) / (1000 * 60 * 60);
-        if (!Pokemon.lastFeed || timeDifference > 10) {
-            Pokemon.current_happiness += 20;
-            Pokemon.negativeInteractioncount = 0;
+        if (!Pokemon.lastFeed || timeDifference > 7) {
+            if (Pokemon.current_happiness >= Pokemon.target_happiness) {
+                return res.status(200).json({
+                    message: "Max happiness reached",
+                    current_happiness: Pokemon.current_happiness
+                });
+            }
+            let pointsNeededToMax = Pokemon.target_happiness - Pokemon.current_happiness;
+            const happinessAwarded = Math.min(pointsNeededToMax, 20);
+            Pokemon.current_happiness += happinessAwarded;
+            Pokemon.negativeInteractionCount = 0;
             Pokemon.lastFeed = Date.now();
             await Pokemon.save();
             return res.status(200).json({
                 message: "Pokemon liked eating",
-                happiness_increased: 20,
+                happiness_increased: happinessAwarded,
                 current_happiness: Pokemon.current_happiness
             });
-        } else if (Pokemon.negativeInteractioncount > 10) {
-            Pokemon.negativeInteractioncount += 1;
-            Pokemon.current_happiness -= Math.max(Pokemon.current_happiness - 5, 0);
+        } else if (Pokemon.negativeInteractionCount > 10) {
+            Pokemon.negativeInteractionCount += 1;
+            let happinessReduced = Pokemon.current_happiness == 5 ? 5 : Math.max(Pokemon.current_happiness - 5, 0);
+            Pokemon.current_happiness -= happinessReduced;
             await Pokemon.save();
             return res.status(200).json({
                 message: "Unwanted interaction thresshold reached",
-                happiness_reduced: 5,
+                happiness_reduced: happinessReduced,
                 current_happiness: Pokemon.current_happiness
             });
         } else {
-            Pokemon.negativeInteractioncount += 1;
+            Pokemon.negativeInteractionCount += 1;
             await Pokemon.save();
             return res.status(200).json({
-                message:
-                    "Be careful excessive unwanted interaction can lead for the pokemon to lose happiness"
+                message: "Be careful excessive unwanted interaction can lead the pokemon to lose happiness"
             });
         }
     } catch (error) {
