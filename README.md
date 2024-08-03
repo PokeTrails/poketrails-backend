@@ -70,6 +70,18 @@ npm run seed
 - Access: Protected (requires JWT token)
 - Body: `{"nickname": "<NewNickname>"}`
 
+### Hatch Pokémon Nickname by Pokémon ID
+
+- URL `http://localhost:8080/hatch/:pokemonID`
+- Method: PATCH
+- Access: Protected (requires JWT token)
+
+### Donate Pokémon Nickname by Pokémon ID
+
+- URL `http://localhost:8080/donate/:pokemonID`
+- Method: PATCH
+- Access: Protected (requires JWT token)
+
 ## Party Route
 
 ### Get party details for the Authenticated User
