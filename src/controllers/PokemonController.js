@@ -2,6 +2,7 @@ const express = require("express");
 const PokemonModel = require("../models/PokemonModel");
 const { getPokemon } = require("../utils/pokemonHelper");
 const { PartyModel } = require("../models/PartyModel");
+const { UserModel } = require("../models/UserModel");
 
 const createPokemon = async (req, res, next) => {
     try {
@@ -24,7 +25,9 @@ const createPokemon = async (req, res, next) => {
         userParty.slots.push(savedPokemon._id);
         await userParty.save();
 
-        res.status(201).json(savedPokemon);
+        res.status(201).json({
+            message: `Pokemon egg accquired with id: ${savedPokemon._id}`
+        });
     } catch (error) {
         next(error);
     }
@@ -91,7 +94,8 @@ const getPokemonByID = async (req, res, next) => {
     }
 };
 
-const editPokemonByID = async (req, res, next) => {
+//set/edit nickname
+const editPokemonNicknameByID = async (req, res, next) => {
     try {
         if (!req.body.nickname) {
             return res.status(400).json({ message: "Nickname is required" });
@@ -142,6 +146,10 @@ const donatePokemonByID = async (req, res, next) => {
             return res.status(400).json({
                 message: `Pokemon with id ${req.params.id} is already donated`
             });
+        } else if (!Pokemon.eggHatched) {
+            return res.status(400).json({
+                message: `Pokemon with id ${req.params.id} has not hatched`
+            });
         }
 
         const updatedPokemon = await PokemonModel.findByIdAndUpdate(
@@ -149,12 +157,40 @@ const donatePokemonByID = async (req, res, next) => {
             { donated: true, donatedDate: Date.now() },
             { new: true }
         );
+        //calculate points
+        let reward;
+        if (Pokemon.is_mythical) {
+            reward = 400;
+        } else if (Pokemon.is_legendary) {
+            reward = 300;
+        } else if (Pokemon.isShiny) {
+            let levelReward = (Pokemon.current_level - 1) * 50;
+            reward = levelReward + 200;
+        } else {
+            let levelReward = (Pokemon.current_level - 1) * 50;
+            reward = levelReward + 100;
+        }
+
+        const user = await UserModel.findByIdAndUpdate(
+            { _id: req.userId },
+            { $inc: { balance: reward } },
+            { new: true }
+        );
 
         const party = await PartyModel.findOneAndUpdate({ user: req.userId }, { $pull: { slots: req.params.id } });
-        return res.status(200).json(updatedPokemon);
+        return res.status(200).json({
+            message: `Pokemon with id: ${updatedPokemon._id} has been sucessfully donated`
+        });
     } catch (error) {
         next(error);
     }
 };
 
-module.exports = { createPokemon, getAllPokemon, getPokemonByID, editPokemonByID, hatchPokemonByID, donatePokemonByID };
+module.exports = {
+    createPokemon,
+    getAllPokemon,
+    getPokemonByID,
+    editPokemonNicknameByID,
+    hatchPokemonByID,
+    donatePokemonByID
+};

@@ -65,10 +65,22 @@ npm run seed
 
 ### set/edit Pokémon Nickname by Pokémon ID
 
-- URL `http://localhost:8080/:pokemonID`
+- URL `http://localhost:8080/nickname/:pokemonID`
 - Method: PATCH
 - Access: Protected (requires JWT token)
 - Body: `{"nickname": "<NewNickname>"}`
+
+### Hatch Pokémon Nickname by Pokémon ID
+
+- URL `http://localhost:8080/hatch/:pokemonID`
+- Method: PATCH
+- Access: Protected (requires JWT token)
+
+### Donate Pokémon Nickname by Pokémon ID
+
+- URL `http://localhost:8080/donate/:pokemonID`
+- Method: PATCH
+- Access: Protected (requires JWT token)
 
 ## Party Route
 
