@@ -94,7 +94,8 @@ const getPokemonByID = async (req, res, next) => {
     }
 };
 
-const editPokemonByID = async (req, res, next) => {
+//set/edit nickname
+const editPokemonNicknameByID = async (req, res, next) => {
     try {
         if (!req.body.nickname) {
             return res.status(400).json({ message: "Nickname is required" });
@@ -185,4 +186,11 @@ const donatePokemonByID = async (req, res, next) => {
     }
 };
 
-module.exports = { createPokemon, getAllPokemon, getPokemonByID, editPokemonByID, hatchPokemonByID, donatePokemonByID };
+module.exports = {
+    createPokemon,
+    getAllPokemon,
+    getPokemonByID,
+    editPokemonNicknameByID,
+    hatchPokemonByID,
+    donatePokemonByID
+};

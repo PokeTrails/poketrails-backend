@@ -6,7 +6,7 @@ const auth = require("../middleware/auth");
 router.post("/", auth, pokemonController.createPokemon);
 router.get("/", auth, pokemonController.getAllPokemon);
 router.get("/:id", auth, pokemonController.getPokemonByID);
-router.patch("/:id", auth, pokemonController.editPokemonByID);
+router.patch("/nickname/:id", auth, pokemonController.editPokemonNicknameByID);
 router.patch("/hatch/:id", auth, pokemonController.hatchPokemonByID);
 router.patch("/donate/:id", auth, pokemonController.donatePokemonByID);
 
