@@ -32,7 +32,7 @@ const createPokemon = async (req, res, next) => {
 
 const getAllPokemon = async (req, res, next) => {
     try {
-        const pokemons = await PokemonModel.find({ user: req.userId });
+        const pokemons = await PokemonModel.find({ user: req.userId }, { evolution: 0 });
         res.status(200).json(pokemons);
     } catch (error) {
         next(error);
@@ -41,13 +41,21 @@ const getAllPokemon = async (req, res, next) => {
 
 const getPokemonByID = async (req, res, next) => {
     try {
-        const pokemon = await PokemonModel.findOne({ _id: req.params.id, user: req.userId });
+        const pokemon = await PokemonModel.findOne(
+            { _id: req.params.id, user: req.userId },
+            //exclude below items from response
+            { evolution: 0, user: 0, updatedAt: 0, __v: 0 }
+        );
         if (!pokemon) {
             return res.status(404).json({ message: `User does not own a pokemon with id ${req.params.id}` });
         }
         // If the egg has already hatched, return the details
-        if (pokemon.eggHatched) {
+        if (pokemon.eggHatched && !pokemon.donated) {
             return res.status(200).json(pokemon);
+        } else if (pokemon.eggHatched && pokemon.donated) {
+            return res.status(400).json({
+                donated: pokemon.donated
+            });
         } else {
             // Determine hours to add based on properties (mythical, legendary, or shiny)
             let hoursToAdd = pokemon.is_mythical || pokemon.is_legendary || pokemon.isShiny ? 8 : 6;
@@ -104,6 +112,7 @@ const editPokemonByID = async (req, res, next) => {
     }
 };
 
+//Admin Route - to be nullififed later
 const hatchPokemonByID = async (req, res, next) => {
     try {
         const updatedPokemon = await PokemonModel.findByIdAndUpdate(
@@ -122,4 +131,30 @@ const hatchPokemonByID = async (req, res, next) => {
     }
 };
 
-module.exports = { createPokemon, getAllPokemon, getPokemonByID, editPokemonByID, hatchPokemonByID };
+const donatePokemonByID = async (req, res, next) => {
+    try {
+        const Pokemon = await PokemonModel.findById({ _id: req.params.id, user: req.userId });
+        if (!Pokemon) {
+            return res.status(404).json({
+                message: `User does not own a pokemon with id ${req.params.id}`
+            });
+        } else if (Pokemon.donated) {
+            return res.status(400).json({
+                message: `Pokemon with id ${req.params.id} is already donated`
+            });
+        }
+
+        const updatedPokemon = await PokemonModel.findByIdAndUpdate(
+            { _id: req.params.id, user: req.userId },
+            { donated: true, donatedDate: Date.now() },
+            { new: true }
+        );
+
+        const party = await PartyModel.findOneAndUpdate({ user: req.userId }, { $pull: { slots: req.params.id } });
+        return res.status(200).json(updatedPokemon);
+    } catch (error) {
+        next(error);
+    }
+};
+
+module.exports = { createPokemon, getAllPokemon, getPokemonByID, editPokemonByID, hatchPokemonByID, donatePokemonByID };
