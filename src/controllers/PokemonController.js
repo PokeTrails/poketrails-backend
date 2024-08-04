@@ -359,7 +359,9 @@ const pokemonInteractionPlay = async (req, res, next) => {
             Pokemon.current_happiness -= happinessReduced;
             await Pokemon.save();
             return res.status(400).json({
-                message: `${Pokemon.nickname} does not want to play. Please try again after ${5 - timeDifference} hrs`,
+                message: `${Pokemon.nickname} does not want to play. Please try again after ${(
+                    5 - timeDifference
+                ).toFixed(2)} hrs`,
                 happiness_reduced: happinessReduced,
                 current_happiness: Pokemon.current_happiness
             });
@@ -427,7 +429,9 @@ const pokemonInteractionFeed = async (req, res, next) => {
             Pokemon.current_happiness -= happinessReduced;
             await Pokemon.save();
             return res.status(400).json({
-                message: `${Pokemon.nickname} does not want to eat. Please try again after ${7 - timeDifference} hrs`,
+                message: `${Pokemon.nickname} does not want to eat. Please try again after ${(
+                    7 - timeDifference
+                ).toFixed(2)} hrs`,
                 happiness_reduced: happinessReduced,
                 current_happiness: Pokemon.current_happiness
             });
