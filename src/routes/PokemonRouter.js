@@ -12,5 +12,6 @@ router.patch("/donate/:id", auth, pokemonController.donatePokemonByID);
 router.patch("/talk/:id", auth, pokemonController.pokemonInteractionTalk);
 router.patch("/play/:id", auth, pokemonController.pokemonInteractionPlay);
 router.patch("/feed/:id", auth, pokemonController.pokemonInteractionFeed);
+router.patch("/evolve/:id", auth, pokemonController.evolvePokemonByID);
 
 module.exports = router;

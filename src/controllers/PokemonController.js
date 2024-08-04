@@ -247,10 +247,19 @@ const pokemonInteractionTalk = async (req, res, next) => {
             }
             let pointsNeededToMax = Pokemon.target_happiness - Pokemon.current_happiness;
             const happinessAwarded = Math.min(pointsNeededToMax, 5);
-            Pokemon.current_happiness += happinessAwarded;
+            // Pokemon.current_happiness += happinessAwarded;
+            Pokemon.current_happiness += 50;
             Pokemon.negativeInteractionCount = 0;
             Pokemon.lastTalked = Date.now();
             await Pokemon.save();
+            const user = await UserModel.findByIdAndUpdate(
+                { _id: req.userId },
+                {
+                    $inc: {
+                        userExperience: 50
+                    }
+                }
+            );
             return res.status(200).json({
                 message: "Pokemon loved talking",
                 happiness_increased: happinessAwarded,
@@ -310,6 +319,14 @@ const pokemonInteractionPlay = async (req, res, next) => {
             Pokemon.negativeInteractionCount = 0;
             Pokemon.lastPlayed = Date.now();
             await Pokemon.save();
+            const user = await UserModel.findByIdAndUpdate(
+                { _id: req.userId },
+                {
+                    $inc: {
+                        userExperience: 50
+                    }
+                }
+            );
             return res.status(200).json({
                 message: "Pokemon loved playing",
                 happiness_increased: happinessAwarded,
@@ -369,6 +386,14 @@ const pokemonInteractionFeed = async (req, res, next) => {
             Pokemon.negativeInteractionCount = 0;
             Pokemon.lastFeed = Date.now();
             await Pokemon.save();
+            const user = await UserModel.findByIdAndUpdate(
+                { _id: req.userId },
+                {
+                    $inc: {
+                        userExperience: 50
+                    }
+                }
+            );
             return res.status(200).json({
                 message: "Pokemon liked eating",
                 happiness_increased: happinessAwarded,
@@ -408,35 +433,48 @@ const evolvePokemonByID = async (req, res, next) => {
         if (!pokemon) {
             return res.status(404).json({ message: `User does not own a pokemon with id ${req.params.id}` });
         }
-        // If the egg has already hatched, return the details
-        if (!pokemon.eggHatched && pokemon.donated) {
-            return res.status(200).json(pokemon);
-        } else if (pokemon.eggHatched && pokemon.donated) {
-            return res.status(400).json({
-                donated: pokemon.donated
+        if (pokemon.current_level == pokemon.max_level) {
+            return res.status(400).json({ message: "Pokemon is maxed out." });
+        }
+        // return res.status(200).json(pokemon.evolution[pokemon.current_level - 1]);
+        if (pokemon.current_happiness == pokemon.target_happiness) {
+            let currentNickName = pokemon.nickname;
+            let updateNickname = pokemon.nickname == pokemon.species ? true : false;
+            let pokemonNextLevel = pokemon.evolution[pokemon.current_level - 1];
+            pokemonNextLevel = pokemonNextLevel.toObject();
+            delete pokemonNextLevel["_id"];
+            Object.assign(pokemon, pokemonNextLevel);
+            pokemon.nickname = updateNickname ? pokemon.species : currentNickName;
+            pokemon.current_happiness = 0;
+            pokemon.current_happiness = 0;
+            pokemon.negativeInteractionCount = 0;
+            pokemon.lastTalked = null;
+            pokemon.lastPlayed = null;
+            pokemon.lastFeed = null;
+            const updatedPokemon = await pokemon.save();
+            const user = await UserModel.findByIdAndUpdate(
+                { _id: req.userId },
+                {
+                    $inc: {
+                        userExperience: 100
+                    }
+                }
+            );
+            return res.status(200).json({
+                current_level: updatedPokemon.current_level,
+                species: updatedPokemon.species,
+                sprite: updatedPokemon.sprite,
+                is_mythical: updatedPokemon.is_mythical,
+                is_legendary: updatedPokemon.is_legendary,
+                is_shiny: updatedPokemon.is_shiny
             });
         } else {
-            let hoursToAdd = pokemon.is_mythical || pokemon.is_legendary || pokemon.isShiny ? 8 : 6;
-            // Convert the created time to a Date object
-            let ISO = new Date(pokemon.createdAt);
-            // Convert the additional hours to milliseconds
-            let millisecondsToAdd = hoursToAdd * 60 * 60 * 1000;
-            // Calculate the hatch ETA by adding milliseconds to the creation time
-            let hatchETA = ISO.getTime() + millisecondsToAdd;
-            // Get the current time in milliseconds
-            let current = Date.now();
-            // Check if the hatch ETA has passed
-            if (hatchETA >= current) {
-                // Calculate the remaining time in milliseconds
-                let milliSecondsLeft = hatchETA - current;
-                // Return the time left to hatch in HH:MM:SS format
-                return res.status(200).json({
-                    eggHatched: pokemon.eggHatched,
-                    timeLeft: milliSecondsLeft
-                });
-            }
-            return res.status(200).json({
-                eggHatched: pokemon.eggHatched
+            return res.status(400).json({
+                message: `${pokemon.species} has not reached the level of happiness required to evolve. It requires ${
+                    pokemon.target_happiness - pokemon.current_happiness
+                } happiness more to evolve.`,
+                required_happiness: pokemon.target_happiness,
+                current_happiness: pokemon.current_happiness
             });
         }
     } catch (error) {
@@ -452,5 +490,6 @@ module.exports = {
     donatePokemonByID,
     pokemonInteractionTalk,
     pokemonInteractionPlay,
-    pokemonInteractionFeed
+    pokemonInteractionFeed,
+    evolvePokemonByID
 };

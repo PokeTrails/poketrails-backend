@@ -26,7 +26,7 @@ async function getPokemon() {
         let types = await pokemontype(detailURL); // Get the type information for the level 2 Pokemon
 
         evolution_data.push({
-            level: 2,
+            current_level: 2,
             poke_id: id,
             species: name,
             sprite: chanceShiny <= shinyChance ? sprites.shinySprite : sprites.defaultSprite,
@@ -51,7 +51,7 @@ async function getPokemon() {
         let types = await pokemontype(detailURL); // Get the type information for the level 3 Pokemon
 
         evolution_data.push({
-            level: 3,
+            current_level: 3,
             poke_id: id,
             species: name,
             sprite: chanceShiny <= shinyChance ? sprites.shinySprite : sprites.defaultSprite,
@@ -66,7 +66,7 @@ async function getPokemon() {
         species: name,
         nickname: name,
         current_level: 1,
-        max_level: evolution_data[evolution_data.length - 1]?.level || 1,
+        max_level: evolution_data[evolution_data.length - 1]?.current_level || 1,
         sprite: chanceShiny <= shinyChance ? sprites.shinySprite : sprites.defaultSprite,
         isShiny: chanceShiny <= shinyChance ? true : false,
         poke_id: id,
