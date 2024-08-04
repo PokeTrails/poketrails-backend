@@ -217,7 +217,9 @@ const donatePokemonByID = async (req, res, next) => {
 
         const party = await PartyModel.findOneAndUpdate({ user: req.userId }, { $pull: { slots: req.params.id } });
         return res.status(200).json({
-            message: `Pokemon with id: ${updatedPokemon._id} has been sucessfully donated`
+            message: `Pokemon with id: ${updatedPokemon._id} has been sucessfully donated`,
+            reward_received: reward,
+            userExperienceIncreased: userExperience
         });
     } catch (error) {
         next(error);
@@ -263,7 +265,8 @@ const pokemonInteractionTalk = async (req, res, next) => {
             return res.status(200).json({
                 message: "Pokemon loved talking",
                 happiness_increased: happinessAwarded,
-                current_happiness: Pokemon.current_happiness
+                current_happiness: Pokemon.current_happiness,
+                userExperienceIncreased: 50
             });
         } else if (Pokemon.negativeInteractionCount > 10) {
             Pokemon.negativeInteractionCount += 1;
@@ -330,7 +333,8 @@ const pokemonInteractionPlay = async (req, res, next) => {
             return res.status(200).json({
                 message: "Pokemon loved playing",
                 happiness_increased: happinessAwarded,
-                current_happiness: Pokemon.current_happiness
+                current_happiness: Pokemon.current_happiness,
+                userExperienceIncreased: 50
             });
         } else if (Pokemon.negativeInteractionCount > 10) {
             Pokemon.negativeInteractionCount += 1;
@@ -397,7 +401,8 @@ const pokemonInteractionFeed = async (req, res, next) => {
             return res.status(200).json({
                 message: "Pokemon liked eating",
                 happiness_increased: happinessAwarded,
-                current_happiness: Pokemon.current_happiness
+                current_happiness: Pokemon.current_happiness,
+                userExperienceIncreased: 50
             });
         } else if (Pokemon.negativeInteractionCount > 10) {
             Pokemon.negativeInteractionCount += 1;
@@ -466,7 +471,8 @@ const evolvePokemonByID = async (req, res, next) => {
                 sprite: updatedPokemon.sprite,
                 is_mythical: updatedPokemon.is_mythical,
                 is_legendary: updatedPokemon.is_legendary,
-                is_shiny: updatedPokemon.is_shiny
+                is_shiny: updatedPokemon.is_shiny,
+                userExperienceIncreased: 50
             });
         } else {
             return res.status(400).json({
