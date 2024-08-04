@@ -4,6 +4,7 @@ const pokemonSchema = mongoose.Schema(
     {
         eggHatched: { type: Boolean, default: false },
         donated: { type: Boolean, default: false },
+        donatedDate: { type: Date },
         species: { type: String },
         nickname: { type: String },
         current_level: { type: Number, default: 0 },
@@ -18,9 +19,13 @@ const pokemonSchema = mongoose.Schema(
         sprite: { type: String },
         cries: { type: String },
         flavour_text: { type: String },
+        lastTalked: { type: Date },
+        lastPlayed: { type: Date },
+        lastFeed: { type: Date },
+        negativeInteractionCount: { type: Number, default: 0 },
         evolution: [
             {
-                level: { type: String },
+                current_level: { type: String },
                 poke_id: { type: Number },
                 species: { type: String },
                 isShiny: { type: Boolean },

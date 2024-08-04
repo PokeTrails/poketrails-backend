@@ -9,10 +9,15 @@ async function getPokemon() {
     let sprites = await getPokemonSprites(name); // Get the sprites for the base Pokemon
     let types = await pokemontype(detailURL); // Get the type information for the base Pokemon
     const chanceShiny = Math.floor(Math.random() * 100) + 1;
+    // Shiny %
+    let shinyChance = 10;
     // Level 2
     let levelTwoPath = (await selectPath(pokemon.chain.evolves_to)) || 0; // Select a random evolution path for level 2
 
-    if (pokemon.chain.evolves_to[levelTwoPath]?.species.name && (await isGenFivePokemon(pokemon.chain.evolves_to[levelTwoPath]?.species.name))) {
+    if (
+        pokemon.chain.evolves_to[levelTwoPath]?.species.name &&
+        (await isGenFivePokemon(pokemon.chain.evolves_to[levelTwoPath]?.species.name))
+    ) {
         // If the Pokemon at level 2 exists and is from Generation 5
         let name = pokemon.chain.evolves_to[levelTwoPath].species.name; // Get the name of the level 2 Pokemon
         let id = await getPokemonId(name); // Get the ID of the level 2 Pokemon
@@ -21,10 +26,10 @@ async function getPokemon() {
         let types = await pokemontype(detailURL); // Get the type information for the level 2 Pokemon
 
         evolution_data.push({
-            level: 2,
+            current_level: 2,
             poke_id: id,
             species: name,
-            sprite: chanceShiny <= 10 ? sprites.shinySprite : sprites.defaultSprite,
+            sprite: chanceShiny <= shinyChance ? sprites.shinySprite : sprites.defaultSprite,
             cries: sprites.cries,
             type: sprites.types,
             target_happiness: 100,
@@ -34,7 +39,10 @@ async function getPokemon() {
 
     // Level 3
     let levelThreePath = await selectPath(pokemon.chain.evolves_to[levelTwoPath]?.evolves_to || 0); // Select a random evolution path for level 3
-    if (pokemon.chain.evolves_to[levelTwoPath]?.evolves_to[levelThreePath]?.species.name && (await isGenFivePokemon(pokemon.chain.evolves_to[levelTwoPath]?.evolves_to[0]?.species.name))) {
+    if (
+        pokemon.chain.evolves_to[levelTwoPath]?.evolves_to[levelThreePath]?.species.name &&
+        (await isGenFivePokemon(pokemon.chain.evolves_to[levelTwoPath]?.evolves_to[0]?.species.name))
+    ) {
         // If the Pokemon at level 3 exists and is from Generation 5
         let name = pokemon.chain.evolves_to[levelTwoPath].evolves_to[levelThreePath].species.name; // Get the name of the level 3 Pokemon
         let id = await getPokemonId(name); // Get the ID of the level 3 Pokemon
@@ -43,10 +51,10 @@ async function getPokemon() {
         let types = await pokemontype(detailURL); // Get the type information for the level 3 Pokemon
 
         evolution_data.push({
-            level: 3,
+            current_level: 3,
             poke_id: id,
             species: name,
-            sprite: chanceShiny <= 10 ? sprites.shinySprite : sprites.defaultSprite,
+            sprite: chanceShiny <= shinyChance ? sprites.shinySprite : sprites.defaultSprite,
             cries: sprites.cries,
             type: sprites.types,
             target_happiness: 200,
@@ -56,10 +64,11 @@ async function getPokemon() {
     // Return the evolution data
     return {
         species: name,
+        nickname: name,
         current_level: 1,
-        max_level: evolution_data[evolution_data.length - 1]?.level || 1,
-        sprite: chanceShiny <= 10 ? sprites.shinySprite : sprites.defaultSprite,
-        isShiny: chanceShiny <= 10 ? true : false,
+        max_level: evolution_data[evolution_data.length - 1]?.current_level || 1,
+        sprite: chanceShiny <= shinyChance ? sprites.shinySprite : sprites.defaultSprite,
+        isShiny: chanceShiny <= shinyChance ? true : false,
         poke_id: id,
         cries: sprites.cries,
         type: sprites.types,

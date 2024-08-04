@@ -57,18 +57,60 @@ npm run seed
 - Method: `GET`
 - Access: Protected (requires JWT token)
 
+### Get All donated Pokémon for Pokedex
+
+- URL `http://localhost:8080/pokemon/pokedex`
+- Method: `GET`
+- Access: Protected (requires JWT token)
+
 ### Get Pokémon by ID
 
-- URL `http://localhost:8080/:pokemonID`
+- URL `http://localhost:8080/pokemon/:pokemonID`
 - Method: `GET`
 - Access: Protected (requires JWT token)
 
 ### set/edit Pokémon Nickname by Pokémon ID
 
-- URL `http://localhost:8080/:pokemonID`
+- URL `http://localhost:8080/pokemon/nickname/:pokemonID`
 - Method: PATCH
 - Access: Protected (requires JWT token)
 - Body: `{"nickname": "<NewNickname>"}`
+
+### Hatch Pokémon Nickname by Pokémon ID
+
+- URL `http://localhost:8080/pokemon/hatch/:pokemonID`
+- Method: PATCH
+- Access: Protected (requires JWT token)
+
+### Donate Pokémon Nickname by Pokémon ID
+
+- URL `http://localhost:8080/pokemon/donate/:pokemonID`
+- Method: PATCH
+- Access: Protected (requires JWT token)
+
+### Talk with Pokémon by Pokémon ID
+
+- URL `http://localhost:8080/pokemon/talk/:pokemonID`
+- Method: PATCH
+- Access: Protected (requires JWT token)
+
+### Play with Pokémon by Pokémon ID
+
+- URL `http://localhost:8080/pokemon/play/:pokemonID`
+- Method: PATCH
+- Access: Protected (requires JWT token)
+
+### Feed with Pokémon by Pokémon ID
+
+- URL `http://localhost:8080/pokemon/feed/:pokemonID`
+- Method: PATCH
+- Access: Protected (requires JWT token)
+
+### Evolve with Pokémon by Pokémon ID
+
+- URL `http://localhost:8080/pokemon/evolve/:pokemonID`
+- Method: PATCH
+- Access: Protected (requires JWT token)
 
 ## Party Route
 
