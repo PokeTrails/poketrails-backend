@@ -260,8 +260,7 @@ const pokemonInteractionTalk = async (req, res, next) => {
             }
             let pointsNeededToMax = Pokemon.target_happiness - Pokemon.current_happiness;
             const happinessAwarded = Math.min(pointsNeededToMax, 5);
-            // Pokemon.current_happiness += happinessAwarded;
-            Pokemon.current_happiness += 50;
+            Pokemon.current_happiness += happinessAwarded;
             Pokemon.negativeInteractionCount = 0;
             Pokemon.lastTalked = Date.now();
             await Pokemon.save();
@@ -290,7 +289,9 @@ const pokemonInteractionTalk = async (req, res, next) => {
             Pokemon.current_happiness -= happinessReduced;
             await Pokemon.save();
             return res.status(400).json({
-                message: "Unwanted interaction thresshold reached",
+                message: `${Pokemon.nickname} does not want to talk. Please try again after ${(
+                    3 - timeDifference
+                ).toFixed(2)} hrs.`,
                 happiness_reduced: happinessReduced,
                 current_happiness: Pokemon.current_happiness
             });
@@ -298,7 +299,7 @@ const pokemonInteractionTalk = async (req, res, next) => {
             Pokemon.negativeInteractionCount += 1;
             await Pokemon.save();
             return res.status(400).json({
-                message: "Be careful excessive unwanted interaction can lead the pokemon to lose happiness",
+                message: `${Pokemon.nickname} does not feel like talking right at this moment.`,
                 current_happiness: Pokemon.current_happiness
             });
         }
@@ -342,7 +343,7 @@ const pokemonInteractionPlay = async (req, res, next) => {
                 }
             );
             return res.status(200).json({
-                message: "Pokemon loved playing",
+                message: `${Pokemon.nickname} loved playing`,
                 happiness_increased: happinessAwarded,
                 current_happiness: Pokemon.current_happiness,
                 userExperienceIncreased: 50
@@ -358,7 +359,9 @@ const pokemonInteractionPlay = async (req, res, next) => {
             Pokemon.current_happiness -= happinessReduced;
             await Pokemon.save();
             return res.status(400).json({
-                message: "Unwanted interaction thresshold reached",
+                message: `${Pokemon.nickname} does not want to play. Please try again after ${(
+                    5 - timeDifference
+                ).toFixed(2)} hrs`,
                 happiness_reduced: happinessReduced,
                 current_happiness: Pokemon.current_happiness
             });
@@ -366,7 +369,7 @@ const pokemonInteractionPlay = async (req, res, next) => {
             Pokemon.negativeInteractionCount += 1;
             await Pokemon.save();
             return res.status(400).json({
-                message: "Be careful excessive unwanted interaction can lead the pokemon to lose happiness",
+                message: `${Pokemon.nickname} does not feel like playing right at this moment.`,
                 current_happiness: Pokemon.current_happiness
             });
         }
@@ -410,7 +413,7 @@ const pokemonInteractionFeed = async (req, res, next) => {
                 }
             );
             return res.status(200).json({
-                message: "Pokemon liked eating",
+                message: `${Pokemon.species} liked eating`,
                 happiness_increased: happinessAwarded,
                 current_happiness: Pokemon.current_happiness,
                 userExperienceIncreased: 50
@@ -426,7 +429,9 @@ const pokemonInteractionFeed = async (req, res, next) => {
             Pokemon.current_happiness -= happinessReduced;
             await Pokemon.save();
             return res.status(400).json({
-                message: "Unwanted interaction thresshold reached",
+                message: `${Pokemon.nickname} does not want to eat. Please try again after ${(
+                    7 - timeDifference
+                ).toFixed(2)} hrs`,
                 happiness_reduced: happinessReduced,
                 current_happiness: Pokemon.current_happiness
             });
@@ -434,7 +439,7 @@ const pokemonInteractionFeed = async (req, res, next) => {
             Pokemon.negativeInteractionCount += 1;
             await Pokemon.save();
             return res.status(400).json({
-                message: "Be careful excessive unwanted interaction can lead the pokemon to lose happiness",
+                message: `${Pokemon.nickname} does not feel like eating right at this moment.`,
                 current_happiness: Pokemon.current_happiness
             });
         }
@@ -455,6 +460,7 @@ const evolvePokemonByID = async (req, res, next) => {
         // return res.status(200).json(pokemon.evolution[pokemon.current_level - 1]);
         if (pokemon.current_happiness == pokemon.target_happiness) {
             let currentNickName = pokemon.nickname;
+            let oldSprite = pokemon.sprite;
             let updateNickname = pokemon.nickname == pokemon.species ? true : false;
             let pokemonNextLevel = pokemon.evolution[pokemon.current_level - 1];
             pokemonNextLevel = pokemonNextLevel.toObject();
@@ -480,10 +486,7 @@ const evolvePokemonByID = async (req, res, next) => {
                 current_level: updatedPokemon.current_level,
                 species: updatedPokemon.species,
                 sprite: updatedPokemon.sprite,
-                is_mythical: updatedPokemon.is_mythical,
-                is_legendary: updatedPokemon.is_legendary,
-                is_shiny: updatedPokemon.is_shiny,
-                userExperienceIncreased: 50
+                oldSprite: oldSprite
             });
         } else {
             return res.status(400).json({
