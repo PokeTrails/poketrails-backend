@@ -488,7 +488,8 @@ const evolvePokemonByID = async (req, res, next) => {
                 species: updatedPokemon.species,
                 nickname: updatedPokemon.nickname,
                 sprite: updatedPokemon.sprite,
-                oldSprite: oldSprite
+                oldSprite: oldSprite,
+                oldNickName: currentNickName
             });
         } else {
             return res.status(400).json({
