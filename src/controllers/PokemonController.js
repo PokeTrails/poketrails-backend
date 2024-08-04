@@ -275,7 +275,8 @@ const pokemonInteractionTalk = async (req, res, next) => {
             Pokemon.negativeInteractionCount += 1;
             await Pokemon.save();
             return res.status(400).json({
-                message: "Be careful excessive unwanted interaction can lead the pokemon to lose happiness"
+                message: "Be careful excessive unwanted interaction can lead the pokemon to lose happiness",
+                current_happiness: Pokemon.current_happiness
             });
         }
     } catch (error) {
@@ -333,7 +334,8 @@ const pokemonInteractionPlay = async (req, res, next) => {
             Pokemon.negativeInteractionCount += 1;
             await Pokemon.save();
             return res.status(400).json({
-                message: "Be careful excessive unwanted interaction can lead the pokemon to lose happiness"
+                message: "Be careful excessive unwanted interaction can lead the pokemon to lose happiness",
+                current_happiness: Pokemon.current_happiness
             });
         }
     } catch (error) {
@@ -391,7 +393,8 @@ const pokemonInteractionFeed = async (req, res, next) => {
             Pokemon.negativeInteractionCount += 1;
             await Pokemon.save();
             return res.status(400).json({
-                message: "Be careful excessive unwanted interaction can lead the pokemon to lose happiness"
+                message: "Be careful excessive unwanted interaction can lead the pokemon to lose happiness",
+                current_happiness: Pokemon.current_happiness
             });
         }
     } catch (error) {
