@@ -155,7 +155,8 @@ const hatchPokemonByID = async (req, res, next) => {
                 species: updatedPokemon.species,
                 sprite: updatedPokemon.sprite,
                 is_mythical: updatedPokemon.is_mythical,
-                is_legendary: updatedPokemon.is_legendary
+                is_legendary: updatedPokemon.is_legendary,
+                is_shiny: updatedPokemon.is_shiny
             });
         }
     } catch (error) {
