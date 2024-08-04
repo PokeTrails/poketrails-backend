@@ -42,6 +42,17 @@ const getAllPokemon = async (req, res, next) => {
     }
 };
 
+const getAllPokedexPokemon = async (req, res, next) => {
+    try {
+        const pokemons = await PokemonModel.find({ user: req.userId, donated: true }, { evolution: 0 }).sort({
+            donatedDate: -1
+        });
+        res.status(200).json(pokemons);
+    } catch (error) {
+        next(error);
+    }
+};
+
 const getPokemonByID = async (req, res, next) => {
     try {
         const pokemon = await PokemonModel.findOne(
@@ -219,7 +230,7 @@ const donatePokemonByID = async (req, res, next) => {
         return res.status(200).json({
             message: `Pokemon with id: ${updatedPokemon._id} has been sucessfully donated`,
             reward_received: reward,
-            userExperienceIncreased: userExperience
+            userExperienceIncreased: experience
         });
     } catch (error) {
         next(error);
@@ -497,5 +508,6 @@ module.exports = {
     pokemonInteractionTalk,
     pokemonInteractionPlay,
     pokemonInteractionFeed,
-    evolvePokemonByID
+    evolvePokemonByID,
+    getAllPokedexPokemon
 };
