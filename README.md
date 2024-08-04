@@ -100,6 +100,12 @@ npm run seed
 - Method: PATCH
 - Access: Protected (requires JWT token)
 
+### Evolve with Pokémon by Pokémon ID
+
+- URL `http://localhost:8080/pokemon/evolve/:pokemonID`
+- Method: PATCH
+- Access: Protected (requires JWT token)
+
 ## Party Route
 
 ### Get party details for the Authenticated User
