@@ -38,6 +38,15 @@ async function seedUsers() {
     return result;
 }
 
+
+async function seedTrails() {
+   let wildtrail = {
+        title: "Wild Trail",
+        buffedTypes: ["Grass", "Bug","Poison"],
+        onTrail: [],
+   }
+}
+
 async function seed() {
     await connectDB();
     await clearDB();
