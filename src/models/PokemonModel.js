@@ -25,7 +25,7 @@ const pokemonSchema = mongoose.Schema(
         negativeInteractionCount: { type: Number, default: 0 },
         evolution: [
             {
-                level: { type: String },
+                current_level: { type: String },
                 poke_id: { type: Number },
                 species: { type: String },
                 isShiny: { type: Boolean },
