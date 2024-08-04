@@ -14,8 +14,10 @@ const createPokemon = async (req, res, next) => {
                 message: "Party already has the maximum number of Pokemon"
             });
         }
+        const user = await UserModel.findOne({ _id: req.userId });
+        let shinyMulti = user.shinyMulti;
         //Fetch pokemon data
-        const pokemonData = await getPokemon();
+        const pokemonData = await getPokemon(shinyMulti);
         //Create a new Pokemon
         const newPokemon = new PokemonModel(pokemonData);
         newPokemon.user = req.userId;
@@ -198,33 +200,27 @@ const donatePokemonByID = async (req, res, next) => {
             { new: true }
         );
         //calculate points
+        const user = await UserModel.findOne({ _id: req.userId });
+        let moneyMulti = user.moneyMulti;
         let reward;
         if (Pokemon.is_mythical) {
-            reward = 400;
+            reward = 400 * moneyMulti;
             experience = 100;
         } else if (Pokemon.is_legendary) {
-            reward = 300;
+            reward = 300 * moneyMulti;
             experience = 200;
         } else if (Pokemon.isShiny) {
             let levelReward = (Pokemon.current_level - 1) * 50;
-            reward = levelReward + 200;
+            reward = (levelReward + 200) * moneyMulti;
             experience = 300;
         } else {
             let levelReward = (Pokemon.current_level - 1) * 50;
-            reward = levelReward + 100;
+            reward = (levelReward + 100) * moneyMulti;
             experience = 400;
         }
-
-        const user = await UserModel.findByIdAndUpdate(
-            { _id: req.userId },
-            {
-                $inc: {
-                    balance: reward,
-                    userExperience: experience
-                }
-            },
-            { new: true }
-        );
+        user.balance += reward;
+        user.userExperience += experience;
+        await user.save();
 
         const party = await PartyModel.findOneAndUpdate({ user: req.userId }, { $pull: { slots: req.params.id } });
         return res.status(200).json({
@@ -245,6 +241,8 @@ const pokemonInteractionTalk = async (req, res, next) => {
                 message: `User does not own a pokemon with id ${req.params.id}`
             });
         }
+        const user = await UserModel.findOne({ _id: req.userId });
+        let happinesMulti = user.happinesMulti;
         if (!Pokemon.eggHatched) {
             return res.status(400).json({
                 message: `Interaction cannot be performed with an egg`
@@ -259,7 +257,7 @@ const pokemonInteractionTalk = async (req, res, next) => {
                 });
             }
             let pointsNeededToMax = Pokemon.target_happiness - Pokemon.current_happiness;
-            const happinessAwarded = Math.min(pointsNeededToMax, 5);
+            const happinessAwarded = Math.min(pointsNeededToMax, 5 * happinesMulti);
             Pokemon.current_happiness += happinessAwarded;
             Pokemon.negativeInteractionCount = 0;
             Pokemon.lastTalked = Date.now();
@@ -320,6 +318,8 @@ const pokemonInteractionPlay = async (req, res, next) => {
                 message: `Interaction cannot be performed with an egg`
             });
         }
+        const user = await UserModel.findOne({ _id: req.userId });
+        let happinesMulti = user.happinesMulti;
         let timeDifference = (Date.now() - Pokemon.lastPlayed) / (1000 * 60 * 60);
         if (!Pokemon.lastPlayed || timeDifference > 5) {
             if (Pokemon.current_happiness >= Pokemon.target_happiness) {
@@ -329,7 +329,7 @@ const pokemonInteractionPlay = async (req, res, next) => {
                 });
             }
             let pointsNeededToMax = Pokemon.target_happiness - Pokemon.current_happiness;
-            const happinessAwarded = Math.min(pointsNeededToMax, 10);
+            const happinessAwarded = Math.min(pointsNeededToMax, 10 * happinesMulti);
             Pokemon.current_happiness += happinessAwarded;
             Pokemon.negativeInteractionCount = 0;
             Pokemon.lastPlayed = Date.now();
@@ -390,6 +390,8 @@ const pokemonInteractionFeed = async (req, res, next) => {
                 message: `Interaction cannot be performed with an egg`
             });
         }
+        const user = await UserModel.findOne({ _id: req.userId });
+        let happinesMulti = user.happinesMulti;
         let timeDifference = (Date.now() - Pokemon.lastFeed) / (1000 * 60 * 60);
         if (!Pokemon.lastFeed || timeDifference > 7) {
             if (Pokemon.current_happiness >= Pokemon.target_happiness) {
@@ -399,7 +401,7 @@ const pokemonInteractionFeed = async (req, res, next) => {
                 });
             }
             let pointsNeededToMax = Pokemon.target_happiness - Pokemon.current_happiness;
-            const happinessAwarded = Math.min(pointsNeededToMax, 20);
+            const happinessAwarded = Math.min(pointsNeededToMax, 20 * happinesMulti);
             Pokemon.current_happiness += happinessAwarded;
             Pokemon.negativeInteractionCount = 0;
             Pokemon.lastFeed = Date.now();
@@ -468,7 +470,6 @@ const evolvePokemonByID = async (req, res, next) => {
             Object.assign(pokemon, pokemonNextLevel);
             pokemon.nickname = updateNickname ? pokemon.species : currentNickName;
             pokemon.current_happiness = 0;
-            pokemon.current_happiness = 0;
             pokemon.negativeInteractionCount = 0;
             pokemon.lastTalked = null;
             pokemon.lastPlayed = null;
@@ -485,10 +486,9 @@ const evolvePokemonByID = async (req, res, next) => {
             return res.status(200).json({
                 current_level: updatedPokemon.current_level,
                 species: updatedPokemon.species,
-                sprite: updatedPokemon.sprite,
-                oldSprite: oldSprite,
                 nickname: updatedPokemon.nickname,
-                oldNickName: currentNickName,
+                sprite: updatedPokemon.sprite,
+                oldSprite: oldSprite
             });
         } else {
             return res.status(400).json({
