@@ -59,44 +59,44 @@ npm run seed
 
 ### Get Pokémon by ID
 
-- URL `http://localhost:8080/:pokemonID`
+- URL `http://localhost:8080/pokemon/:pokemonID`
 - Method: `GET`
 - Access: Protected (requires JWT token)
 
 ### set/edit Pokémon Nickname by Pokémon ID
 
-- URL `http://localhost:8080/nickname/:pokemonID`
+- URL `http://localhost:8080/pokemon/nickname/:pokemonID`
 - Method: PATCH
 - Access: Protected (requires JWT token)
 - Body: `{"nickname": "<NewNickname>"}`
 
 ### Hatch Pokémon Nickname by Pokémon ID
 
-- URL `http://localhost:8080/hatch/:pokemonID`
+- URL `http://localhost:8080/pokemon/hatch/:pokemonID`
 - Method: PATCH
 - Access: Protected (requires JWT token)
 
 ### Donate Pokémon Nickname by Pokémon ID
 
-- URL `http://localhost:8080/donate/:pokemonID`
+- URL `http://localhost:8080/pokemon/donate/:pokemonID`
 - Method: PATCH
 - Access: Protected (requires JWT token)
 
 ### Talk with Pokémon by Pokémon ID
 
-- URL `http://localhost:8080/talk/:pokemonID`
+- URL `http://localhost:8080/pokemon/talk/:pokemonID`
 - Method: PATCH
 - Access: Protected (requires JWT token)
 
 ### Play with Pokémon by Pokémon ID
 
-- URL `http://localhost:8080/play/:pokemonID`
+- URL `http://localhost:8080/pokemon/play/:pokemonID`
 - Method: PATCH
 - Access: Protected (requires JWT token)
 
 ### Feed with Pokémon by Pokémon ID
 
-- URL `http://localhost:8080/feed/:pokemonID`
+- URL `http://localhost:8080/pokemon/feed/:pokemonID`
 - Method: PATCH
 - Access: Protected (requires JWT token)
 
