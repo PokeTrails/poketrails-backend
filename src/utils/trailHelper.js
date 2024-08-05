@@ -17,8 +17,6 @@ async function simulateTrail(trail, pokemonID) {
 
     // Find the specific Pokémon on the trail
     const pokemon = trail.onTrail.find(pokemon => pokemon._id.toString() === pokemonID);
-    console.log(pokemon.length)
-    console.log(events)
 
     // Simulate the trail and create an event log
     const eventLog = [];
@@ -28,7 +26,7 @@ async function simulateTrail(trail, pokemonID) {
         const randomEvent = events[Math.floor(Math.random() * events.length)];
         eventLog.push(randomEvent);
     }
-
+    
     return {
         pokemonID: pokemon._id,
         trailLog: eventLog,
