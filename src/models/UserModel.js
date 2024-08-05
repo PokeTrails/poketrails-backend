@@ -22,16 +22,17 @@ const userSchema = mongoose.Schema({
             itemName: { type: String, required: true },
             price: { type: Number, required: true },
             level: { type: Number, required: true },
-            owned: { type: Boolean, default: false, required: true }
+            owned: { type: Boolean, default: false, required: true },
+            isFullyUpgraded: { type: Boolean, default: false, required: true }
         }
     ]
 });
 
 const defaultShopItems = [
-    { itemName: "expShare", price: 600, level: 1 },
-    { itemName: "shinyCharm", price: 600, level: 1 },
-    { itemName: "runningShoes", price: 600, level: 1 },
-    { itemName: "amuletCoin", price: 600, level: 1 }
+    { itemName: "expShare", price: 600, level: 1, isFullyUpgraded: false },
+    { itemName: "shinyCharm", price: 600, level: 1, isFullyUpgraded: false },
+    { itemName: "runningShoes", price: 600, level: 1, isFullyUpgraded: false },
+    { itemName: "amuletCoin", price: 600, level: 1, isFullyUpgraded: false }
 ];
 
 userSchema.pre("save", async function (next) {
