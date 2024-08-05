@@ -42,7 +42,7 @@ const pokemonSchema = mongoose.Schema(
         rockyCompleted: { type: Number, default: 0 },
         frostyCompleted: { type: Number, default: 0 },
         wetCompleted: { type: Number, default: 0 },
-        trailLog: [{type: String}]
+        trailLog: [{ type: String }]
     },
     {
         timestamps: true

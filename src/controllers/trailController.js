@@ -1,4 +1,4 @@
-const { default: mongoose } = require('mongoose');
+const { mongoose } = require("mongoose");
 const { TrailModel } = require('../models/TrailModel');
 const { simulateTrail } = require("../utils/trailHelper");
 const PokemonModel = require('../models/PokemonModel');

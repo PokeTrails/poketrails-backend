@@ -1,4 +1,5 @@
-const { default: mongoose } = require("mongoose");
+const { mongoose } = require("mongoose");
+const PokemonModel = require("../models/PokemonModel");
 
 async function simulateTrail(trail, pokemonID) {
     const events = [
@@ -15,9 +16,9 @@ async function simulateTrail(trail, pokemonID) {
         "Had a close call with a wild Pokémon"
     ];
 
-    // Find the specific Pokémon on the trail
-    const pokemon = trail.onTrail.find(pokemon => pokemon._id.toString() === pokemonID);
-
+    // Find the specific ID of Pokemon on the trail
+    const pokemonId =  trail.onTrail.find(pokemon => pokemon._id.toString() === pokemonID);
+    const pokemon = await PokemonModel.findById(pokemonId);
     // Simulate the trail and create an event log
     const eventLog = [];
     const numberOfEvents = Math.floor(Math.random() * 5) + 1; // Each Pokémon will encounter between 1 and 5 events
@@ -26,9 +27,15 @@ async function simulateTrail(trail, pokemonID) {
         const randomEvent = events[Math.floor(Math.random() * events.length)];
         eventLog.push(randomEvent);
     }
-    
+
+    console.log("HELPER " + pokemon.nickname);
+
+    pokemon.trailLog.push(...eventLog)
+    await pokemon.save();
+    console.log("HELPER2 " + pokemon.trailLog);
+
     return {
-        pokemonID: pokemon._id,
+        pokemonID: pokemonId,
         trailLog: eventLog,
     };
 }
