@@ -38,21 +38,41 @@ async function simulateTrail(trail, pokemonID) {
     };
 }
 
-async function addEventValuesToUser(userId, eventLog){
+async function addEventValuesToUserAndPokemon(userId, eventLog, pokemonId){
     const user = await UserModel.findById(userId);
+    const pokemon = await PokemonModel.findById(pokemonId);
+    console.log(pokemon + " ASDHASDHASDHas");
+
+    let runningBalance = 0;
+    let runningVoucher = 0;
+    let runningHappiness = 0;
 
     eventLog.forEach(event => {
         const effect = events[event];
         if (effect.balance) {
             user.balance += effect.balance;
+            runningBalance += effect.balance;
         }
         if (effect.eggVoucher) {
             user.eggVoucher += effect.eggVoucher;
+            runningVoucher += effect.eggVoucher;
+        }
+        if (effect.happiness) {
+            pokemon.current_happiness += effect.happiness;
+            runningHappiness += effect.happiness;
         }
     });
 
+    await pokemon.save()
     await user.save();
-    return user;
+
+    return {
+        user: user,
+        pokemon: pokemon,
+        runningBalance: runningBalance,
+        runningVoucher: runningVoucher,
+        runningHappiness: runningHappiness
+    };
 }
 
 async function resetTrailFields(pokemon) {
@@ -68,4 +88,4 @@ async function resetTrailFields(pokemon) {
     return pokemon;
 }
 
-module.exports = { simulateTrail, addEventValuesToUser, resetTrailFields };
+module.exports = { simulateTrail, addEventValuesToUserAndPokemon, resetTrailFields };

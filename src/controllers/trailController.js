@@ -1,6 +1,6 @@
 const { mongoose } = require("mongoose");
 const { TrailModel } = require('../models/TrailModel');
-const { simulateTrail, addEventValuesToUser, resetTrailFields } = require("../utils/trailHelper");
+const { simulateTrail, addEventValuesToUserAndPokemon, resetTrailFields } = require("../utils/trailHelper");
 const PokemonModel = require('../models/PokemonModel');
 const { UserModel } = require("../models/UserModel");
 
@@ -68,8 +68,6 @@ const finishTrail = async (req, res, next) => {
 
         console.log("pre balance: " + previousBalance  + " pre vouchers: " + previousVouchers );
 
-        await addEventValuesToUser(userId, eventLog);
-
         const trail = await TrailModel.findById(pokemon.onTrailP).exec();
         // Removes pokemon from the trail on the trail model
         if (trail) {
@@ -81,6 +79,14 @@ const finishTrail = async (req, res, next) => {
         trailDone = milliSecondsLeft <= 0;
 
         if (eventLog.length > 0 && pokemon.currentlyOnTrail && trailDone) {
+
+            const { user, pokemon: updatedPokemon, runningBalance, runningVoucher, runningHappiness } = 
+            await addEventValuesToUserAndPokemon(userId, eventLog, pokemonId);
+
+            console.log("Running Balance:", runningBalance);
+            console.log("Running Egg Vouchers:", runningVoucher);
+            console.log("Running Happiness:", runningHappiness);
+
             // Remove trail related fields from pokemon
             await resetTrailFields(pokemon);
 
@@ -90,11 +96,14 @@ const finishTrail = async (req, res, next) => {
             console.log("balance: " + userBalance  + " vouchers: " + userTickets );
 
             res.status(200).json({
-                balance: userBalance,
-                vouchers: userTickets,
-                sprite: pokemon.sprite
-                // running total for balance, vouchers, happeiness
+                balance: user.balance,
+                vouchers: user.eggVoucher,
+                happiness: updatedPokemon.current_happiness,
+                runningBalance: runningBalance,
+                runningVoucher: runningVoucher,
+                runningHappiness: runningHappiness
             });
+
         } else if (!trailDone) {
             res.status(200).json({
                 message: "Pokemon is still on trail",
