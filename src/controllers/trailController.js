@@ -1,7 +1,9 @@
 const { mongoose } = require("mongoose");
 const { TrailModel } = require('../models/TrailModel');
-const { simulateTrail } = require("../utils/trailHelper");
+const { simulateTrail, addEventValuesToUser } = require("../utils/trailHelper");
 const PokemonModel = require('../models/PokemonModel');
+const { UserModel } = require("../models/UserModel");
+
 
 const simulateTrailByID = async (req, res, next) => {
     try {
@@ -46,4 +48,49 @@ const simulateTrailByID = async (req, res, next) => {
     }
 };
 
-module.exports = { simulateTrailByID };
+
+const finishTrail = async (req, res, next) => {
+    try{
+        const userId = req.userId;
+        const user = await UserModel.findById(userId).exec();
+
+        const pokemonId = req.body.pokemonId;
+        const pokemon = await PokemonModel.findById(pokemonId).exec();
+
+        const eventLog = pokemon.trailLog;
+
+        const previousBalance =  user.balance;
+        const previousVouchers =  user.eggVoucher;
+
+        console.log("pre balance: " + previousBalance  + " pre vouchers: " + previousVouchers );
+
+        await addEventValuesToUser(userId, eventLog);
+
+        const trail = await TrailModel.findById(pokemon.onTrailP).exec();
+        // Removes pokemon from the trail on the trail model
+        if (trail) {
+            trail.onTrail = trail.onTrail.filter(id => id.toString() !== pokemonId);
+            await trail.save();
+        }
+
+        // Remove pokemon from trail on itself and clears the log
+        pokemon.onTrailP = null;
+        pokemon.trailLog = [];
+        await pokemon.save();
+
+        const userBalance =  user.balance;
+        const userTickets =  user.eggVoucher;
+
+        console.log("balance: " + userBalance  + " vouchers: " + userTickets );
+
+        res.status(200).json({
+            balance: userBalance,
+            vouchers: userTickets
+        });
+
+    } catch(error) {
+        next(error);
+    }
+}
+
+module.exports = { simulateTrailByID, finishTrail };
