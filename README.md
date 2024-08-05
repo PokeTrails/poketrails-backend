@@ -122,10 +122,22 @@ npm run seed
 
 ## Store Route
 
-### Get party details for the Authenticated User
+### Get all items in the store
 
-- URL `http://localhost:8080/party`
+- URL `http://localhost:8080/store`
 - Method: `GET`
+- Access: Protected (requires JWT token)
+
+### View individual items in the store
+
+- URL `http://localhost:8080/store/view/:id`
+- Method: `GET`
+- Access: Protected (requires JWT token)
+
+### Buy individual items in the store
+
+- URL `http://localhost:8080/store/buy/:id`
+- Method: `PATCH`
 - Access: Protected (requires JWT token)
 
 ## User Route
