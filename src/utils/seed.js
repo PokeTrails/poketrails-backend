@@ -3,6 +3,7 @@ const { UserModel } = require("../models/UserModel");
 const { PartyModel } = require("../models/PartyModel");
 const { getPokemon } = require("./pokemonHelper");
 const PokemonModel = require("../models/PokemonModel");
+const { TrailModel } = require("../models/TrailModel");
 
 async function seedUsers() {
     console.log("Seeding Data");
@@ -71,11 +72,14 @@ async function seedUsers() {
 
 
 async function seedTrails() {
-   let wildtrail = {
+   let trail1 = {
         title: "Wild Trail",
         buffedTypes: ["Grass", "Bug","Poison"],
         onTrail: [],
     }
+
+    let wildTrail = await TrailModel.create(trail1);
+    await wildTrail.save();
 }
 
 async function assignPokemon(user, egg, party, hatched) {
@@ -101,7 +105,8 @@ async function seed() {
     await connectDB();
     await clearDB();
 
-    let seededData = await seedUsers();
+    let seededUsers = await seedUsers();
+    let seededTrails = await seedTrails();
 
     await closeDB();
 }
