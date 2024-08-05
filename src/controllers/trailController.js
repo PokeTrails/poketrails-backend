@@ -9,6 +9,7 @@ const simulateTrailByID = async (req, res, next) => {
     try {
         const trailName = req.body.title;
         const pokemonId = req.body.pokemonId;
+        const trailLength = req.body.trailLength;
         // Select only the trail id from the title of the trail
         const trailId = await TrailModel.findOne({ title: trailName }).select('_id').exec();
         // Find the trail and pokemon by ID
@@ -30,19 +31,23 @@ const simulateTrailByID = async (req, res, next) => {
         }
 
         // Add the trail to the Pokemon if pokemon isnt already on a trail
-        if (pokemon.onTrailP == null) {
+        if (pokemon.currentlyOnTrail == false) {
             pokemon.onTrailP = trail._id;
+            pokemon.trailStartTime = new Date();
+            pokemon.trailLength = trailLength;
+            pokemon.trailFinishTime = new Date(pokemon.trailStartTime.getTime() + pokemon.trailLength);
+            pokemon.currentlyOnTrail = true;
             await pokemon.save();
-            console.log( "hello " + trail._id)
+
+            console.log( "start " + pokemon.trailStartTime + " length " + pokemon.trailLength + " end " + pokemon.trailFinishTime);
+
+            // Run the simulation of the Pokémon on the trail
+            const results = await simulateTrail(trail, pokemonId);
+            res.status(200).json(results);
+
         } else {
             return res.status(200).json({message: "Pokemon is already on trail"})
         }
-
-
-        // Run the simulation of the Pokémon on the trail
-        const results = await simulateTrail(trail, pokemonId);
-
-        res.status(200).json(results);
     } catch (error) {
         next(error);
     }
@@ -86,11 +91,15 @@ const finishTrail = async (req, res, next) => {
         res.status(200).json({
             balance: userBalance,
             vouchers: userTickets
+            // sprite
+            // running total for balance, vouchers, happeiness
         });
 
     } catch(error) {
         next(error);
     }
 }
+
+
 
 module.exports = { simulateTrailByID, finishTrail };
