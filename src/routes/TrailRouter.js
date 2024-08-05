@@ -4,4 +4,8 @@ const trailController = require('../controllers/trailController');
 
 
 
-router.post('/:id/simulate', trailController.simulateTrailByID);
+router.post('/simulate', trailController.simulateTrailByID);
+
+
+
+module.exports = router;

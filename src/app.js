@@ -35,7 +35,6 @@ app.use("/pokemon", pokemonRouter);
 const trailRouter = require("./routes/TrailRouter.js")
 app.use("/trail", trailRouter);
 
-
 //Party Router
 const partyRouter = require("./routes/PartyRouter.js");
 app.use("/party", partyRouter);

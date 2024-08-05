@@ -1,15 +1,21 @@
+const { default: mongoose } = require('mongoose');
 const { TrailModel } = require('../models/TrailModel');
 const { simulateTrail } = require("../utils/trailHelper");
 
 const simulateTrailByID = async (req, res, next) => {
     try {
-        const trailId = req.params.id;
+        const trailName = req.body.title;
         const pokemonId = req.body.pokemonId;
 
+        trailId = await TrailModel.where({title: trailName});
         // Find the trail by ID
         const trail = await TrailModel.findById(trailId).exec();
         if (!trail) {
             return res.status(404).json({ message: "Trail not found" });
+        }
+
+        if (!mongoose.Types.ObjectId.isValid(pokemonId)){
+            return res.status(404).json({ message: "Pokemon not found"})
         }
 
         // Add the Pokémon to the trail if not already present
