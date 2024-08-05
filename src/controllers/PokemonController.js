@@ -249,7 +249,7 @@ const pokemonInteractionTalk = async (req, res, next) => {
             });
         }
         let timeDifference = (Date.now() - Pokemon.lastTalked) / (1000 * 60 * 60);
-        if (!Pokemon.lastTalked || timeDifference > 3) {
+        if (!Pokemon.lastTalked || timeDifference > 1) {
             if (Pokemon.current_happiness >= Pokemon.target_happiness) {
                 return res.status(200).json({
                     message: "Max happiness reached",
@@ -257,7 +257,7 @@ const pokemonInteractionTalk = async (req, res, next) => {
                 });
             }
             let pointsNeededToMax = Pokemon.target_happiness - Pokemon.current_happiness;
-            const happinessAwarded = Math.min(pointsNeededToMax, 5 * happinesMulti);
+            const happinessAwarded = Math.min(pointsNeededToMax, 2 * happinesMulti);
             Pokemon.current_happiness += happinessAwarded;
             Pokemon.negativeInteractionCount = 0;
             Pokemon.lastTalked = Date.now();
@@ -321,7 +321,7 @@ const pokemonInteractionPlay = async (req, res, next) => {
         const user = await UserModel.findOne({ _id: req.userId });
         let happinesMulti = user.happinesMulti;
         let timeDifference = (Date.now() - Pokemon.lastPlayed) / (1000 * 60 * 60);
-        if (!Pokemon.lastPlayed || timeDifference > 5) {
+        if (!Pokemon.lastPlayed || timeDifference > 3) {
             if (Pokemon.current_happiness >= Pokemon.target_happiness) {
                 return res.status(200).json({
                     message: "Max happiness reached",
@@ -329,7 +329,7 @@ const pokemonInteractionPlay = async (req, res, next) => {
                 });
             }
             let pointsNeededToMax = Pokemon.target_happiness - Pokemon.current_happiness;
-            const happinessAwarded = Math.min(pointsNeededToMax, 10 * happinesMulti);
+            const happinessAwarded = Math.min(pointsNeededToMax, 5 * happinesMulti);
             Pokemon.current_happiness += happinessAwarded;
             Pokemon.negativeInteractionCount = 0;
             Pokemon.lastPlayed = Date.now();
@@ -393,7 +393,7 @@ const pokemonInteractionFeed = async (req, res, next) => {
         const user = await UserModel.findOne({ _id: req.userId });
         let happinesMulti = user.happinesMulti;
         let timeDifference = (Date.now() - Pokemon.lastFeed) / (1000 * 60 * 60);
-        if (!Pokemon.lastFeed || timeDifference > 7) {
+        if (!Pokemon.lastFeed || timeDifference > 6) {
             if (Pokemon.current_happiness >= Pokemon.target_happiness) {
                 return res.status(200).json({
                     message: "Max happiness reached",
@@ -401,7 +401,7 @@ const pokemonInteractionFeed = async (req, res, next) => {
                 });
             }
             let pointsNeededToMax = Pokemon.target_happiness - Pokemon.current_happiness;
-            const happinessAwarded = Math.min(pointsNeededToMax, 20 * happinesMulti);
+            const happinessAwarded = Math.min(pointsNeededToMax, 10 * happinesMulti);
             Pokemon.current_happiness += happinessAwarded;
             Pokemon.negativeInteractionCount = 0;
             Pokemon.lastFeed = Date.now();
