@@ -120,6 +120,14 @@ npm run seed
 - Method: `GET`
 - Access: Protected (requires JWT token)
 
+## Store Route
+
+### Get party details for the Authenticated User
+
+- URL `http://localhost:8080/party`
+- Method: `GET`
+- Access: Protected (requires JWT token)
+
 ## User Route
 
 ### Create a New user
