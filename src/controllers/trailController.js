@@ -1,9 +1,8 @@
 const { mongoose } = require("mongoose");
 const { TrailModel } = require('../models/TrailModel');
-const { simulateTrail, addEventValuesToUser } = require("../utils/trailHelper");
+const { simulateTrail, addEventValuesToUser, resetTrailFields } = require("../utils/trailHelper");
 const PokemonModel = require('../models/PokemonModel');
 const { UserModel } = require("../models/UserModel");
-
 
 const simulateTrailByID = async (req, res, next) => {
     try {
@@ -76,30 +75,41 @@ const finishTrail = async (req, res, next) => {
         if (trail) {
             trail.onTrail = trail.onTrail.filter(id => id.toString() !== pokemonId);
             await trail.save();
+        };
+
+        milliSecondsLeft = pokemon.trailFinishTime - Date.now();
+        trailDone = milliSecondsLeft <= 0;
+
+        if (eventLog.length > 0 && pokemon.currentlyOnTrail && trailDone) {
+            // Remove trail related fields from pokemon
+            await resetTrailFields(pokemon);
+
+            const userBalance =  user.balance;
+            const userTickets =  user.eggVoucher;
+
+            console.log("balance: " + userBalance  + " vouchers: " + userTickets );
+
+            res.status(200).json({
+                balance: userBalance,
+                vouchers: userTickets,
+                sprite: pokemon.sprite
+                // running total for balance, vouchers, happeiness
+            });
+        } else if (!trailDone) {
+            res.status(200).json({
+                message: "Pokemon is still on trail",
+                timeLeft: milliSecondsLeft
+            })
+        } else {
+            await resetTrailFields(pokemon);
+            res.status(200).json({
+                message: "Nothing to update",
+            })
         }
-
-        // Remove pokemon from trail on itself and clears the log
-        pokemon.onTrailP = null;
-        pokemon.trailLog = [];
-        await pokemon.save();
-
-        const userBalance =  user.balance;
-        const userTickets =  user.eggVoucher;
-
-        console.log("balance: " + userBalance  + " vouchers: " + userTickets );
-
-        res.status(200).json({
-            balance: userBalance,
-            vouchers: userTickets
-            // sprite
-            // running total for balance, vouchers, happeiness
-        });
 
     } catch(error) {
         next(error);
     }
 }
-
-
 
 module.exports = { simulateTrailByID, finishTrail };

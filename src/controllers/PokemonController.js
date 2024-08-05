@@ -67,9 +67,12 @@ const getPokemonByID = async (req, res, next) => {
         }
         // If the egg has already hatched, return the details
         if (pokemon.eggHatched && !pokemon.donated) {
+            // Check if on trail 
             if (pokemon.currentlyOnTrail) {
+                // Calc using estimated finish time and current time
                 milliSecondsLeft = pokemon.trailFinishTime - Date.now();
                 console.log(milliSecondsLeft);
+                // Return time left
                 return res.status(300).json({
                     currentlyOnTrail: pokemon.currentlyOnTrail,
                     timeLeft: milliSecondsLeft

@@ -55,4 +55,17 @@ async function addEventValuesToUser(userId, eventLog){
     return user;
 }
 
-module.exports = { simulateTrail, addEventValuesToUser };
+async function resetTrailFields(pokemon) {
+    
+    pokemon.currentlyOnTrail = false;
+    pokemon.trailStartTime = null;
+    pokemon.onTrailP = null;
+    pokemon.trailLength = null;
+    pokemon.trailFinishTime = null;
+    pokemon.trailLog = [];
+    await pokemon.save();
+
+    return pokemon;
+}
+
+module.exports = { simulateTrail, addEventValuesToUser, resetTrailFields };
