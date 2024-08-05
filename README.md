@@ -128,13 +128,13 @@ npm run seed
 - Method: `GET`
 - Access: Protected (requires JWT token)
 
-### View individual items in the store
+### View individual items in the store by id
 
 - URL `http://localhost:8080/store/view/:id`
 - Method: `GET`
 - Access: Protected (requires JWT token)
 
-### Buy individual items in the store
+### Buy individual items in the store by id
 
 - URL `http://localhost:8080/store/buy/:id`
 - Method: `PATCH`
