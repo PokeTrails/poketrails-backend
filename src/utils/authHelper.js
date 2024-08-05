@@ -7,15 +7,14 @@ async function comparePasswords(plaintextPassword, encryptedPassword) {
     let doesPasswordMatch = false;
 
     doesPasswordMatch = await bcrypt.compare(plaintextPassword, encryptedPassword);
-    
+
     return doesPasswordMatch;
 }
 
-
-function createJWT(userID){
+function createJWT(userID) {
     let newJwt = jwt.sign(
         // Payloard of data
-        {id: userID},
+        { id: userID },
         // Secret key for JWT signature
         process.env.JWT_KEY,
 
@@ -23,25 +22,22 @@ function createJWT(userID){
         {
             expiresIn: "7d"
         }
-    )
+    );
 
     return newJwt;
 }
 
-
-function validateJWT(jwtToValidate){
+function validateJWT(jwtToValidate) {
     let isJwtValid = false;
 
     jwt.verify(jwtToValidate, process.env.JWT_KEY, (error, decodedJwt) => {
-        if (error){
+        if (error) {
             throw new Error("user JWT is not valid!");
         }
-        console.log("Decoded JWT:")
-        console.log(decodedJwt);
 
         isJwtValid = true;
     });
-    
+
     return isJwtValid;
 }
 
@@ -49,4 +45,4 @@ module.exports = {
     comparePasswords,
     createJWT,
     validateJWT
-}
+};

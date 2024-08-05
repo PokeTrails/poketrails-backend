@@ -81,7 +81,7 @@ async function seedTrails() {
 async function assignPokemon(user, egg, party, hatched) {
     let hatchedCount = 0;
     for (a = 1; a <= egg; a++) {
-        const pokemonData = await getPokemon();
+        const pokemonData = await getPokemon(user.shinyMulti);
         //Create a new Pokemon
         const newPokemon = await PokemonModel.create(pokemonData);
         newPokemon.user = user._id;
