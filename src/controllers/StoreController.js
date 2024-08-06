@@ -2,13 +2,19 @@ const { UserModel } = require("../models/UserModel");
 
 const allStoreItems = async (req, res, next) => {
     try {
-        const user = await UserModel.findOne({ _id: req.userId });
+        const user = await UserModel.findOne({ _id: req.userId }, { price: 0, level: 0, owned: 0 });
         if (!user) {
             res.status(404).json({
                 message: `User wiht ID ${req.userId} does not exist`
             });
         }
-        return res.status(200).json(user.shopItems);
+        const filteredItems = user.shopItems.map(({ itemName, isFullyUpgraded, _id }) => ({
+            itemName,
+            isFullyUpgraded,
+            _id
+        }));
+
+        return res.status(200).json(filteredItems);
     } catch (error) {
         next(error);
     }
@@ -72,7 +78,7 @@ const buyItem = async (req, res, next) => {
         user.balance -= shopItem.price;
         if (!shopItem.owned || currentLevel != 3) {
             shopItem.level += 1;
-            shopItem.price += 600;
+            shopItem.price = shopItem.price * 2;
             shopItem.owned = true;
             currentLevel += 1;
         }
