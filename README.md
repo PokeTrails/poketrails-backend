@@ -88,6 +88,12 @@ npm run seed
 - Method: PATCH
 - Access: Protected (requires JWT token)
 
+### View Donation reward of Pokémon by Pokémon ID
+
+- URL `http://localhost:8080/pokemon/donate/reward/:pokemonID`
+- Method: GET
+- Access: Protected (requires JWT token)
+
 ### Talk with Pokémon by Pokémon ID
 
 - URL `http://localhost:8080/pokemon/talk/:pokemonID`
