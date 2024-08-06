@@ -3,6 +3,8 @@ const PokemonModel = require("../models/PokemonModel");
 const { getPokemon, calculateDonationReward } = require("../utils/pokemonHelper");
 const { PartyModel } = require("../models/PartyModel");
 const { UserModel } = require("../models/UserModel");
+const { PokedexModel } = require("../models/PokedexModel");
+const { registerToPokedex } = require("../utils/pokedexRegistration");
 
 const createPokemon = async (req, res, next) => {
     try {
@@ -19,14 +21,19 @@ const createPokemon = async (req, res, next) => {
         //Fetch pokemon data
         const pokemonData = await getPokemon(shinyMulti);
         //Create a new Pokemon
-        const newPokemon = new PokemonModel(pokemonData);
+        let newPokemon = new PokemonModel(pokemonData);
         newPokemon.user = req.userId;
         //SavePokemon
         const savedPokemon = await newPokemon.save();
         // Add the new Pokémon to the user's party
         userParty.slots.push(savedPokemon._id);
         await userParty.save();
-
+        let userPokedex = await PokedexModel.findOne({ user: req.userId, poke_id: newPokemon.poke_id });
+        if (!userPokedex) {
+            await registerToPokedex(newPokemon, req.userId);
+            console.log(req.userId);
+            console.log(newPokemon.poke_id);
+        }
         res.status(201).json({
             message: `Pokemon egg accquired with id: ${savedPokemon._id}`
         });
