@@ -3,6 +3,7 @@ const router = express.Router();
 const { UserModel } = require("../models/UserModel");
 const { createJWT } = require("../utils/authHelper");
 const { PartyModel } = require("../models/PartyModel");
+const auth = require("../middleware/auth");
 
 // Route to find all  users
 router.get("/", async (request, response, next) => {
@@ -14,12 +15,24 @@ router.get("/", async (request, response, next) => {
 });
 
 // Route to find user with matching ID
-router.get("/:id", async (request, response, next) => {
+router.get("/find/:id", async (request, response, next) => {
     let result = await UserModel.findById(request.params.id).exec();
 
     response.json({
         message: "user router test",
         result: result
+    });
+});
+
+// Route to find user balance
+router.get("/balance", auth, async (req, res, next) => {
+    // console.log(req)
+    const user = await UserModel.findOne({ _id: req.userId })
+    console.log(user)
+    res.json({
+        message: "user balance",
+        balance: user.balance,
+        vouchers: user.eggVoucher
     });
 });
 

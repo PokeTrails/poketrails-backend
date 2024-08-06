@@ -23,9 +23,6 @@ app.get("/", (req, res, next) => {
     });
 });
 
-// User Router
-const userRouter = require("./routes/UserRouter.js");
-app.use("/user", userRouter);
 
 // Pokemon Router
 const pokemonRouter = require("./routes/PokemonRouter.js");
@@ -39,9 +36,14 @@ app.use("/party", partyRouter);
 const loginRouter = require("./routes/LoginRouter.js");
 app.use("/login", loginRouter);
 
+// User Router
+const userRouter = require("./routes/UserRouter.js");
+app.use("/user", userRouter);
+
 // Store Router
 const storeRouter = require("./routes/StoreRouter.js");
 app.use("/store", storeRouter);
+
 
 // Generic error handling for any error that happens on the server
 app.use((error, req, res, next) => {
