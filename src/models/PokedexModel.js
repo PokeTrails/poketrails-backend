@@ -14,8 +14,7 @@ const pokedexSchema = mongoose.Schema(
         sprite: { type: String },
         cries: { type: String },
         flavour_text: { type: String },
-        user: { type: mongoose.Schema.Types.ObjectId, ref: "user" },
-        pokemon: { type: mongoose.Schema.Types.ObjectId, ref: "Pokemon" }
+        user: { type: mongoose.Schema.Types.ObjectId, ref: "user" }
     },
     {
         timestamps: true

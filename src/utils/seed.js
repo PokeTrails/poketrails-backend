@@ -85,7 +85,9 @@ async function assignPokemon(user, egg, party, hatched) {
         //SavePokemon
         const savedPokemon = await newPokemon.save();
         //Register to pokdex
-        await registerToPokedex(newPokemon, user._id);
+        if (savedPokemon.eggHatched) {
+            await registerToPokedex(savedPokemon, user._id);
+        }
         // Add the new Pokémon to the user's party
         party.slots.push(savedPokemon._id);
         await party.save();

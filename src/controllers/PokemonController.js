@@ -28,12 +28,6 @@ const createPokemon = async (req, res, next) => {
         // Add the new Pokémon to the user's party
         userParty.slots.push(savedPokemon._id);
         await userParty.save();
-        let userPokedex = await PokedexModel.findOne({ user: req.userId, poke_id: newPokemon.poke_id });
-        if (!userPokedex) {
-            await registerToPokedex(newPokemon, req.userId);
-            console.log(req.userId);
-            console.log(newPokemon.poke_id);
-        }
         res.status(201).json({
             message: `Pokemon egg accquired with id: ${savedPokemon._id}`
         });
@@ -170,6 +164,8 @@ const hatchPokemonByID = async (req, res, next) => {
                 { eggHatched: true },
                 { new: true }
             );
+            //Register Pokemon to Pokedex
+            await registerToPokedex(updatedPokemon, req.userId);
             return res.status(200).json({
                 eggHatched: updatedPokemon.eggHatched,
                 species: updatedPokemon.species,
@@ -503,6 +499,8 @@ const evolvePokemonByID = async (req, res, next) => {
                     }
                 }
             );
+            //Register Evolved Pokemon
+            await registerToPokedex(updatedPokemon, req.userId);
             return res.status(200).json({
                 current_level: updatedPokemon.current_level,
                 species: updatedPokemon.species,
