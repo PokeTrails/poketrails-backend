@@ -226,7 +226,8 @@ const donatePokemonByID = async (req, res, next) => {
         return res.status(200).json({
             message: `Pokemon with id: ${updatedPokemon._id} has been sucessfully donated`,
             reward_received: reward,
-            userExperienceIncreased: experience
+            userExperienceIncreased: experience,
+            sprite: updatedPokemon.sprite
         });
     } catch (error) {
         next(error);
