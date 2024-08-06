@@ -15,7 +15,7 @@ router.get("/", async (request, response, next) => {
 });
 
 // Route to find user with matching ID
-router.get("/:id", async (request, response, next) => {
+router.get("/find/:id", async (request, response, next) => {
     let result = await UserModel.findById(request.params.id).exec();
 
     response.json({
@@ -24,9 +24,9 @@ router.get("/:id", async (request, response, next) => {
     });
 });
 
-// Route to find users balance
+// Route to find user balance
 router.get("/balance", auth, async (req, res, next) => {
-    console.log(req)
+    // console.log(req)
     const user = await UserModel.findOne({ _id: req.userId })
     console.log(user)
     res.json({
