@@ -57,9 +57,9 @@ npm run seed
 - Method: `GET`
 - Access: Protected (requires JWT token)
 
-### Get All donated Pokémon for Pokedex
+### Get All donated Pokémon
 
-- URL `http://localhost:8080/pokemon/pokedex`
+- URL `http://localhost:8080/pokemon/donated`
 - Method: `GET`
 - Access: Protected (requires JWT token)
 
@@ -116,6 +116,12 @@ npm run seed
 
 - URL `http://localhost:8080/pokemon/evolve/:pokemonID`
 - Method: PATCH
+- Access: Protected (requires JWT token)
+
+## Pokedex Route
+
+- URL `http://localhost:8080/pokedex`
+- Method: GET
 - Access: Protected (requires JWT token)
 
 ## Party Route

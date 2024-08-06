@@ -3,6 +3,7 @@ const { UserModel } = require("../models/UserModel");
 const { PartyModel } = require("../models/PartyModel");
 const { getPokemon } = require("./pokemonHelper");
 const PokemonModel = require("../models/PokemonModel");
+const { registerToPokedex } = require("./pokedexRegistration");
 
 async function seedUsers() {
     console.log("Seeding Data");
@@ -83,6 +84,10 @@ async function assignPokemon(user, egg, party, hatched) {
         }
         //SavePokemon
         const savedPokemon = await newPokemon.save();
+        //Register to pokdex
+        if (savedPokemon.eggHatched) {
+            await registerToPokedex(savedPokemon, user._id);
+        }
         // Add the new Pokémon to the user's party
         party.slots.push(savedPokemon._id);
         await party.save();

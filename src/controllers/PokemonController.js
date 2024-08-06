@@ -3,6 +3,8 @@ const PokemonModel = require("../models/PokemonModel");
 const { getPokemon, calculateDonationReward } = require("../utils/pokemonHelper");
 const { PartyModel } = require("../models/PartyModel");
 const { UserModel } = require("../models/UserModel");
+const { PokedexModel } = require("../models/PokedexModel");
+const { registerToPokedex } = require("../utils/pokedexRegistration");
 
 const createPokemon = async (req, res, next) => {
     try {
@@ -19,14 +21,13 @@ const createPokemon = async (req, res, next) => {
         //Fetch pokemon data
         const pokemonData = await getPokemon(shinyMulti);
         //Create a new Pokemon
-        const newPokemon = new PokemonModel(pokemonData);
+        let newPokemon = new PokemonModel(pokemonData);
         newPokemon.user = req.userId;
         //SavePokemon
         const savedPokemon = await newPokemon.save();
         // Add the new Pokémon to the user's party
         userParty.slots.push(savedPokemon._id);
         await userParty.save();
-
         res.status(201).json({
             message: `Pokemon egg accquired with id: ${savedPokemon._id}`
         });
@@ -44,7 +45,7 @@ const getAllPokemon = async (req, res, next) => {
     }
 };
 
-const getAllPokedexPokemon = async (req, res, next) => {
+const getAllDonatedPokemon = async (req, res, next) => {
     try {
         const pokemons = await PokemonModel.find({ user: req.userId, donated: true }, { evolution: 0 }).sort({
             donatedDate: -1
@@ -163,6 +164,8 @@ const hatchPokemonByID = async (req, res, next) => {
                 { eggHatched: true },
                 { new: true }
             );
+            //Register Pokemon to Pokedex
+            await registerToPokedex(updatedPokemon, req.userId);
             return res.status(200).json({
                 eggHatched: updatedPokemon.eggHatched,
                 species: updatedPokemon.species,
@@ -496,6 +499,8 @@ const evolvePokemonByID = async (req, res, next) => {
                     }
                 }
             );
+            //Register Evolved Pokemon
+            await registerToPokedex(updatedPokemon, req.userId);
             return res.status(200).json({
                 current_level: updatedPokemon.current_level,
                 species: updatedPokemon.species,
@@ -529,5 +534,5 @@ module.exports = {
     pokemonInteractionPlay,
     pokemonInteractionFeed,
     evolvePokemonByID,
-    getAllPokedexPokemon
+    getAllDonatedPokemon
 };
