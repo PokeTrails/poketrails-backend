@@ -27,8 +27,7 @@ router.get("/find/:id", async (request, response, next) => {
 // Route to find user balance
 router.get("/balance", auth, async (req, res, next) => {
     // console.log(req)
-    const user = await UserModel.findOne({ _id: req.userId })
-    console.log(user)
+    const user = await UserModel.findOne({ _id: req.userId });
     res.json({
         message: "user balance",
         balance: user.balance,
