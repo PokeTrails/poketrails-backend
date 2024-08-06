@@ -88,6 +88,12 @@ npm run seed
 - Method: PATCH
 - Access: Protected (requires JWT token)
 
+### View Donation reward of Pokémon by Pokémon ID
+
+- URL `http://localhost:8080/pokemon/donate/reward/:pokemonID`
+- Method: GET
+- Access: Protected (requires JWT token)
+
 ### Talk with Pokémon by Pokémon ID
 
 - URL `http://localhost:8080/pokemon/talk/:pokemonID`
@@ -118,6 +124,26 @@ npm run seed
 
 - URL `http://localhost:8080/party`
 - Method: `GET`
+- Access: Protected (requires JWT token)
+
+## Store Route
+
+### Get all items in the store
+
+- URL `http://localhost:8080/store`
+- Method: `GET`
+- Access: Protected (requires JWT token)
+
+### View individual items in the store by id
+
+- URL `http://localhost:8080/store/view/:id`
+- Method: `GET`
+- Access: Protected (requires JWT token)
+
+### Buy individual items in the store by id
+
+- URL `http://localhost:8080/store/buy/:id`
+- Method: `PATCH`
 - Access: Protected (requires JWT token)
 
 ## User Route

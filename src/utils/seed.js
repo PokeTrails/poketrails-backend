@@ -43,7 +43,8 @@ async function seedUsers() {
             username: `user${i}`,
             trainerName: `user${i}`,
             password: `user${i}`,
-            trainerSprite: `user${i}`
+            trainerSprite: `user${i}`,
+            balance: 100000
         });
         const party = await PartyModel.create({
             slots: [],
