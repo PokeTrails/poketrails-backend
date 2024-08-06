@@ -2,7 +2,6 @@ const mongoose = require("mongoose");
 
 const pokedexSchema = mongoose.Schema(
     {
-        eggHatched: { type: Boolean, default: false },
         donated: { type: Boolean, default: false },
         donatedDate: { type: Date },
         species: { type: String },
