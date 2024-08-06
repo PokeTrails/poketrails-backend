@@ -1,6 +1,6 @@
 const express = require("express");
 const PokemonModel = require("../models/PokemonModel");
-const { getPokemon } = require("../utils/pokemonHelper");
+const { getPokemon, calculateDonationReward } = require("../utils/pokemonHelper");
 const { PartyModel } = require("../models/PartyModel");
 const { UserModel } = require("../models/UserModel");
 
@@ -201,28 +201,7 @@ const donatePokemonByID = async (req, res, next) => {
         );
         //calculate points
         const user = await UserModel.findOne({ _id: req.userId });
-        let moneyMulti = user.moneyMulti;
-        let reward;
-        let extraShinyReward;
-        if (Pokemon.is_mythical && Pokemon.isShiny) {
-            extraShinyReward = Math.round(35 * 2.5);
-        } else if (Pokemon.is_legendary && Pokemon.isShiny) {
-            extraShinyReward = Math.round(30 * 2.5);
-        } else if (Pokemon.is_legendary && Pokemon.isShiny) {
-            extraShinyReward = Math.round(10 * 2.5);
-        }
-        //give more reward if donated before
-        if (Pokemon.is_mythical) {
-            reward = extraShinyReward || 0 + Pokemon.current_happiness + 35 * moneyMulti;
-            experience = 300;
-        } else if (Pokemon.is_legendary) {
-            reward = extraShinyReward || 0 + Pokemon.current_happiness + 30 * moneyMulti;
-            experience = 200;
-        } else {
-            let levelReward = (Pokemon.current_level - 1) * 50;
-            reward = (extraShinyReward || 0 + Pokemon.current_happiness + levelReward + 10) * moneyMulti;
-            experience = 100;
-        }
+        let { reward, experience } = await calculateDonationReward(Pokemon, user.moneyMulti);
         user.balance += reward;
         user.userExperience += experience;
         await user.save();
@@ -257,26 +236,8 @@ const donatePreviewPokemonByID = async (req, res, next) => {
         }
         //calculate points
         const user = await UserModel.findOne({ _id: req.userId });
-        let moneyMulti = user.moneyMulti;
+        let { reward } = await calculateDonationReward(Pokemon, user.moneyMulti);
 
-        let reward;
-        let extraShinyReward;
-        if (Pokemon.is_mythical && Pokemon.isShiny) {
-            extraShinyReward = Math.round(35 * 2.5);
-        } else if (Pokemon.is_legendary && Pokemon.isShiny) {
-            extraShinyReward = Math.round(30 * 2.5);
-        } else if (Pokemon.is_legendary && Pokemon.isShiny) {
-            extraShinyReward = Math.round(10 * 2.5);
-        }
-
-        if (Pokemon.is_mythical) {
-            reward = extraShinyReward || 0 + Pokemon.current_happiness + 35 * moneyMulti;
-        } else if (Pokemon.is_legendary) {
-            reward = extraShinyReward || 0 + Pokemon.current_happiness + 30 * moneyMulti;
-        } else {
-            let levelReward = (Pokemon.current_level - 1) * 50;
-            reward = (extraShinyReward || 0 + Pokemon.current_happiness + levelReward + 10) * moneyMulti;
-        }
         return res.status(200).json({
             expected_reward: reward
         });
