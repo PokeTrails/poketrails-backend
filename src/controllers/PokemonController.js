@@ -233,6 +233,45 @@ const donatePokemonByID = async (req, res, next) => {
     }
 };
 
+const donatePreviewPokemonByID = async (req, res, next) => {
+    try {
+        const Pokemon = await PokemonModel.findById({ _id: req.params.id, user: req.userId });
+        if (!Pokemon) {
+            return res.status(404).json({
+                message: `User does not own a pokemon with id ${req.params.id}`
+            });
+        } else if (Pokemon.donated) {
+            return res.status(400).json({
+                message: `Pokemon with id ${req.params.id} is already donated`
+            });
+        } else if (!Pokemon.eggHatched) {
+            return res.status(400).json({
+                message: `Pokemon with id ${req.params.id} has not hatched`
+            });
+        }
+        //calculate points
+        const user = await UserModel.findOne({ _id: req.userId });
+        let moneyMulti = user.moneyMulti;
+        let reward;
+        if (Pokemon.is_mythical) {
+            reward = 400 * moneyMulti;
+        } else if (Pokemon.is_legendary) {
+            reward = 300 * moneyMulti;
+        } else if (Pokemon.isShiny) {
+            let levelReward = (Pokemon.current_level - 1) * 50;
+            reward = (levelReward + 200) * moneyMulti;
+        } else {
+            let levelReward = (Pokemon.current_level - 1) * 50;
+            reward = (levelReward + 100) * moneyMulti;
+        }
+        return res.status(200).json({
+            expected_reward: reward
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
 const pokemonInteractionTalk = async (req, res, next) => {
     try {
         const Pokemon = await PokemonModel.findOne({ _id: req.params.id, user: req.userId });
@@ -511,6 +550,7 @@ module.exports = {
     editPokemonNicknameByID,
     hatchPokemonByID,
     donatePokemonByID,
+    donatePreviewPokemonByID,
     pokemonInteractionTalk,
     pokemonInteractionPlay,
     pokemonInteractionFeed,
