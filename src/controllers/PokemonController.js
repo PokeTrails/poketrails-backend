@@ -203,20 +203,25 @@ const donatePokemonByID = async (req, res, next) => {
         const user = await UserModel.findOne({ _id: req.userId });
         let moneyMulti = user.moneyMulti;
         let reward;
+        let extraShinyReward;
+        if (Pokemon.is_mythical && Pokemon.isShiny) {
+            extraShinyReward = Math.round(35 * 2.5);
+        } else if (Pokemon.is_legendary && Pokemon.isShiny) {
+            extraShinyReward = Math.round(30 * 2.5);
+        } else if (Pokemon.is_legendary && Pokemon.isShiny) {
+            extraShinyReward = Math.round(10 * 2.5);
+        }
+        //give more reward if donated before
         if (Pokemon.is_mythical) {
-            reward = 400 * moneyMulti;
-            experience = 100;
-        } else if (Pokemon.is_legendary) {
-            reward = 300 * moneyMulti;
-            experience = 200;
-        } else if (Pokemon.isShiny) {
-            let levelReward = (Pokemon.current_level - 1) * 50;
-            reward = (levelReward + 200) * moneyMulti;
+            reward = extraShinyReward || 0 + Pokemon.current_happiness + 35 * moneyMulti;
             experience = 300;
+        } else if (Pokemon.is_legendary) {
+            reward = extraShinyReward || 0 + Pokemon.current_happiness + 30 * moneyMulti;
+            experience = 200;
         } else {
             let levelReward = (Pokemon.current_level - 1) * 50;
-            reward = (levelReward + 100) * moneyMulti;
-            experience = 400;
+            reward = (extraShinyReward || 0 + Pokemon.current_happiness + levelReward + 10) * moneyMulti;
+            experience = 100;
         }
         user.balance += reward;
         user.userExperience += experience;
@@ -226,7 +231,54 @@ const donatePokemonByID = async (req, res, next) => {
         return res.status(200).json({
             message: `Pokemon with id: ${updatedPokemon._id} has been sucessfully donated`,
             reward_received: reward,
-            userExperienceIncreased: experience
+            userExperienceIncreased: experience,
+            sprite: updatedPokemon.sprite
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+const donatePreviewPokemonByID = async (req, res, next) => {
+    try {
+        const Pokemon = await PokemonModel.findById({ _id: req.params.id, user: req.userId });
+        if (!Pokemon) {
+            return res.status(404).json({
+                message: `User does not own a pokemon with id ${req.params.id}`
+            });
+        } else if (Pokemon.donated) {
+            return res.status(400).json({
+                message: `Pokemon with id ${req.params.id} is already donated`
+            });
+        } else if (!Pokemon.eggHatched) {
+            return res.status(400).json({
+                message: `Pokemon with id ${req.params.id} has not hatched`
+            });
+        }
+        //calculate points
+        const user = await UserModel.findOne({ _id: req.userId });
+        let moneyMulti = user.moneyMulti;
+
+        let reward;
+        let extraShinyReward;
+        if (Pokemon.is_mythical && Pokemon.isShiny) {
+            extraShinyReward = Math.round(35 * 2.5);
+        } else if (Pokemon.is_legendary && Pokemon.isShiny) {
+            extraShinyReward = Math.round(30 * 2.5);
+        } else if (Pokemon.is_legendary && Pokemon.isShiny) {
+            extraShinyReward = Math.round(10 * 2.5);
+        }
+
+        if (Pokemon.is_mythical) {
+            reward = extraShinyReward || 0 + Pokemon.current_happiness + 35 * moneyMulti;
+        } else if (Pokemon.is_legendary) {
+            reward = extraShinyReward || 0 + Pokemon.current_happiness + 30 * moneyMulti;
+        } else {
+            let levelReward = (Pokemon.current_level - 1) * 50;
+            reward = (extraShinyReward || 0 + Pokemon.current_happiness + levelReward + 10) * moneyMulti;
+        }
+        return res.status(200).json({
+            expected_reward: reward
         });
     } catch (error) {
         next(error);
@@ -249,7 +301,7 @@ const pokemonInteractionTalk = async (req, res, next) => {
             });
         }
         let timeDifference = (Date.now() - Pokemon.lastTalked) / (1000 * 60 * 60);
-        if (!Pokemon.lastTalked || timeDifference > 3) {
+        if (!Pokemon.lastTalked || timeDifference > 1) {
             if (Pokemon.current_happiness >= Pokemon.target_happiness) {
                 return res.status(200).json({
                     message: "Max happiness reached",
@@ -257,7 +309,7 @@ const pokemonInteractionTalk = async (req, res, next) => {
                 });
             }
             let pointsNeededToMax = Pokemon.target_happiness - Pokemon.current_happiness;
-            const happinessAwarded = Math.min(pointsNeededToMax, 5 * happinesMulti);
+            const happinessAwarded = Math.min(pointsNeededToMax, 2 * happinesMulti);
             Pokemon.current_happiness += happinessAwarded;
             Pokemon.negativeInteractionCount = 0;
             Pokemon.lastTalked = Date.now();
@@ -321,7 +373,7 @@ const pokemonInteractionPlay = async (req, res, next) => {
         const user = await UserModel.findOne({ _id: req.userId });
         let happinesMulti = user.happinesMulti;
         let timeDifference = (Date.now() - Pokemon.lastPlayed) / (1000 * 60 * 60);
-        if (!Pokemon.lastPlayed || timeDifference > 5) {
+        if (!Pokemon.lastPlayed || timeDifference > 3) {
             if (Pokemon.current_happiness >= Pokemon.target_happiness) {
                 return res.status(200).json({
                     message: "Max happiness reached",
@@ -329,7 +381,7 @@ const pokemonInteractionPlay = async (req, res, next) => {
                 });
             }
             let pointsNeededToMax = Pokemon.target_happiness - Pokemon.current_happiness;
-            const happinessAwarded = Math.min(pointsNeededToMax, 10 * happinesMulti);
+            const happinessAwarded = Math.min(pointsNeededToMax, 5 * happinesMulti);
             Pokemon.current_happiness += happinessAwarded;
             Pokemon.negativeInteractionCount = 0;
             Pokemon.lastPlayed = Date.now();
@@ -393,7 +445,7 @@ const pokemonInteractionFeed = async (req, res, next) => {
         const user = await UserModel.findOne({ _id: req.userId });
         let happinesMulti = user.happinesMulti;
         let timeDifference = (Date.now() - Pokemon.lastFeed) / (1000 * 60 * 60);
-        if (!Pokemon.lastFeed || timeDifference > 7) {
+        if (!Pokemon.lastFeed || timeDifference > 6) {
             if (Pokemon.current_happiness >= Pokemon.target_happiness) {
                 return res.status(200).json({
                     message: "Max happiness reached",
@@ -401,7 +453,7 @@ const pokemonInteractionFeed = async (req, res, next) => {
                 });
             }
             let pointsNeededToMax = Pokemon.target_happiness - Pokemon.current_happiness;
-            const happinessAwarded = Math.min(pointsNeededToMax, 20 * happinesMulti);
+            const happinessAwarded = Math.min(pointsNeededToMax, 10 * happinesMulti);
             Pokemon.current_happiness += happinessAwarded;
             Pokemon.negativeInteractionCount = 0;
             Pokemon.lastFeed = Date.now();
@@ -511,6 +563,7 @@ module.exports = {
     editPokemonNicknameByID,
     hatchPokemonByID,
     donatePokemonByID,
+    donatePreviewPokemonByID,
     pokemonInteractionTalk,
     pokemonInteractionPlay,
     pokemonInteractionFeed,

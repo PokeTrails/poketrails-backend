@@ -61,18 +61,26 @@ async function getPokemon(shinyMulti) {
             flavour_text: types.flavour_text
         });
     }
+    //Calculate base target happiness
+    let base_happiness;
+    let max = evolution_data[evolution_data.length - 1]?.current_level || 1;
+    if (types.is_mythical || types.is_legendary) {
+        base_happiness = 200;
+    } else if (max == 1) {
+        base_happiness = 100;
+    } else base_happiness = 50;
     // Return the evolution data
     return {
         species: name,
         nickname: name,
         current_level: 1,
-        max_level: evolution_data[evolution_data.length - 1]?.current_level || 1,
+        max_level: max,
         sprite: chanceShiny <= shinyChance ? sprites.shinySprite : sprites.defaultSprite,
         isShiny: chanceShiny <= shinyChance ? true : false,
         poke_id: id,
         cries: sprites.cries,
         type: sprites.types,
-        target_happiness: 50,
+        target_happiness: base_happiness,
         flavour_text: types.flavour_text,
         is_mythical: types.is_mythical,
         is_legendary: types.is_legendary,
