@@ -62,25 +62,43 @@ router.post("/create", async (request, response, next) => {
 });
 
 // Route to find user with matching ID and delete
-router.delete("/:id", async (request, response, next) => {
-    let result = await UserModel.findByIdAndDelete(request.params.id).exec();
-
-    response.json({
-        message: "User deleted successfully",
-        result: result
-    });
+router.delete("/:id", auth, async (request, response, next) => {
+    try{
+        loggedUser = request.userId;
+        if (loggedUser == request.params.id) {
+            let result = await UserModel.findByIdAndDelete(request.params.id).exec();
+            response.status(200).json({
+                message: "User deleted successfully",
+                result: result
+            });
+        } else {
+            response.status(401).json({
+                message: "Unauthorized action",
+            });
+        }
+    } catch(error) {
+        next(error);
+    }
 });
 
 // Route to edit user with matching ID
-router.patch("/patch/:id", async (request, response, next) => {
-    let result = await UserModel.findByIdAndUpdate(request.params.id, request.body, {
-        returnDocument: "after"
-    });
-
-    response.json({
-        message: "User updated",
-        result: result
-    });
+router.patch("/patch/:id", auth, async (request, response, next) => {
+    try{
+        loggedUser = request.userId;
+        if (loggedUser == request.params.id) {
+            let result = await UserModel.findByIdAndUpdate(request.params.id, request.body, { returnDocument: "after"});
+            response.json({
+                message: "User updated",
+                result: result
+            });
+        } else {
+            response.status(401).json({
+                message: "Unauthorized action",
+            });
+        }
+    } catch(error)  {
+        next(error);
+    }
 });
 
 module.exports = router;
