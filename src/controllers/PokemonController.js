@@ -45,7 +45,7 @@ const getAllPokemon = async (req, res, next) => {
     }
 };
 
-const getAllPokedexPokemon = async (req, res, next) => {
+const getAllDonatedPokemon = async (req, res, next) => {
     try {
         const pokemons = await PokemonModel.find({ user: req.userId, donated: true }, { evolution: 0 }).sort({
             donatedDate: -1
@@ -534,5 +534,5 @@ module.exports = {
     pokemonInteractionPlay,
     pokemonInteractionFeed,
     evolvePokemonByID,
-    getAllPokedexPokemon
+    getAllDonatedPokemon
 };
