@@ -9,7 +9,7 @@ router.get("/pokedex", auth, pokemonController.getAllPokedexPokemon);
 router.get("/:id", auth, pokemonController.getPokemonByID);
 router.patch("/nickname/:id", auth, pokemonController.editPokemonNicknameByID);
 router.patch("/hatch/:id", auth, pokemonController.hatchPokemonByID);
-router.get("/donate/:id", auth, pokemonController.donatePreviewPokemonByID);
+router.get("/donate/reward/:id", auth, pokemonController.donatePreviewPokemonByID);
 router.patch("/donate/:id", auth, pokemonController.donatePokemonByID);
 router.patch("/talk/:id", auth, pokemonController.pokemonInteractionTalk);
 router.patch("/play/:id", auth, pokemonController.pokemonInteractionPlay);

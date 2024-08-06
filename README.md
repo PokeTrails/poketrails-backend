@@ -90,7 +90,7 @@ npm run seed
 
 ### View Donation reward of Pokémon by Pokémon ID
 
-- URL `http://localhost:8080/pokemon/donate/:pokemonID`
+- URL `http://localhost:8080/pokemon/donate/reward/:pokemonID`
 - Method: GET
 - Access: Protected (requires JWT token)
 
