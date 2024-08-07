@@ -76,24 +76,28 @@ async function seedTrails() {
         title: "Wild Trail",
         buffedTypes: ["Grass", "Bug", "Poison"],
         onTrail: [],
+        length: 3600
     };
     
     const trail2 = {
         title: "Rocky Trail",
         buffedTypes: ["Rock", "Ground", "Steel"],
         onTrail: [],
+        length: 10800000 
     };
     
     const trail3 = {
         title: "Frosty Trail",
         buffedTypes: ["Ice", "Water", "Flying"],
         onTrail: [],
+        length: 21600000  
     };
     
     const trail4 = {
         title: "Wet Trail",
         buffedTypes: ["Water", "Electric", "Grass"],
         onTrail: [],
+        length: 43200000   
     };
 
     let wildTrail = await TrailModel.create(trail1);

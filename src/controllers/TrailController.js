@@ -8,12 +8,21 @@ const simulateTrailByID = async (req, res, next) => {
     try {
         const trailName = req.body.title;
         const pokemonId = req.body.pokemonId;
-        const trailLength = req.body.trailLength;
         // Select only the trail id from the title of the trail
         const trailId = await TrailModel.findOne({ title: trailName }).select('_id').exec();
         // Find the trail and pokemon by ID
         const trail = await TrailModel.findById(trailId).exec();
-        const pokemon = await PokemonModel.findById(pokemonId).exec();
+        const pokemon = await PokemonModel.findById(pokemonId);
+        console.log(" USER ID " + req.userId + " POKEMON ID" + pokemonId + "WHO OWNS" + pokemon.user);
+
+        if (pokemon.user != req.userId) {
+            return res.status(401).json({
+                message: `User does not own a pokemon with id ${pokemon._id}`
+            });
+        }
+
+        const trailLength = trail.length;
+        console.log(trail);
 
         if (!trail) {
             return res.status(404).json({ message: "Trail not found" });
@@ -60,6 +69,11 @@ const finishTrail = async (req, res, next) => {
 
         const pokemonId = req.body.pokemonId;
         const pokemon = await PokemonModel.findById(pokemonId).exec();
+        if (pokemon.user != req.userId) {
+            return res.status(401).json({
+                message: `User does not own a pokemon with id ${pokemon._id}`
+            });
+        }
 
         const eventLog = pokemon.trailLog;
 

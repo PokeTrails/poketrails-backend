@@ -1,4 +1,4 @@
-
+// add function for egg voucher chance
 
 const events = {
     "Discovered a hidden berry patch": { eggVoucher: 0, balance: 10, happiness: 5 },
