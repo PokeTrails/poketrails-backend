@@ -12,6 +12,8 @@ const simulateTrailByID = async (req, res, next) => {
         const trailId = await TrailModel.findOne({ title: trailName }).select('_id').exec();
         // Find the trail and pokemon by ID
         const trail = await TrailModel.findById(trailId).exec();
+        console.log("SHOULD BE TRAIL ID: " + trailId);
+
         const pokemon = await PokemonModel.findById(pokemonId);
         console.log(" USER ID " + req.userId + " POKEMON ID" + pokemonId + "WHO OWNS" + pokemon.user);
 
@@ -57,6 +59,7 @@ const simulateTrailByID = async (req, res, next) => {
             return res.status(200).json({message: "Pokemon is already on trail"})
         }
     } catch (error) {
+        console.log("Error in simulate: ", error);
         next(error);
     }
 };
