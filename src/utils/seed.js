@@ -10,7 +10,8 @@ async function seedUsers() {
         username: "pokeking",
         trainerName: "PokeKing",
         password: "password",
-        trainerSprite: "hello"
+        trainerSprite: "hello",
+        balance: "60000"
     };
 
     let user1 = await UserModel.create(userData1);
