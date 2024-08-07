@@ -1,11 +1,12 @@
 const { mongoose } = require("mongoose");
 const { TrailModel } = require('../models/TrailModel');
-const { simulateTrail, addEventValuesToUserAndPokemon, resetTrailFields } = require("../utils/trailHelper");
+const { simulateTrail, addEventValuesToUserAndPokemon, resetTrailFields, transformTitle } = require("../utils/trailHelper");
 const PokemonModel = require('../models/PokemonModel');
 const { UserModel } = require("../models/UserModel");
 
 const simulateTrailByID = async (req, res, next) => {
     try {
+        const user = await UserModel.findById(req.userId).exec();
         const trailName = req.body.title;
         const pokemonId = req.body.pokemonId;
         // Select only the trail id from the title of the trail
@@ -23,8 +24,8 @@ const simulateTrailByID = async (req, res, next) => {
             });
         }
 
-        const trailLength = trail.length;
-        console.log(trail);
+        const trailLength = trail.length / user.trailMulti;
+        console.log(trailLength);
 
         if (!trail) {
             return res.status(404).json({ message: "Trail not found" });
@@ -138,4 +139,39 @@ const finishTrail = async (req, res, next) => {
     }
 }
 
-module.exports = { simulateTrailByID, finishTrail };
+const getTrail = async (req, res, next) => {
+    try {
+        const urlTitle = req.params.title 
+        const trailTitle = transformTitle(urlTitle);
+
+        const result = await TrailModel.findOne({ title: trailTitle }).exec()
+        if (!result) {
+            res.status(404).json({
+                error: "Trail not found",
+                result: result
+            });
+        }
+
+        res.status(200).json({
+            message: "Get Trail",
+            result: result
+        });
+    } catch (error){
+        next(error)
+    }   
+}
+
+const getTrails = async (req, res, next) => {
+    try {
+        let result = await TrailModel.find({}).exec();
+
+        res.status(200).json({
+            message: "Get Trails",
+            result: result
+        });
+    } catch (error){
+        next(error)
+    }   
+}
+
+module.exports = { simulateTrailByID, finishTrail, getTrail, getTrails };

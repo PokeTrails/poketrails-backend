@@ -50,16 +50,16 @@ async function addEventValuesToUserAndPokemon(userId, eventLog, pokemonId){
     eventLog.forEach(event => {
         const effect = events[event];
         if (effect.balance) {
-            user.balance += effect.balance;
-            runningBalance += effect.balance;
+            user.balance += (effect.balance * user.moneyMulti);
+            runningBalance += (effect.balance * user.moneyMulti);
         }
         if (effect.eggVoucher) {
             user.eggVoucher += effect.eggVoucher;
             runningVoucher += effect.eggVoucher;
         }
         if (effect.happiness) {
-            pokemon.current_happiness += effect.happiness;
-            runningHappiness += effect.happiness;
+            pokemon.current_happiness += (effect.happiness * user.happinesMulti);
+            runningHappiness += (effect.happiness * user.happinesMulti);
         }
     });
 
@@ -88,4 +88,20 @@ async function resetTrailFields(pokemon) {
     return pokemon;
 }
 
-module.exports = { simulateTrail, addEventValuesToUserAndPokemon, resetTrailFields };
+
+const transformTitle = (title) => {
+    switch (title.toLowerCase()) {
+        case 'wettrail':
+            return 'Wet Trail';
+        case 'rockytrail':
+            return 'Rocky Trail';
+        case 'frosttrail':
+            return 'Frost Trail';
+        case 'wildtrail':
+            return 'Wild Trail';
+        default:
+            return null;
+    }
+};
+
+module.exports = { simulateTrail, addEventValuesToUserAndPokemon, resetTrailFields, transformTitle };

@@ -5,10 +5,14 @@ const auth = require('../middleware/auth');
 
 
 
+router.get('/', trailController.getTrails);
+
 router.post('/simulate', auth, trailController.simulateTrailByID);
 
-
 router.post('/finish', auth, trailController.finishTrail);
+
+router.get('/:title', trailController.getTrail);
+
 
 
 module.exports = router;
