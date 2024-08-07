@@ -4,6 +4,7 @@ const { PartyModel } = require("../models/PartyModel");
 const { getPokemon } = require("./pokemonHelper");
 const PokemonModel = require("../models/PokemonModel");
 const { TrailModel } = require("../models/TrailModel");
+const { registerToPokedex } = require("./pokedexRegistration");
 
 async function seedUsers() {
     console.log("Seeding Data");
@@ -44,7 +45,8 @@ async function seedUsers() {
             username: `user${i}`,
             trainerName: `user${i}`,
             password: `user${i}`,
-            trainerSprite: `user${i}`
+            trainerSprite: `user${i}`,
+            balance: 100000
         });
         const party = await PartyModel.create({
             slots: [],
@@ -128,6 +130,10 @@ async function assignPokemon(user, egg, party, hatched) {
         }
         //SavePokemon
         const savedPokemon = await newPokemon.save();
+        //Register to pokdex
+        if (savedPokemon.eggHatched) {
+            await registerToPokedex(savedPokemon, user._id);
+        }
         // Add the new Pokémon to the user's party
         party.slots.push(savedPokemon._id);
         await party.save();

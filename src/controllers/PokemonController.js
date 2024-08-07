@@ -1,8 +1,10 @@
 const express = require("express");
 const PokemonModel = require("../models/PokemonModel");
-const { getPokemon } = require("../utils/pokemonHelper");
+const { getPokemon, calculateDonationReward } = require("../utils/pokemonHelper");
 const { PartyModel } = require("../models/PartyModel");
 const { UserModel } = require("../models/UserModel");
+const { PokedexModel } = require("../models/PokedexModel");
+const { registerToPokedex } = require("../utils/pokedexRegistration");
 
 const createPokemon = async (req, res, next) => {
     try {
@@ -19,14 +21,13 @@ const createPokemon = async (req, res, next) => {
         //Fetch pokemon data
         const pokemonData = await getPokemon(shinyMulti);
         //Create a new Pokemon
-        const newPokemon = new PokemonModel(pokemonData);
+        let newPokemon = new PokemonModel(pokemonData);
         newPokemon.user = req.userId;
         //SavePokemon
         const savedPokemon = await newPokemon.save();
         // Add the new Pokémon to the user's party
         userParty.slots.push(savedPokemon._id);
         await userParty.save();
-
         res.status(201).json({
             message: `Pokemon egg accquired with id: ${savedPokemon._id}`
         });
@@ -44,7 +45,7 @@ const getAllPokemon = async (req, res, next) => {
     }
 };
 
-const getAllPokedexPokemon = async (req, res, next) => {
+const getAllDonatedPokemon = async (req, res, next) => {
     try {
         const pokemons = await PokemonModel.find({ user: req.userId, donated: true }, { evolution: 0 }).sort({
             donatedDate: -1
@@ -174,6 +175,8 @@ const hatchPokemonByID = async (req, res, next) => {
                 { eggHatched: true },
                 { new: true }
             );
+            //Register Pokemon to Pokedex
+            await registerToPokedex(updatedPokemon, req.userId);
             return res.status(200).json({
                 eggHatched: updatedPokemon.eggHatched,
                 species: updatedPokemon.species,
@@ -212,23 +215,7 @@ const donatePokemonByID = async (req, res, next) => {
         );
         //calculate points
         const user = await UserModel.findOne({ _id: req.userId });
-        let moneyMulti = user.moneyMulti;
-        let reward;
-        if (Pokemon.is_mythical) {
-            reward = 400 * moneyMulti;
-            experience = 100;
-        } else if (Pokemon.is_legendary) {
-            reward = 300 * moneyMulti;
-            experience = 200;
-        } else if (Pokemon.isShiny) {
-            let levelReward = (Pokemon.current_level - 1) * 50;
-            reward = (levelReward + 200) * moneyMulti;
-            experience = 300;
-        } else {
-            let levelReward = (Pokemon.current_level - 1) * 50;
-            reward = (levelReward + 100) * moneyMulti;
-            experience = 400;
-        }
+        let { reward, experience } = await calculateDonationReward(Pokemon, user.moneyMulti);
         user.balance += reward;
         user.userExperience += experience;
         await user.save();
@@ -237,7 +224,36 @@ const donatePokemonByID = async (req, res, next) => {
         return res.status(200).json({
             message: `Pokemon with id: ${updatedPokemon._id} has been sucessfully donated`,
             reward_received: reward,
-            userExperienceIncreased: experience
+            userExperienceIncreased: experience,
+            sprite: updatedPokemon.sprite
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+const donatePreviewPokemonByID = async (req, res, next) => {
+    try {
+        const Pokemon = await PokemonModel.findById({ _id: req.params.id, user: req.userId });
+        if (!Pokemon) {
+            return res.status(404).json({
+                message: `User does not own a pokemon with id ${req.params.id}`
+            });
+        } else if (Pokemon.donated) {
+            return res.status(400).json({
+                message: `Pokemon with id ${req.params.id} is already donated`
+            });
+        } else if (!Pokemon.eggHatched) {
+            return res.status(400).json({
+                message: `Pokemon with id ${req.params.id} has not hatched`
+            });
+        }
+        //calculate points
+        const user = await UserModel.findOne({ _id: req.userId });
+        let { reward } = await calculateDonationReward(Pokemon, user.moneyMulti);
+
+        return res.status(200).json({
+            expected_reward: reward
         });
     } catch (error) {
         next(error);
@@ -260,7 +276,7 @@ const pokemonInteractionTalk = async (req, res, next) => {
             });
         }
         let timeDifference = (Date.now() - Pokemon.lastTalked) / (1000 * 60 * 60);
-        if (!Pokemon.lastTalked || timeDifference > 3) {
+        if (!Pokemon.lastTalked || timeDifference > 1) {
             if (Pokemon.current_happiness >= Pokemon.target_happiness) {
                 return res.status(200).json({
                     message: "Max happiness reached",
@@ -268,7 +284,7 @@ const pokemonInteractionTalk = async (req, res, next) => {
                 });
             }
             let pointsNeededToMax = Pokemon.target_happiness - Pokemon.current_happiness;
-            const happinessAwarded = Math.min(pointsNeededToMax, 5 * happinesMulti);
+            const happinessAwarded = Math.min(pointsNeededToMax, 2 * happinesMulti);
             Pokemon.current_happiness += happinessAwarded;
             Pokemon.negativeInteractionCount = 0;
             Pokemon.lastTalked = Date.now();
@@ -332,7 +348,7 @@ const pokemonInteractionPlay = async (req, res, next) => {
         const user = await UserModel.findOne({ _id: req.userId });
         let happinesMulti = user.happinesMulti;
         let timeDifference = (Date.now() - Pokemon.lastPlayed) / (1000 * 60 * 60);
-        if (!Pokemon.lastPlayed || timeDifference > 5) {
+        if (!Pokemon.lastPlayed || timeDifference > 3) {
             if (Pokemon.current_happiness >= Pokemon.target_happiness) {
                 return res.status(200).json({
                     message: "Max happiness reached",
@@ -340,7 +356,7 @@ const pokemonInteractionPlay = async (req, res, next) => {
                 });
             }
             let pointsNeededToMax = Pokemon.target_happiness - Pokemon.current_happiness;
-            const happinessAwarded = Math.min(pointsNeededToMax, 10 * happinesMulti);
+            const happinessAwarded = Math.min(pointsNeededToMax, 5 * happinesMulti);
             Pokemon.current_happiness += happinessAwarded;
             Pokemon.negativeInteractionCount = 0;
             Pokemon.lastPlayed = Date.now();
@@ -404,7 +420,7 @@ const pokemonInteractionFeed = async (req, res, next) => {
         const user = await UserModel.findOne({ _id: req.userId });
         let happinesMulti = user.happinesMulti;
         let timeDifference = (Date.now() - Pokemon.lastFeed) / (1000 * 60 * 60);
-        if (!Pokemon.lastFeed || timeDifference > 7) {
+        if (!Pokemon.lastFeed || timeDifference > 6) {
             if (Pokemon.current_happiness >= Pokemon.target_happiness) {
                 return res.status(200).json({
                     message: "Max happiness reached",
@@ -412,7 +428,7 @@ const pokemonInteractionFeed = async (req, res, next) => {
                 });
             }
             let pointsNeededToMax = Pokemon.target_happiness - Pokemon.current_happiness;
-            const happinessAwarded = Math.min(pointsNeededToMax, 20 * happinesMulti);
+            const happinessAwarded = Math.min(pointsNeededToMax, 10 * happinesMulti);
             Pokemon.current_happiness += happinessAwarded;
             Pokemon.negativeInteractionCount = 0;
             Pokemon.lastFeed = Date.now();
@@ -494,6 +510,8 @@ const evolvePokemonByID = async (req, res, next) => {
                     }
                 }
             );
+            //Register Evolved Pokemon
+            await registerToPokedex(updatedPokemon, req.userId);
             return res.status(200).json({
                 current_level: updatedPokemon.current_level,
                 species: updatedPokemon.species,
@@ -522,9 +540,10 @@ module.exports = {
     editPokemonNicknameByID,
     hatchPokemonByID,
     donatePokemonByID,
+    donatePreviewPokemonByID,
     pokemonInteractionTalk,
     pokemonInteractionPlay,
     pokemonInteractionFeed,
     evolvePokemonByID,
-    getAllPokedexPokemon
+    getAllDonatedPokemon
 };
