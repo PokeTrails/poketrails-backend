@@ -36,7 +36,17 @@ const pokemonSchema = mongoose.Schema(
                 flavour_text: { type: String }
             }
         ],
-        user: { type: mongoose.Schema.Types.ObjectId, ref: "user" }
+        user: { type: mongoose.Schema.Types.ObjectId, ref: "user" },
+        onTrailP: { type: mongoose.Schema.Types.ObjectId, ref: "Trail" },
+        wildCompleted: { type: Number, default: 0 },
+        rockyCompleted: { type: Number, default: 0 },
+        frostyCompleted: { type: Number, default: 0 },
+        wetCompleted: { type: Number, default: 0 },
+        currentlyOnTrail: {type: Boolean, default: false},
+        trailLog: [{ type: String }],
+        trailStartTime: { type: Date },
+        trailLength: { type: Number },
+        trailFinishTime: {type: Date}
     },
     {
         timestamps: true

@@ -68,6 +68,17 @@ const getPokemonByID = async (req, res, next) => {
         }
         // If the egg has already hatched, return the details
         if (pokemon.eggHatched && !pokemon.donated) {
+            // Check if on trail 
+            if (pokemon.currentlyOnTrail) {
+                // Calc using estimated finish time and current time
+                milliSecondsLeft = pokemon.trailFinishTime - Date.now();
+                console.log(milliSecondsLeft);
+                // Return time left
+                return res.status(300).json({
+                    currentlyOnTrail: pokemon.currentlyOnTrail,
+                    timeLeft: milliSecondsLeft
+                });
+            }
             return res.status(200).json(pokemon);
         } else if (pokemon.eggHatched && pokemon.donated) {
             return res.status(400).json({

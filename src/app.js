@@ -27,6 +27,10 @@ app.get("/", (req, res, next) => {
 const pokemonRouter = require("./routes/PokemonRouter.js");
 app.use("/pokemon", pokemonRouter);
 
+// Trail Router
+const trailRouter = require("./routes/TrailRouter.js")
+app.use("/trail", trailRouter);
+
 //Party Router
 const partyRouter = require("./routes/PartyRouter.js");
 app.use("/party", partyRouter);
