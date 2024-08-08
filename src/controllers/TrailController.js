@@ -38,6 +38,12 @@ const simulateTrailByID = async (req, res, next) => {
                 message: `User does not own a pokemon with id ${pokemon._id}`
             });
         }
+        
+        if (!pokemon.eggHatched) {
+            return res.status(401).json({
+                message: `Cannot send eggs on trails.`
+            });
+        }
 
         const trailLength = trail.length / user.trailMulti;
         console.log(trailLength);
