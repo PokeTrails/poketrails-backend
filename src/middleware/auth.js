@@ -10,6 +10,7 @@ const auth = async (req, res, next) => {
             token = token.split(" ")[1];
             let decodedToken = jwt.verify(token, process.env.JWT_KEY);
             req.userId = decodedToken.id;
+            req.admin = decodedToken.admin;
             let dbUser = await UserModel.findOne({ _id: req.userId });
             // If user not found, send a 404 response
             if (!dbUser) {

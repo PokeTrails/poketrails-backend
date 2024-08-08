@@ -63,7 +63,10 @@ const simulateTrailByID = async (req, res, next) => {
             const results = await simulateTrail(trail, pokemonId);
             return res.status(200).json(results);
         } else {
-            return res.status(200).json({ message: "Pokemon is already on trail" });
+            return res.status(200).json({ 
+                message: "Pokemon is already on trail",
+                timeLeft: pokemon.trailFinishTime - Date.now()
+            });
         }
     } catch (error) {
         console.log("error: ", error);
@@ -154,14 +157,14 @@ const finishTrail = async (req, res, next) => {
             });
 
         } else if (!trailDone) {
-            res.status(200).json({
+            res.status(400).json({
                 message: "Pokemon is still on trail",
                 timeLeft: milliSecondsLeft
             })
         } else {
             await resetTrailFields(pokemon);
-            res.status(200).json({
-                message: "Nothing to update",
+            res.status(400).json({
+                message: "Pokemon not on trail"
             })
         }
 

@@ -43,7 +43,7 @@ router.post("/create", async (request, response, next) => {
         const newUser = new UserModel(request.body);
         newUser.eggVoucher += 1;
         const result = await newUser.save();
-        const jwt = createJWT(result._id);
+        const jwt = createJWT(result._id, result.admin);
         //reward egg for new users
         const pokemonData = await getPokemon(1);
         //Assign a new Pokemon

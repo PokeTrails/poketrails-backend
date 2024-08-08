@@ -60,6 +60,7 @@ const getAllDonatedPokemon = async (req, res, next) => {
 
 const getPokemonByID = async (req, res, next) => {
     try {
+        console.log(req.admin);
         const pokemon = await PokemonModel.findOne(
             { _id: req.params.id, user: req.userId },
             //exclude below items from response
