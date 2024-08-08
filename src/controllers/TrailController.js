@@ -95,7 +95,7 @@ const finishTrail = async (req, res, next) => {
         console.log("pre balance: " + previousBalance  + " pre vouchers: " + previousVouchers );
 
         const trail = await TrailModel.findById(pokemon.onTrailP).exec();
-        // Removes pokemon from the trail on the trail model
+        // Removes Pokemon from the trail on the trail model
         if (trail) {
             trail.onTrail = trail.onTrail.filter(id => id.toString() !== pokemonId);
             await trail.save();
@@ -108,13 +108,36 @@ const finishTrail = async (req, res, next) => {
 
             const { user, pokemon: updatedPokemon, runningBalance, runningVoucher, runningHappiness } = 
             await addEventValuesToUserAndPokemon(userId, eventLog, pokemonId);
+            
 
             console.log("Running Balance:", runningBalance);
             console.log("Running Egg Vouchers:", runningVoucher);
             console.log("Running Happiness:", runningHappiness);
 
-            // Remove trail related fields from pokemon
+            // Remove trail related fields from Pokemon
             await resetTrailFields(pokemon);
+
+            // Update the Pokemon trail completion log
+            switch (trail.title) {
+                case 'Wet Trail':
+                    pokemon.wetCompleted += 1;
+                    console.log("Wet Completed");
+                    break;
+                case 'Rocky Trail':
+                    pokemon.rockyCompleted += 1;
+                    console.log("Rocky Completed");
+                    break;
+                case 'Frosty Trail':
+                    pokemon.frostCompleted += 1;
+                    console.log("Frosty Completed");
+                    break;
+                case 'Wild Trail':
+                    pokemon.wildCompleted += 1;
+                    console.log("Wild Completed");
+                    break;
+            }
+            await pokemon.save();
+
 
             const userBalance =  user.balance;
             const userTickets =  user.eggVoucher;
