@@ -27,7 +27,7 @@ async function getPokemon(shinyMulti) {
 
         evolution_data.push({
             current_level: 2,
-            poke_id: id,
+            species_id: id,
             species: name,
             sprite: chanceShiny <= shinyChance ? sprites.shinySprite : sprites.defaultSprite,
             cries: sprites.cries,
@@ -52,7 +52,7 @@ async function getPokemon(shinyMulti) {
 
         evolution_data.push({
             current_level: 3,
-            poke_id: id,
+            species_id: id,
             species: name,
             sprite: chanceShiny <= shinyChance ? sprites.shinySprite : sprites.defaultSprite,
             cries: sprites.cries,
@@ -77,7 +77,7 @@ async function getPokemon(shinyMulti) {
         max_level: max,
         sprite: chanceShiny <= shinyChance ? sprites.shinySprite : sprites.defaultSprite,
         isShiny: chanceShiny <= shinyChance ? true : false,
-        poke_id: id,
+        species_id: id,
         cries: sprites.cries,
         type: sprites.types,
         target_happiness: base_happiness,

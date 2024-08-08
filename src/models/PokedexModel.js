@@ -6,7 +6,7 @@ const pokedexSchema = mongoose.Schema(
         donatedDate: { type: Date },
         species: { type: String },
         nickname: { type: String },
-        poke_id: { type: Number },
+        species_id: { type: Number },
         type: { type: String },
         is_mythical: { type: Boolean },
         is_legendary: { type: Boolean },

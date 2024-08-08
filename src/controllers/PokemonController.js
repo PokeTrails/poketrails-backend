@@ -68,7 +68,7 @@ const getPokemonByID = async (req, res, next) => {
         }
         // If the egg has already hatched, return the details
         if (pokemon.eggHatched && !pokemon.donated) {
-            // Check if on trail 
+            // Check if on trail
             if (pokemon.currentlyOnTrail) {
                 // Calc using estimated finish time and current time
                 milliSecondsLeft = pokemon.trailFinishTime - Date.now();
@@ -221,6 +221,14 @@ const donatePokemonByID = async (req, res, next) => {
         await user.save();
 
         const party = await PartyModel.findOneAndUpdate({ user: req.userId }, { $pull: { slots: req.params.id } });
+        let userPokedexPokemon = await PokedexModel.findOne({
+            species_id: updatedPokemon.species_id,
+            user: req.userId
+        });
+        if (!userPokedexPokemon.donated) {
+            userPokedexPokemon.donated = true;
+            await userPokedexPokemon.save();
+        }
         return res.status(200).json({
             message: `Pokemon with id: ${updatedPokemon._id} has been sucessfully donated`,
             reward_received: reward,

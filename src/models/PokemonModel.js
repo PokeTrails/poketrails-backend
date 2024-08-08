@@ -9,7 +9,7 @@ const pokemonSchema = mongoose.Schema(
         nickname: { type: String },
         current_level: { type: Number, default: 0 },
         max_level: { type: Number },
-        poke_id: { type: Number },
+        species_id: { type: Number },
         type: { type: String },
         is_mythical: { type: Boolean },
         is_legendary: { type: Boolean },
@@ -42,11 +42,11 @@ const pokemonSchema = mongoose.Schema(
         rockyCompleted: { type: Number, default: 0 },
         frostyCompleted: { type: Number, default: 0 },
         wetCompleted: { type: Number, default: 0 },
-        currentlyOnTrail: {type: Boolean, default: false},
+        currentlyOnTrail: { type: Boolean, default: false },
         trailLog: [{ type: String }],
         trailStartTime: { type: Date },
         trailLength: { type: Number },
-        trailFinishTime: {type: Date}
+        trailFinishTime: { type: Date }
     },
     {
         timestamps: true
