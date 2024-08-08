@@ -23,6 +23,8 @@ const createPokemon = async (req, res, next) => {
         //Create a new Pokemon
         let newPokemon = new PokemonModel(pokemonData);
         newPokemon.user = req.userId;
+        let hoursToAdd = pokemon.is_mythical || pokemon.is_legendary || pokemon.isShiny ? 8 : 6;
+        newPokemon.eggHatchETA = Date.now() + hoursToAdd * 60 * 60 * 1000;
         //SavePokemon
         const savedPokemon = await newPokemon.save();
         // Add the new Pokémon to the user's party
@@ -38,7 +40,7 @@ const createPokemon = async (req, res, next) => {
 
 const getAllPokemon = async (req, res, next) => {
     try {
-        const pokemons = await PokemonModel.find({ user: req.userId }, { evolution: 0 });
+        const pokemons = await PokemonModel.find({ user: req.userId });
         res.status(200).json(pokemons);
     } catch (error) {
         next(error);
@@ -72,7 +74,6 @@ const getPokemonByID = async (req, res, next) => {
             if (pokemon.currentlyOnTrail) {
                 // Calc using estimated finish time and current time
                 milliSecondsLeft = pokemon.trailFinishTime - Date.now();
-                console.log(milliSecondsLeft);
                 // Return time left
                 return res.status(300).json({
                     currentlyOnTrail: pokemon.currentlyOnTrail,
@@ -85,19 +86,19 @@ const getPokemonByID = async (req, res, next) => {
                 donated: pokemon.donated
             });
         } else {
-            let hoursToAdd = pokemon.is_mythical || pokemon.is_legendary || pokemon.isShiny ? 8 : 6;
-            // Convert the created time to a Date object
-            let ISO = new Date(pokemon.createdAt);
-            // Convert the additional hours to milliseconds
-            let millisecondsToAdd = hoursToAdd * 60 * 60 * 1000;
-            // Calculate the hatch ETA by adding milliseconds to the creation time
-            let hatchETA = ISO.getTime() + millisecondsToAdd;
-            // Get the current time in milliseconds
+            // let hoursToAdd = pokemon.is_mythical || pokemon.is_legendary || pokemon.isShiny ? 8 : 6;
+            // // Convert the created time to a Date object
+            // let ISO = new Date(pokemon.createdAt);
+            // // Convert the additional hours to milliseconds
+            // let millisecondsToAdd = hoursToAdd * 60 * 60 * 1000;
+            // // Calculate the hatch ETA by adding milliseconds to the creation time
+            // let hatchETA = ISO.getTime() + millisecondsToAdd;
+            // // Get the current time in milliseconds
             let current = Date.now();
             // Check if the hatch ETA has passed
-            if (hatchETA >= current) {
+            if (pokemon.eggHatchETA >= current) {
                 // Calculate the remaining time in milliseconds
-                let milliSecondsLeft = hatchETA - current;
+                let milliSecondsLeft = pokemon.eggHatchETA - current;
                 // Return the time left to hatch in HH:MM:SS format
                 return res.status(200).json({
                     eggHatched: pokemon.eggHatched,
@@ -105,7 +106,8 @@ const getPokemonByID = async (req, res, next) => {
                 });
             }
             return res.status(200).json({
-                eggHatched: pokemon.eggHatched
+                eggHatched: pokemon.eggHatched,
+                message: "egg is ready to be hatched"
             });
         }
     } catch (error) {
@@ -150,19 +152,19 @@ const hatchPokemonByID = async (req, res, next) => {
             return res.status(400).json({ message: `Pokemon with ${req.params.id} is already hatched` });
         }
         // Determine hours to add based on properties (mythical, legendary, or shiny)
-        let hoursToAdd = pokemon.is_mythical || pokemon.is_legendary || pokemon.isShiny ? 8 : 6;
-        // Convert the created time to a Date object
-        let ISO = new Date(pokemon.createdAt);
-        // Convert the additional hours to milliseconds
-        let millisecondsToAdd = hoursToAdd * 60 * 60 * 1000;
-        // Calculate the hatch ETA by adding milliseconds to the creation time
-        let hatchETA = ISO.getTime() + millisecondsToAdd;
+        // let hoursToAdd = pokemon.is_mythical || pokemon.is_legendary || pokemon.isShiny ? 8 : 6;
+        // // Convert the created time to a Date object
+        // let ISO = new Date(pokemon.createdAt);
+        // // Convert the additional hours to milliseconds
+        // let millisecondsToAdd = hoursToAdd * 60 * 60 * 1000;
+        // // Calculate the hatch ETA by adding milliseconds to the creation time
+        // let hatchETA = ISO.getTime() + millisecondsToAdd;
         // Get the current time in milliseconds
         let current = Date.now();
         // Check if the hatch ETA has passed
-        if (hatchETA >= current) {
+        if (pokemon.eggHatchETA >= current) {
             // Calculate the remaining time in milliseconds
-            let milliSecondsLeft = hatchETA - current;
+            let milliSecondsLeft = pokemon.eggHatchETA - current;
             // Return the time left to hatch in HH:MM:SS format
             return res.status(400).json({
                 message: `There is still ${(milliSecondsLeft / 60000).toFixed(
@@ -292,7 +294,7 @@ const pokemonInteractionTalk = async (req, res, next) => {
                 });
             }
             let pointsNeededToMax = Pokemon.target_happiness - Pokemon.current_happiness;
-            const happinessAwarded = Math.min(pointsNeededToMax, 2 * happinesMulti);
+            const happinessAwarded = Math.min(pointsNeededToMax, 50 * happinesMulti);
             Pokemon.current_happiness += happinessAwarded;
             Pokemon.negativeInteractionCount = 0;
             Pokemon.lastTalked = Date.now();
