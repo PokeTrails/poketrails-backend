@@ -11,9 +11,9 @@ router.get('/balance', auth, userController.getUserBalance);
 
 router.post('/signup', userController.createUser);
 
-router.delete('/delete', auth, userController.deleteUser);
+router.delete('/delete/:id', auth, userController.deleteUser);
 
-router.patch('/patch', auth, userController.patchUser);
+router.patch('/patch/:id', auth, userController.patchUser);
 
 router.post('/login', auth, userController.userLogin);
 

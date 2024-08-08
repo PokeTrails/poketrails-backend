@@ -4,15 +4,14 @@ const { createJWT } = require("../utils/authHelper");
 const { PartyModel } = require("../models/PartyModel");
 const { getPokemon } = require("../utils/pokemonHelper");
 const PokemonModel  = require("../models/PokemonModel");
+const { handleNotFound, handleUnauthorized } = require("../utils/globalHelpers")
 
 
 // Get all users
 const getAllUsers =  async (req, res, next) => {
     let result = await UserModel.find({}).exec();
     if (!result) {
-        return res.status(404).json({
-            error: "No users found"
-        });      
+        return handleNotFound(res, 'Users'); 
     }
 
     res.status(200).json({
@@ -24,9 +23,7 @@ const getAllUsers =  async (req, res, next) => {
 const findUserById = async (req, res, next) => {
     let result = await UserModel.findById(req.params.id).exec();
     if (!result) {
-        return res.status(404).json({
-            error: "No user found"
-        });      
+        return handleNotFound(res, 'Users');
     }
 
     res.status(200).json({
@@ -38,9 +35,7 @@ const findUserById = async (req, res, next) => {
 const getUserBalance = async (req, res, next) => {
     const user = await UserModel.findOne({ _id: req.userId });
     if (!user) {
-        return res.status(404).json({
-            error: "No user found"
-        });      
+        return handleNotFound(res, 'Users');  
     }
 
     res.status(200).json({
@@ -111,9 +106,7 @@ const deleteUser = async (req, res, next) => {
                 result: result
             });
         } else {
-            res.status(401).json({
-                message: "Unauthorized action",
-            });
+            return handleUnauthorized(res);
         }
     } catch(error) {
         return next(error);
@@ -132,9 +125,7 @@ const patchUser = async (req, res, next) => {
                 result: result
             });
         } else {
-            res.status(401).json({
-                message: "Unauthorized action",
-            });
+            return handleUnauthorized(res);
         }
     } catch(error)  {
         return next(error);
