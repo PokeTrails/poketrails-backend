@@ -6,19 +6,34 @@ const { UserModel } = require("../models/UserModel");
 
 const simulateTrailByID = async (req, res, next) => {
     try {
+
         const user = await UserModel.findById(req.userId).exec();
         const trailName = req.body.title;
         const pokemonId = req.body.pokemonId;
+
         // Select only the trail id from the title of the trail
-        const trailId = await TrailModel.findOne({ title: trailName }).select('_id').exec();
+        const trailDoc = await TrailModel.findOne({ title: trailName }).select('_id').exec();
+        if (!trailDoc) {
+            return res.status(404).json({ message: "Trail not found" });
+        }
+        
+        const trailId = trailDoc._id;
+
         // Find the trail and pokemon by ID
         const trail = await TrailModel.findById(trailId).exec();
-        console.log("SHOULD BE TRAIL ID: " + trailId);
+        const pokemon = await PokemonModel.findById(pokemonId).exec();
 
-        const pokemon = await PokemonModel.findById(pokemonId);
-        console.log(" USER ID " + req.userId + " POKEMON ID" + pokemonId + "WHO OWNS" + pokemon.user);
+        if (!trail) {
+            return res.status(404).json({ message: "Trail not found" });
+        }
 
-        if (pokemon.user != req.userId) {
+        if (!pokemon) {
+            return res.status(404).json({ message: "Pokemon not found" });
+        }
+
+        console.log("USER ID " + req.userId + " POKEMON ID " + pokemonId + " WHO OWNS " + pokemon.user);
+
+        if (pokemon.user.toString() !== req.userId.toString()) {
             return res.status(401).json({
                 message: `User does not own a pokemon with id ${pokemon._id}`
             });
@@ -27,22 +42,14 @@ const simulateTrailByID = async (req, res, next) => {
         const trailLength = trail.length / user.trailMulti;
         console.log(trailLength);
 
-        if (!trail) {
-            return res.status(404).json({ message: "Trail not found" });
-        }
-
-        if (!mongoose.Types.ObjectId.isValid(pokemonId)){
-            return res.status(404).json({ message: "Pokemon not found"})
-        }
-
-        // Add the Pokemon to the trail  if not already present
+        // Add the Pokemon to the trail if not already present
         if (!trail.onTrail.includes(pokemonId)) {
             trail.onTrail.push(pokemonId);
             await trail.save();
         }
 
-        // Add the trail to the Pokemon if pokemon isnt already on a trail
-        if (pokemon.currentlyOnTrail == false) {
+        // Add the trail to the Pokemon if pokemon isn't already on a trail
+        if (!pokemon.currentlyOnTrail) {
             pokemon.onTrailP = trail._id;
             pokemon.trailStartTime = new Date();
             pokemon.trailLength = trailLength;
@@ -50,20 +57,21 @@ const simulateTrailByID = async (req, res, next) => {
             pokemon.currentlyOnTrail = true;
             await pokemon.save();
 
-            console.log( "start " + pokemon.trailStartTime + " length " + pokemon.trailLength + " end " + pokemon.trailFinishTime);
+            console.log("start " + pokemon.trailStartTime + " length " + pokemon.trailLength + " end " + pokemon.trailFinishTime);
 
             // Run the simulation of the Pokémon on the trail
             const results = await simulateTrail(trail, pokemonId);
-            res.status(200).json(results);
-
+            return res.status(200).json(results);
         } else {
-            return res.status(200).json({message: "Pokemon is already on trail"})
+            return res.status(200).json({ message: "Pokemon is already on trail" });
         }
     } catch (error) {
-        console.log("Error in simulate: ", error);
+        console.log("error: ", error);
         next(error);
     }
 };
+
+module.exports = simulateTrailByID;
 
 
 const finishTrail = async (req, res, next) => {
