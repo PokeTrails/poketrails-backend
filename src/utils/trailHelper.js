@@ -31,10 +31,14 @@ async function simulateTrail(trail, pokemonID) {
     pokemon.trailLog.push(...eventLog)
     await pokemon.save();
     console.log("HELPER2 " + pokemon.trailLog);
+    
+    milliSecondsLeft = pokemon.trailFinishTime - Date.now();
+
 
     return {
         pokemonID: pokemonId,
-        trailLog: eventLog,        
+        trailLog: eventLog, 
+        timeLeft: milliSecondsLeft       
     };
 }
 
