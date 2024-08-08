@@ -69,7 +69,7 @@ const buyItem = async (req, res, next) => {
                 message: `Insufficent balance, user requires $${shopItem.price - user.balance} more to buy this item.`
             });
         }
-        let currentLevel = shopItem.level - 1;
+        let currentLevel = shopItem.level;
         if (shopItem.isFullyUpgraded) {
             return res.status(400).json({
                 message: `${shopItem.itemName} is already at max level and cannot be upgraded`
@@ -85,17 +85,18 @@ const buyItem = async (req, res, next) => {
         if (currentLevel == 3) {
             shopItem.isFullyUpgraded = true;
         }
+        console.log(shopItem.itemName);
         switch (shopItem.itemName) {
-            case "amuletCoin":
+            case "Amulet Coin":
                 user.moneyMulti += 1;
                 break;
-            case "shinyCharm":
+            case "Shiny Charm":
                 user.shinyMulti += 1;
                 break;
-            case "runningShoes":
+            case "Pathfinder Trainers":
                 user.trailMulti += 1;
                 break;
-            case "expShare":
+            case "Happiness Share":
                 user.happinesMulti += 1;
                 break;
             default:
