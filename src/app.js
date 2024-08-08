@@ -35,10 +35,6 @@ app.use("/trail", trailRouter);
 const partyRouter = require("./routes/PartyRouter.js");
 app.use("/party", partyRouter);
 
-// Login Router
-const loginRouter = require("./routes/LoginRouter.js");
-app.use("/login", loginRouter);
-
 // User Router
 const userRouter = require("./routes/UserRouter.js");
 app.use("/user", userRouter);
