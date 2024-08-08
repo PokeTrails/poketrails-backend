@@ -252,4 +252,22 @@ const editTrail = async (req, res, next) => {
     }
 }
 
-module.exports = { simulateTrailByID, finishTrail, getTrail, getTrails, deleteTrail, editTrail };
+const getLogForPokemon = async (req, res, next) => {
+    try {
+        // Find Pokemon from body
+        const pokemon = await PokemonModel.findOne({ _id: req.body.pokemonId, user: req.userId });
+
+        if (!pokemon) {
+            return res.status(404).json({ message: `User does not own a pokemon` });
+        } else{
+            console.log(pokemon.trailLog);
+            return res.status(200).json(pokemon.trailLog);
+        }
+        
+    } catch (error) {
+        console.error("Error in getLogForPokemon: ", error);
+        next(error);
+    }
+}
+
+module.exports = { simulateTrailByID, finishTrail, getTrail, getTrails, deleteTrail, editTrail, getLogForPokemon };
