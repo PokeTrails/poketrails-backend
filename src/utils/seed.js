@@ -73,7 +73,6 @@ async function seedUsers() {
     return result;
 }
 
-
 async function seedTrails() {
     const trail1 = {
         title: "Wild Trail",
@@ -81,26 +80,26 @@ async function seedTrails() {
         onTrail: [],
         length: 3600
     };
-    
+
     const trail2 = {
         title: "Rocky Trail",
         buffedTypes: ["Rock", "Ground", "Steel"],
         onTrail: [],
-        length: 10800000 
+        length: 10800000
     };
-    
+
     const trail3 = {
         title: "Frosty Trail",
         buffedTypes: ["Ice", "Water", "Flying"],
         onTrail: [],
-        length: 21600000  
+        length: 21600000
     };
-    
+
     const trail4 = {
         title: "Wet Trail",
         buffedTypes: ["Water", "Electric", "Grass"],
         onTrail: [],
-        length: 43200000   
+        length: 43200000
     };
 
     let wildTrail = await TrailModel.create(trail1);
@@ -129,6 +128,9 @@ async function assignPokemon(user, egg, party, hatched) {
             newPokemon.eggHatched = true;
             hatchedCount++;
         }
+        let hoursToAdd = newPokemon.is_mythical || newPokemon.is_legendary || newPokemon.isShiny ? 8 : 6;
+        // newPokemon.eggHatchETA = Date.now() + hoursToAdd * 60 * 60 * 1000;
+        newPokemon.eggHatchETA = Date.now() + 0.01;
         //SavePokemon
         const savedPokemon = await newPokemon.save();
         //Register to pokdex

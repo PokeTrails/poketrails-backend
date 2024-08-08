@@ -28,6 +28,7 @@ const pokemonSchema = mongoose.Schema(
                 current_level: { type: String },
                 poke_id: { type: Number },
                 species: { type: String },
+                species_id: { type: Number },
                 isShiny: { type: Boolean },
                 type: { type: String },
                 target_happiness: { type: Number },
@@ -46,7 +47,8 @@ const pokemonSchema = mongoose.Schema(
         trailLog: [{ type: String }],
         trailStartTime: { type: Date },
         trailLength: { type: Number },
-        trailFinishTime: { type: Date }
+        trailFinishTime: { type: Date },
+        eggHatchETA: { type: Date }
     },
     {
         timestamps: true
