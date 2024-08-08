@@ -57,9 +57,9 @@ npm run seed
 - Method: `GET`
 - Access: Protected (requires JWT token)
 
-### Get All donated Pokémon for Pokedex
+### Get All donated Pokémon
 
-- URL `http://localhost:8080/pokemon/pokedex`
+- URL `http://localhost:8080/pokemon/donated`
 - Method: `GET`
 - Access: Protected (requires JWT token)
 
@@ -116,6 +116,12 @@ npm run seed
 
 - URL `http://localhost:8080/pokemon/evolve/:pokemonID`
 - Method: PATCH
+- Access: Protected (requires JWT token)
+
+## Pokedex Route
+
+- URL `http://localhost:8080/pokedex`
+- Method: GET
 - Access: Protected (requires JWT token)
 
 ## Party Route
@@ -176,8 +182,59 @@ npm run seed
 
 - Method: `GET`
 
-## Find all Users
+### Find all Users
 
 - URL `http://localhost:8080/user`
 
 - Method: `GET`
+
+## Trail Route
+
+
+### Send on Trail
+
+- URL `http://localhost:8080/trail/simulate`
+
+- Method: `POST`
+
+- Body:`{"title": "Wild Trail",  "pokemonId": "12123123aseasdasda"}`
+
+- Access: Protected (requires JWT token)
+
+
+### Finish Trail
+
+- URL `http://localhost:8080/trail/finish`
+
+- Method: `POST`
+
+- Body:`{"pokemonId": "12123123aseasdasda"}`
+
+- Access: Protected (requires JWT token)
+
+
+### Find a Trail
+
+- URL `http://localhost:8080/trail/:trailtitle` (Wet Trail = wettrail)
+
+- Method: `GET`
+
+### Get all trails
+
+- URL `http://localhost:8080/trail/`
+
+- Method: `GET`
+
+### Delete Trail
+
+- URL `http://localhost:8080/trail/:trailtitle` (Wet Trail = wettrail)
+
+- Method: `DELETE`
+
+### Patch Trail
+
+- URL `http://localhost:8080/trail/:trailtitle` (Wet Trail = wettrail)
+
+- Method: `PATCH`
+
+- Body: Any of the fields present on Trail Model e.g `{"length": "12030"}`

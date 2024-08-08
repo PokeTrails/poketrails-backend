@@ -3,6 +3,7 @@ const bcrypt = require("bcryptjs");
 
 const userSchema = mongoose.Schema({
     username: { type: String, required: true, unique: true },
+    admin: { type: Boolean, required: true, default: false},
     trainerName: { type: String, required: true },
     password: { type: String, required: true, unique: false },
     secretQuestion: { type: String },
@@ -20,19 +21,32 @@ const userSchema = mongoose.Schema({
     shopItems: [
         {
             itemName: { type: String, required: true },
-            price: { type: Number, required: true },
-            level: { type: Number, required: true },
-            owned: { type: Boolean, default: false, required: true },
-            isFullyUpgraded: { type: Boolean, default: false, required: true }
+            price: { type: Number},
+            level: { type: Number},
+            owned: { type: Boolean, default: false},
+            isFullyUpgraded: { type: Boolean, default: false},
+            description: { type: String },
+            isEgg: { type: Boolean, default: false }
         }
     ]
 });
 
+
+let hapDesc = "Upgrades to this item will increase the happiness gained for all actions allowing for faster training.";
+
+let shinyDesc = "Upgrades to this item will increase the rate you will hatch shiny Pokémon.";
+
+let trainersDesc = "Upgrades to improve the speed pokemon come back from trails."
+
+let amuletDesc = "Upgrades to this increase the amount of gold earned from all actions.";
+
 const defaultShopItems = [
-    { itemName: "expShare", price: 600, level: 1, isFullyUpgraded: false },
-    { itemName: "shinyCharm", price: 600, level: 1, isFullyUpgraded: false },
-    { itemName: "runningShoes", price: 600, level: 1, isFullyUpgraded: false },
-    { itemName: "amuletCoin", price: 600, level: 1, isFullyUpgraded: false }
+    { itemName: "Happiness Share", price: 600, level: 0, isFullyUpgraded: false, description: hapDesc },
+    { itemName: "Shiny Charm", price: 600, level: 0, isFullyUpgraded: false, description: shinyDesc },
+    { itemName: "Pathfinder Trainers", price: 600, level: 0, isFullyUpgraded: false, description: trainersDesc },
+    { itemName: "Amulet Coin", price: 600, level: 0, isFullyUpgraded: false, description: amuletDesc },
+    { itemName: "Basic Egg", price: 1, owned: false,  description:" This is a basic egg the professor had found in the wild this could containt anything!", isEgg: true},
+    { itemName: "Special Egg?", price: 5, owned: false,  description:" This is a special egg the professor had found in a legendary pokemons cave, who knows what might come out of it!", isEgg: true}
 ];
 
 userSchema.pre("save", async function (next) {

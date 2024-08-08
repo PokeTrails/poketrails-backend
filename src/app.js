@@ -23,10 +23,13 @@ app.get("/", (req, res, next) => {
     });
 });
 
-
 // Pokemon Router
 const pokemonRouter = require("./routes/PokemonRouter.js");
 app.use("/pokemon", pokemonRouter);
+
+// Trail Router
+const trailRouter = require("./routes/TrailRouter.js")
+app.use("/trail", trailRouter);
 
 //Party Router
 const partyRouter = require("./routes/PartyRouter.js");
@@ -44,6 +47,8 @@ app.use("/user", userRouter);
 const storeRouter = require("./routes/StoreRouter.js");
 app.use("/store", storeRouter);
 
+const pokedexRouter = require("./routes/PokedexRouter.js");
+app.use("/pokedex", pokedexRouter);
 
 // Generic error handling for any error that happens on the server
 app.use((error, req, res, next) => {

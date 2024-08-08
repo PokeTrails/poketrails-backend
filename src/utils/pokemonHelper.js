@@ -27,7 +27,7 @@ async function getPokemon(shinyMulti) {
 
         evolution_data.push({
             current_level: 2,
-            poke_id: id,
+            species_id: id,
             species: name,
             sprite: chanceShiny <= shinyChance ? sprites.shinySprite : sprites.defaultSprite,
             cries: sprites.cries,
@@ -52,7 +52,7 @@ async function getPokemon(shinyMulti) {
 
         evolution_data.push({
             current_level: 3,
-            poke_id: id,
+            species_id: id,
             species: name,
             sprite: chanceShiny <= shinyChance ? sprites.shinySprite : sprites.defaultSprite,
             cries: sprites.cries,
@@ -77,7 +77,7 @@ async function getPokemon(shinyMulti) {
         max_level: max,
         sprite: chanceShiny <= shinyChance ? sprites.shinySprite : sprites.defaultSprite,
         isShiny: chanceShiny <= shinyChance ? true : false,
-        poke_id: id,
+        species_id: id,
         cries: sprites.cries,
         type: sprites.types,
         target_happiness: base_happiness,
@@ -162,4 +162,30 @@ async function selectPath(paths) {
     }
 }
 
-module.exports = { getPokemon };
+async function calculateDonationReward(Pokemon, moneyMulti) {
+    let reward = 0;
+    let extraShinyReward = 0;
+    if (Pokemon.is_mythical && Pokemon.isShiny) {
+        extraShinyReward = Math.round(35 * 2.5);
+    } else if (Pokemon.is_legendary && Pokemon.isShiny) {
+        extraShinyReward = Math.round(30 * 2.5);
+    } else if (Pokemon.isShiny) {
+        extraShinyReward = Math.round(10 * 2.5);
+    }
+    //give more reward if donated before
+    if (Pokemon.is_mythical) {
+        reward = (extraShinyReward + Pokemon.current_happiness + 35) * moneyMulti;
+        experience = 300;
+    } else if (Pokemon.is_legendary) {
+        reward = (extraShinyReward + Pokemon.current_happiness + 30) * moneyMulti;
+        experience = 200;
+    } else {
+        let levelReward = (Pokemon.current_level - 1) * 50;
+        reward = (extraShinyReward + Pokemon.current_happiness + levelReward + 10) * moneyMulti;
+        experience = 100;
+    }
+
+    return { reward, experience };
+}
+
+module.exports = { getPokemon, calculateDonationReward };

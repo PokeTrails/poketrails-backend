@@ -3,6 +3,8 @@ const { UserModel } = require("../models/UserModel");
 const { PartyModel } = require("../models/PartyModel");
 const { getPokemon } = require("./pokemonHelper");
 const PokemonModel = require("../models/PokemonModel");
+const { TrailModel } = require("../models/TrailModel");
+const { registerToPokedex } = require("./pokedexRegistration");
 
 async function seedUsers() {
     console.log("Seeding Data");
@@ -10,7 +12,9 @@ async function seedUsers() {
         username: "pokeking",
         trainerName: "PokeKing",
         password: "password",
-        trainerSprite: "hello"
+        trainerSprite: "hello",
+        balance: "60000",
+        admin: true
     };
 
     let user1 = await UserModel.create(userData1);
@@ -66,8 +70,52 @@ async function seedUsers() {
         }
         await assignPokemon(user, egg, party, hatched);
     }
-    console.log("Seeding Complete");
+    console.log("Users Seeded");
     return result;
+}
+
+async function seedTrails() {
+    const trail1 = {
+        title: "Wild Trail",
+        buffedTypes: ["Grass", "Bug", "Poison"],
+        onTrail: [],
+        length: 3600
+    };
+
+    const trail2 = {
+        title: "Rocky Trail",
+        buffedTypes: ["Rock", "Ground", "Steel"],
+        onTrail: [],
+        length: 10800000
+    };
+
+    const trail3 = {
+        title: "Frosty Trail",
+        buffedTypes: ["Ice", "Water", "Flying"],
+        onTrail: [],
+        length: 21600000
+    };
+
+    const trail4 = {
+        title: "Wet Trail",
+        buffedTypes: ["Water", "Electric", "Grass"],
+        onTrail: [],
+        length: 43200000
+    };
+
+    let wildTrail = await TrailModel.create(trail1);
+    await wildTrail.save();
+
+    let rockyTrail = await TrailModel.create(trail2);
+    await rockyTrail.save();
+
+    let frostyTrail = await TrailModel.create(trail3);
+    await frostyTrail.save();
+
+    let wetTrail = await TrailModel.create(trail4);
+    await wetTrail.save();
+
+    console.log("Trails Seeded");
 }
 
 async function assignPokemon(user, egg, party, hatched) {
@@ -81,8 +129,15 @@ async function assignPokemon(user, egg, party, hatched) {
             newPokemon.eggHatched = true;
             hatchedCount++;
         }
+        let hoursToAdd = newPokemon.is_mythical || newPokemon.is_legendary || newPokemon.isShiny ? 8 : 6;
+        // newPokemon.eggHatchETA = Date.now() + hoursToAdd * 60 * 60 * 1000;
+        newPokemon.eggHatchETA = Date.now() + 0.01;
         //SavePokemon
         const savedPokemon = await newPokemon.save();
+        //Register to pokdex
+        if (savedPokemon.eggHatched) {
+            await registerToPokedex(savedPokemon, user._id);
+        }
         // Add the new Pokémon to the user's party
         party.slots.push(savedPokemon._id);
         await party.save();
@@ -93,7 +148,8 @@ async function seed() {
     await connectDB();
     await clearDB();
 
-    let seededData = await seedUsers();
+    let seededUsers = await seedUsers();
+    let seededTrails = await seedTrails();
 
     await closeDB();
 }

@@ -1,8 +1,10 @@
 const express = require("express");
 const PokemonModel = require("../models/PokemonModel");
-const { getPokemon } = require("../utils/pokemonHelper");
+const { getPokemon, calculateDonationReward } = require("../utils/pokemonHelper");
 const { PartyModel } = require("../models/PartyModel");
 const { UserModel } = require("../models/UserModel");
+const { PokedexModel } = require("../models/PokedexModel");
+const { registerToPokedex } = require("../utils/pokedexRegistration");
 
 const createPokemon = async (req, res, next) => {
     try {
@@ -19,14 +21,15 @@ const createPokemon = async (req, res, next) => {
         //Fetch pokemon data
         const pokemonData = await getPokemon(shinyMulti);
         //Create a new Pokemon
-        const newPokemon = new PokemonModel(pokemonData);
+        let newPokemon = new PokemonModel(pokemonData);
         newPokemon.user = req.userId;
+        let hoursToAdd = pokemon.is_mythical || pokemon.is_legendary || pokemon.isShiny ? 8 : 6;
+        newPokemon.eggHatchETA = Date.now() + hoursToAdd * 60 * 60 * 1000;
         //SavePokemon
         const savedPokemon = await newPokemon.save();
         // Add the new Pokémon to the user's party
         userParty.slots.push(savedPokemon._id);
         await userParty.save();
-
         res.status(201).json({
             message: `Pokemon egg accquired with id: ${savedPokemon._id}`
         });
@@ -37,14 +40,14 @@ const createPokemon = async (req, res, next) => {
 
 const getAllPokemon = async (req, res, next) => {
     try {
-        const pokemons = await PokemonModel.find({ user: req.userId }, { evolution: 0 });
+        const pokemons = await PokemonModel.find({ user: req.userId });
         res.status(200).json(pokemons);
     } catch (error) {
         next(error);
     }
 };
 
-const getAllPokedexPokemon = async (req, res, next) => {
+const getAllDonatedPokemon = async (req, res, next) => {
     try {
         const pokemons = await PokemonModel.find({ user: req.userId, donated: true }, { evolution: 0 }).sort({
             donatedDate: -1
@@ -57,6 +60,7 @@ const getAllPokedexPokemon = async (req, res, next) => {
 
 const getPokemonByID = async (req, res, next) => {
     try {
+        console.log(req.admin);
         const pokemon = await PokemonModel.findOne(
             { _id: req.params.id, user: req.userId },
             //exclude below items from response
@@ -67,25 +71,34 @@ const getPokemonByID = async (req, res, next) => {
         }
         // If the egg has already hatched, return the details
         if (pokemon.eggHatched && !pokemon.donated) {
+            // Check if on trail
+            if (pokemon.currentlyOnTrail) {
+                // Calc using estimated finish time and current time
+                let milliSecondsLeft = pokemon.trailFinishTime - Date.now();
+                let trailPokemon = pokemon.toObject();
+                trailPokemon.timeLeft = milliSecondsLeft;
+                // Return time left
+                return res.status(300).json(trailPokemon);
+            }
             return res.status(200).json(pokemon);
         } else if (pokemon.eggHatched && pokemon.donated) {
             return res.status(400).json({
                 donated: pokemon.donated
             });
         } else {
-            let hoursToAdd = pokemon.is_mythical || pokemon.is_legendary || pokemon.isShiny ? 8 : 6;
-            // Convert the created time to a Date object
-            let ISO = new Date(pokemon.createdAt);
-            // Convert the additional hours to milliseconds
-            let millisecondsToAdd = hoursToAdd * 60 * 60 * 1000;
-            // Calculate the hatch ETA by adding milliseconds to the creation time
-            let hatchETA = ISO.getTime() + millisecondsToAdd;
-            // Get the current time in milliseconds
+            // let hoursToAdd = pokemon.is_mythical || pokemon.is_legendary || pokemon.isShiny ? 8 : 6;
+            // // Convert the created time to a Date object
+            // let ISO = new Date(pokemon.createdAt);
+            // // Convert the additional hours to milliseconds
+            // let millisecondsToAdd = hoursToAdd * 60 * 60 * 1000;
+            // // Calculate the hatch ETA by adding milliseconds to the creation time
+            // let hatchETA = ISO.getTime() + millisecondsToAdd;
+            // // Get the current time in milliseconds
             let current = Date.now();
             // Check if the hatch ETA has passed
-            if (hatchETA >= current) {
+            if (pokemon.eggHatchETA >= current) {
                 // Calculate the remaining time in milliseconds
-                let milliSecondsLeft = hatchETA - current;
+                let milliSecondsLeft = pokemon.eggHatchETA - current;
                 // Return the time left to hatch in HH:MM:SS format
                 return res.status(200).json({
                     eggHatched: pokemon.eggHatched,
@@ -93,7 +106,8 @@ const getPokemonByID = async (req, res, next) => {
                 });
             }
             return res.status(200).json({
-                eggHatched: pokemon.eggHatched
+                eggHatched: pokemon.eggHatched,
+                message: "egg is ready to be hatched"
             });
         }
     } catch (error) {
@@ -138,19 +152,19 @@ const hatchPokemonByID = async (req, res, next) => {
             return res.status(400).json({ message: `Pokemon with ${req.params.id} is already hatched` });
         }
         // Determine hours to add based on properties (mythical, legendary, or shiny)
-        let hoursToAdd = pokemon.is_mythical || pokemon.is_legendary || pokemon.isShiny ? 8 : 6;
-        // Convert the created time to a Date object
-        let ISO = new Date(pokemon.createdAt);
-        // Convert the additional hours to milliseconds
-        let millisecondsToAdd = hoursToAdd * 60 * 60 * 1000;
-        // Calculate the hatch ETA by adding milliseconds to the creation time
-        let hatchETA = ISO.getTime() + millisecondsToAdd;
+        // let hoursToAdd = pokemon.is_mythical || pokemon.is_legendary || pokemon.isShiny ? 8 : 6;
+        // // Convert the created time to a Date object
+        // let ISO = new Date(pokemon.createdAt);
+        // // Convert the additional hours to milliseconds
+        // let millisecondsToAdd = hoursToAdd * 60 * 60 * 1000;
+        // // Calculate the hatch ETA by adding milliseconds to the creation time
+        // let hatchETA = ISO.getTime() + millisecondsToAdd;
         // Get the current time in milliseconds
         let current = Date.now();
         // Check if the hatch ETA has passed
-        if (hatchETA >= current) {
+        if (pokemon.eggHatchETA >= current) {
             // Calculate the remaining time in milliseconds
-            let milliSecondsLeft = hatchETA - current;
+            let milliSecondsLeft = pokemon.eggHatchETA - current;
             // Return the time left to hatch in HH:MM:SS format
             return res.status(400).json({
                 message: `There is still ${(milliSecondsLeft / 60000).toFixed(
@@ -163,6 +177,8 @@ const hatchPokemonByID = async (req, res, next) => {
                 { eggHatched: true },
                 { new: true }
             );
+            //Register Pokemon to Pokedex
+            await registerToPokedex(updatedPokemon, req.userId);
             return res.status(200).json({
                 eggHatched: updatedPokemon.eggHatched,
                 species: updatedPokemon.species,
@@ -201,33 +217,20 @@ const donatePokemonByID = async (req, res, next) => {
         );
         //calculate points
         const user = await UserModel.findOne({ _id: req.userId });
-        let moneyMulti = user.moneyMulti;
-        let reward;
-        let extraShinyReward;
-        if (Pokemon.is_mythical && Pokemon.isShiny) {
-            extraShinyReward = Math.round(35 * 2.5);
-        } else if (Pokemon.is_legendary && Pokemon.isShiny) {
-            extraShinyReward = Math.round(30 * 2.5);
-        } else if (Pokemon.is_legendary && Pokemon.isShiny) {
-            extraShinyReward = Math.round(10 * 2.5);
-        }
-        //give more reward if donated before
-        if (Pokemon.is_mythical) {
-            reward = extraShinyReward || 0 + Pokemon.current_happiness + 35 * moneyMulti;
-            experience = 300;
-        } else if (Pokemon.is_legendary) {
-            reward = extraShinyReward || 0 + Pokemon.current_happiness + 30 * moneyMulti;
-            experience = 200;
-        } else {
-            let levelReward = (Pokemon.current_level - 1) * 50;
-            reward = (extraShinyReward || 0 + Pokemon.current_happiness + levelReward + 10) * moneyMulti;
-            experience = 100;
-        }
+        let { reward, experience } = await calculateDonationReward(Pokemon, user.moneyMulti);
         user.balance += reward;
         user.userExperience += experience;
         await user.save();
 
         const party = await PartyModel.findOneAndUpdate({ user: req.userId }, { $pull: { slots: req.params.id } });
+        let userPokedexPokemon = await PokedexModel.findOne({
+            species_id: updatedPokemon.species_id,
+            user: req.userId
+        });
+        if (!userPokedexPokemon.donated) {
+            userPokedexPokemon.donated = true;
+            await userPokedexPokemon.save();
+        }
         return res.status(200).json({
             message: `Pokemon with id: ${updatedPokemon._id} has been sucessfully donated`,
             reward_received: reward,
@@ -257,26 +260,8 @@ const donatePreviewPokemonByID = async (req, res, next) => {
         }
         //calculate points
         const user = await UserModel.findOne({ _id: req.userId });
-        let moneyMulti = user.moneyMulti;
+        let { reward } = await calculateDonationReward(Pokemon, user.moneyMulti);
 
-        let reward;
-        let extraShinyReward;
-        if (Pokemon.is_mythical && Pokemon.isShiny) {
-            extraShinyReward = Math.round(35 * 2.5);
-        } else if (Pokemon.is_legendary && Pokemon.isShiny) {
-            extraShinyReward = Math.round(30 * 2.5);
-        } else if (Pokemon.is_legendary && Pokemon.isShiny) {
-            extraShinyReward = Math.round(10 * 2.5);
-        }
-
-        if (Pokemon.is_mythical) {
-            reward = extraShinyReward || 0 + Pokemon.current_happiness + 35 * moneyMulti;
-        } else if (Pokemon.is_legendary) {
-            reward = extraShinyReward || 0 + Pokemon.current_happiness + 30 * moneyMulti;
-        } else {
-            let levelReward = (Pokemon.current_level - 1) * 50;
-            reward = (extraShinyReward || 0 + Pokemon.current_happiness + levelReward + 10) * moneyMulti;
-        }
         return res.status(200).json({
             expected_reward: reward
         });
@@ -309,7 +294,7 @@ const pokemonInteractionTalk = async (req, res, next) => {
                 });
             }
             let pointsNeededToMax = Pokemon.target_happiness - Pokemon.current_happiness;
-            const happinessAwarded = Math.min(pointsNeededToMax, 2 * happinesMulti);
+            const happinessAwarded = Math.min(pointsNeededToMax, 50 * happinesMulti);
             Pokemon.current_happiness += happinessAwarded;
             Pokemon.negativeInteractionCount = 0;
             Pokemon.lastTalked = Date.now();
@@ -535,6 +520,8 @@ const evolvePokemonByID = async (req, res, next) => {
                     }
                 }
             );
+            //Register Evolved Pokemon
+            await registerToPokedex(updatedPokemon, req.userId);
             return res.status(200).json({
                 current_level: updatedPokemon.current_level,
                 species: updatedPokemon.species,
@@ -568,5 +555,5 @@ module.exports = {
     pokemonInteractionPlay,
     pokemonInteractionFeed,
     evolvePokemonByID,
-    getAllPokedexPokemon
+    getAllDonatedPokemon
 };
