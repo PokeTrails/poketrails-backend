@@ -1,8 +1,7 @@
-
 function randomChanceOfEggVoucher() {
-    // Generate a random number 
+    // Generate a random number
     const randomNumber = Math.random() * 100;
-    // Return 1 if the random number is less than 7 
+    // Return 1 if the random number is less than 7
     return randomNumber < 7 ? 1 : 0;
 }
 
@@ -28,7 +27,11 @@ const events = {
     "Found a cache of berries": { eggVoucher: randomChanceOfEggVoucher(), balance: 15, happiness: 0 },
     "Explored a new area in the forest": { eggVoucher: randomChanceOfEggVoucher(), balance: 10, happiness: 0 },
     "Discovered a rare Pokémon habitat": { eggVoucher: randomChanceOfEggVoucher(), balance: 25, happiness: 0 },
-    "Won a game of hide and seek with wild Pokémon": { eggVoucher: randomChanceOfEggVoucher(), balance: 5, happiness: 0 },
+    "Won a game of hide and seek with wild Pokémon": {
+        eggVoucher: randomChanceOfEggVoucher(),
+        balance: 5,
+        happiness: 0
+    },
     "Found a box of ancient relics": { eggVoucher: randomChanceOfEggVoucher(), balance: 20, happiness: 0 },
     "Helped clean up a Pokémon playground": { eggVoucher: randomChanceOfEggVoucher(), balance: 5, happiness: 0 },
     "Uncovered a buried chest": { eggVoucher: randomChanceOfEggVoucher(), balance: 30, happiness: 0 },
@@ -39,7 +42,11 @@ const events = {
     "Traded stories with a traveling Pokémon": { eggVoucher: randomChanceOfEggVoucher(), balance: 10, happiness: 0 },
     "Participated in a treasure hunt": { eggVoucher: randomChanceOfEggVoucher(), balance: 15, happiness: 0 },
     "Found an old Pokémon diary": { eggVoucher: randomChanceOfEggVoucher(), balance: 5, happiness: 0 },
-    "Encountered a legendary Pokémon in the wild": { eggVoucher: randomChanceOfEggVoucher(), balance: 50, happiness: 0 },
+    "Encountered a legendary Pokémon in the wild": {
+        eggVoucher: randomChanceOfEggVoucher(),
+        balance: 50,
+        happiness: 0
+    },
     "Discovered a hidden path": { eggVoucher: randomChanceOfEggVoucher(), balance: 15, happiness: 0 },
     "Helped a Pokémon find its lost family": { eggVoucher: randomChanceOfEggVoucher(), balance: 10, happiness: 5 },
     "Found a rare Pokémon figurine": { eggVoucher: randomChanceOfEggVoucher(), balance: 10, happiness: 0 },
@@ -117,8 +124,16 @@ const events = {
     "Assisted in a Pokémon community event": { eggVoucher: randomChanceOfEggVoucher(), balance: 10, happiness: 5 },
     "Participated in a Pokémon rescue mission": { eggVoucher: randomChanceOfEggVoucher(), balance: 15, happiness: 5 },
     "Helped a Pokémon learn to fly": { eggVoucher: randomChanceOfEggVoucher(), balance: 15, happiness: 5 },
-    "Found a lost baby Pokémon and returned it to its family": { eggVoucher: randomChanceOfEggVoucher(), balance: 10, happiness: 5 },
-    "Protected a Pokémon from a natural disaster": { eggVoucher: randomChanceOfEggVoucher(), balance: 15, happiness: 5 },
+    "Found a lost baby Pokémon and returned it to its family": {
+        eggVoucher: randomChanceOfEggVoucher(),
+        balance: 10,
+        happiness: 5
+    },
+    "Protected a Pokémon from a natural disaster": {
+        eggVoucher: randomChanceOfEggVoucher(),
+        balance: 15,
+        happiness: 5
+    },
 
     // Negative events with eggVoucher set to 0
     "Encountered a mischievous Pokémon": { eggVoucher: 0, balance: 0, happiness: 0 },
@@ -144,6 +159,4 @@ const events = {
     "Had to backtrack after a wrong turn": { eggVoucher: 0, balance: 0, happiness: 0 }
 };
 
-
-
-module.exports = { events }
+module.exports = { events };
