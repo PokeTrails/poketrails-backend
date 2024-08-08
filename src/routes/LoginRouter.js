@@ -25,10 +25,10 @@ router.post("/", async (request, response, next) => {
 
         // Create a JWT based on foundUser._id
         if (isPasswordCorrect) {
-            newJwt = createJWT(foundUser._id);
+            newJwt = createJWT(foundUser._id, foundUser.admin);
 
             response.json({
-                jwt: newJwt
+                jwt: newJwt,
             });
         } else {
             return next(new Error("Incorrect password."));

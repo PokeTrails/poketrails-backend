@@ -9,6 +9,8 @@ router.get('/', trailController.getTrails);
 
 router.post('/simulate', auth, trailController.simulateTrailByID);
 
+router.get(`/log`, auth, trailController.getLogForPokemon);
+
 router.post('/finish', auth, trailController.finishTrail);
 
 router.get('/:title', trailController.getTrail);
@@ -16,5 +18,7 @@ router.get('/:title', trailController.getTrail);
 router.delete('/:title', trailController.deleteTrail);
 
 router.patch('/:title', trailController.editTrail);
+
+
 
 module.exports = router;

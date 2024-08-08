@@ -60,6 +60,7 @@ const getAllDonatedPokemon = async (req, res, next) => {
 
 const getPokemonByID = async (req, res, next) => {
     try {
+        console.log(req.admin);
         const pokemon = await PokemonModel.findOne(
             { _id: req.params.id, user: req.userId },
             //exclude below items from response
@@ -73,12 +74,11 @@ const getPokemonByID = async (req, res, next) => {
             // Check if on trail
             if (pokemon.currentlyOnTrail) {
                 // Calc using estimated finish time and current time
-                milliSecondsLeft = pokemon.trailFinishTime - Date.now();
+                let milliSecondsLeft = pokemon.trailFinishTime - Date.now();
+                let trailPokemon = pokemon.toObject();
+                trailPokemon.timeLeft = milliSecondsLeft;
                 // Return time left
-                return res.status(300).json({
-                    currentlyOnTrail: pokemon.currentlyOnTrail,
-                    timeLeft: milliSecondsLeft
-                });
+                return res.status(300).json(trailPokemon);
             }
             return res.status(200).json(pokemon);
         } else if (pokemon.eggHatched && pokemon.donated) {

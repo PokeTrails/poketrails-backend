@@ -63,7 +63,10 @@ const simulateTrailByID = async (req, res, next) => {
             const results = await simulateTrail(trail, pokemonId);
             return res.status(200).json(results);
         } else {
-            return res.status(200).json({ message: "Pokemon is already on trail" });
+            return res.status(200).json({ 
+                message: "Pokemon is already on trail",
+                timeLeft: pokemon.trailFinishTime - Date.now()
+            });
         }
     } catch (error) {
         console.log("error: ", error);
@@ -95,7 +98,7 @@ const finishTrail = async (req, res, next) => {
         console.log("pre balance: " + previousBalance  + " pre vouchers: " + previousVouchers );
 
         const trail = await TrailModel.findById(pokemon.onTrailP).exec();
-        // Removes pokemon from the trail on the trail model
+        // Removes Pokemon from the trail on the trail model
         if (trail) {
             trail.onTrail = trail.onTrail.filter(id => id.toString() !== pokemonId);
             await trail.save();
@@ -108,13 +111,36 @@ const finishTrail = async (req, res, next) => {
 
             const { user, pokemon: updatedPokemon, runningBalance, runningVoucher, runningHappiness } = 
             await addEventValuesToUserAndPokemon(userId, eventLog, pokemonId);
+            
 
             console.log("Running Balance:", runningBalance);
             console.log("Running Egg Vouchers:", runningVoucher);
             console.log("Running Happiness:", runningHappiness);
 
-            // Remove trail related fields from pokemon
+            // Remove trail related fields from Pokemon
             await resetTrailFields(pokemon);
+
+            // Update the Pokemon trail completion log
+            switch (trail.title) {
+                case 'Wet Trail':
+                    pokemon.wetCompleted += 1;
+                    console.log("Wet Completed");
+                    break;
+                case 'Rocky Trail':
+                    pokemon.rockyCompleted += 1;
+                    console.log("Rocky Completed");
+                    break;
+                case 'Frosty Trail':
+                    pokemon.frostCompleted += 1;
+                    console.log("Frosty Completed");
+                    break;
+                case 'Wild Trail':
+                    pokemon.wildCompleted += 1;
+                    console.log("Wild Completed");
+                    break;
+            }
+            await pokemon.save();
+
 
             const userBalance =  user.balance;
             const userTickets =  user.eggVoucher;
@@ -131,14 +157,14 @@ const finishTrail = async (req, res, next) => {
             });
 
         } else if (!trailDone) {
-            res.status(200).json({
+            res.status(400).json({
                 message: "Pokemon is still on trail",
                 timeLeft: milliSecondsLeft
             })
         } else {
             await resetTrailFields(pokemon);
-            res.status(200).json({
-                message: "Nothing to update",
+            res.status(400).json({
+                message: "Pokemon not on trail"
             })
         }
 
@@ -229,4 +255,22 @@ const editTrail = async (req, res, next) => {
     }
 }
 
-module.exports = { simulateTrailByID, finishTrail, getTrail, getTrails, deleteTrail, editTrail };
+const getLogForPokemon = async (req, res, next) => {
+    try {
+        // Find Pokemon from body
+        const pokemon = await PokemonModel.findOne({ _id: req.body.pokemonId, user: req.userId });
+
+        if (!pokemon) {
+            return res.status(404).json({ message: `User does not own a pokemon` });
+        } else{
+            console.log(pokemon.trailLog);
+            return res.status(200).json(pokemon.trailLog);
+        }
+        
+    } catch (error) {
+        console.error("Error in getLogForPokemon: ", error);
+        next(error);
+    }
+}
+
+module.exports = { simulateTrailByID, finishTrail, getTrail, getTrails, deleteTrail, editTrail, getLogForPokemon };

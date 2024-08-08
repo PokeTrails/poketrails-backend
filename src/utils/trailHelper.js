@@ -32,9 +32,13 @@ async function simulateTrail(trail, pokemonID) {
     await pokemon.save();
     console.log("HELPER2 " + pokemon.trailLog);
 
+    milliSecondsLeft = pokemon.trailFinishTime - Date.now();
+
+
     return {
         pokemonID: pokemonId,
-        trailLog: eventLog,        
+        trailLog: eventLog, 
+        timeLeft: milliSecondsLeft       
     };
 }
 
@@ -58,8 +62,13 @@ async function addEventValuesToUserAndPokemon(userId, eventLog, pokemonId){
             runningVoucher += effect.eggVoucher;
         }
         if (effect.happiness) {
-            pokemon.current_happiness += (effect.happiness * user.happinesMulti);
+            let rewardHap =  47 //(effect.happiness * user.happinesMulti);
+            happinessMax = pokemon.target_happiness - pokemon.current_happiness;
+            pokemon.current_happiness += Math.min(rewardHap, happinessMax)
             runningHappiness += (effect.happiness * user.happinesMulti);
+            if (runningHappiness > happinessMax) {
+                runningHappiness = happinessMax;
+            }
         }
     });
 
