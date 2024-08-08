@@ -41,6 +41,7 @@ router.get("/balance", auth, async (req, res, next) => {
 router.post("/create", async (request, response, next) => {
     try {
         const newUser = new UserModel(request.body);
+        newUser.eggVoucher += 1;
         const result = await newUser.save();
         const jwt = createJWT(result._id);
         //reward egg for new users
