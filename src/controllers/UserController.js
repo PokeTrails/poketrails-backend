@@ -4,7 +4,9 @@ const { createJWT } = require("../utils/authHelper");
 const { PartyModel } = require("../models/PartyModel");
 const { getPokemon } = require("../utils/pokemonHelper");
 const PokemonModel  = require("../models/PokemonModel");
-const { handleNotFound, handleUnauthorized } = require("../utils/globalHelpers")
+const { handleNotFound, handleUnauthorized } = require("../utils/globalHelpers");
+const { isValidPassword } = require("../utils/userHelper");
+
 
 
 // Get all users
@@ -53,6 +55,11 @@ const createUser = async (req, res, next) => {
             return res.status(400).json({
                 message: "User with this username already exists"
             });
+        }
+
+        const password = req.body.password;
+        if (!isValidPassword(password)) {
+            return res.status(400).json({ message: "Password must contain both letters and numbers" });
         }
 
         // Creates new user
