@@ -5,6 +5,7 @@ const { PartyModel } = require("../models/PartyModel");
 const { UserModel } = require("../models/UserModel");
 const { PokedexModel } = require("../models/PokedexModel");
 const { registerToPokedex } = require("../utils/pokedexRegistration");
+const { filterPastEntries } = require("../utils/trailLogHelper");
 
 const createPokemon = async (req, res, next) => {
     try {
@@ -20,10 +21,11 @@ const createPokemon = async (req, res, next) => {
         let shinyMulti = user.shinyMulti;
         //Fetch pokemon data
         const pokemonData = await getPokemon(shinyMulti);
+
         //Create a new Pokemon
         let newPokemon = new PokemonModel(pokemonData);
         newPokemon.user = req.userId;
-        let hoursToAdd = pokemon.is_mythical || pokemon.is_legendary || pokemon.isShiny ? 8 : 6;
+        let hoursToAdd = newPokemon.is_mythical || newPokemon.is_legendary || newPokemon.isShiny ? 8 : 6;
         newPokemon.eggHatchETA = Date.now() + hoursToAdd * 60 * 60 * 1000;
         //SavePokemon
         const savedPokemon = await newPokemon.save();
@@ -60,7 +62,6 @@ const getAllDonatedPokemon = async (req, res, next) => {
 
 const getPokemonByID = async (req, res, next) => {
     try {
-        console.log(req.admin);
         const pokemon = await PokemonModel.findOne(
             { _id: req.params.id, user: req.userId },
             //exclude below items from response
@@ -77,8 +78,14 @@ const getPokemonByID = async (req, res, next) => {
                 let milliSecondsLeft = pokemon.trailFinishTime - Date.now();
                 let trailPokemon = pokemon.toObject();
                 trailPokemon.timeLeft = milliSecondsLeft;
+                let log = filterPastEntries(trailPokemon.trailLog);
+                if (log.length == 0) {
+                    trailPokemon.trailLog = [];
+                } else {
+                    trailPokemon.trailLog = log;
+                }
                 // Return time left
-                return res.status(300).json(trailPokemon);
+                return res.status(200).json(trailPokemon);
             }
             return res.status(200).json(pokemon);
         } else if (pokemon.eggHatched && pokemon.donated) {
