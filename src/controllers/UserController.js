@@ -141,38 +141,39 @@ const patchUser = async (req, res, next) => {
 
 // User login
 const userLogin = async (req, res, next) => {
-    let newJwt = "";
-
-    if (!req.body.password || !req.body.username) {
-        res.status(401).json({message: "Missing login details"})
-    };
-
     try {
-        // Find user by username in DB
+        // Check if both username and password are provided
+        if (!req.body.password || !req.body.username) {
+            return res.status(401).json({ message: "Missing login details" });
+        }
+
+        // Find user by username in the database
         let foundUser = await UserModel.findOne({ username: req.body.username }).exec();
-        let isPasswordCorrect = false;
 
-        // Compare body password to foundUser password 
-        if (foundUser) {
-            isPasswordCorrect = await comparePasswords(req.body.password, foundUser.password);
-        } else {
-            res.status(400).json("Incorrect username");
+        // If the user is not found return error
+        if (!foundUser) {
+            return res.status(400).json({ message: "Incorrect username" });
         }
 
-        // Create a JWT when password matches
-        if (isPasswordCorrect) {
-            newJwt = createJWT(foundUser._id, foundUser.admin);
+        // Compare the provided password with the stored password
+        const isPasswordCorrect = await comparePasswords(req.body.password, foundUser.password);
 
-            res.json({
-                jwt: newJwt,
-            });
-        } else {
-            res.status(400).json("Incorrect password");
+        // If the password is incorrect, return an error
+        if (!isPasswordCorrect) {
+            return res.status(400).json({ message: "Incorrect password" });
         }
+
+        // If the password is correct, create a JWT
+        const newJwt = createJWT(foundUser._id, foundUser.admin);
+
+        // Send the JWT back to the client
+        return res.status(200).json({ jwt: newJwt });
+
     } catch (error) {
         return next(error);
     }
 };
+
 
 
 module.exports = { getAllUsers, findUserById, getUserBalance, createUser, deleteUser, patchUser, userLogin };
