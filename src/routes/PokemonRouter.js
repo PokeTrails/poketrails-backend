@@ -3,7 +3,7 @@ const router = express.Router();
 const pokemonController = require("../controllers/PokemonController");
 const auth = require("../middleware/auth");
 
-router.post("/", auth, pokemonController.createPokemon);
+// router.post("/", auth, pokemonController.createPokemon);
 router.get("/", auth, pokemonController.getAllPokemon);
 router.get("/donated", auth, pokemonController.getAllDonatedPokemon);
 router.get("/:id", auth, pokemonController.getPokemonByID);
