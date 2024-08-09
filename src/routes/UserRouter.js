@@ -15,7 +15,7 @@ router.delete('/delete/:id', auth, userController.deleteUser);
 
 router.patch('/patch/:id', auth, userController.patchUser);
 
-router.post('/login', auth, userController.userLogin);
+router.post('/login', userController.userLogin);
 
 
 module.exports = router;
