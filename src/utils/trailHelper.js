@@ -42,7 +42,8 @@ async function simulateTrail(trail, pokemonID, start, end) {
     return {
         timeLeft: milliSecondsLeft,
         message: `${pokemon.species} is set on trail`,
-        currentlyOnTrail: pokemon.currentlyOnTrail
+        currentlyOnTrail: pokemon.currentlyOnTrail,
+        sprite: pokemon.sprite,
     };
 }
 
@@ -110,7 +111,7 @@ async function addEventValuesToUserAndPokemon(userId, eventLog, pokemonId) {
         pokemon: pokemon,
         runningBalance: runningBalance,
         runningVoucher: runningVoucher,
-        runningHappiness: runningHappiness
+        runningHappiness: runningHappiness,
     };
 }
 

@@ -154,7 +154,8 @@ const finishTrail = async (req, res, next) => {
                 happiness: updatedPokemon.current_happiness,
                 runningBalance: runningBalance,
                 runningVoucher: runningVoucher,
-                runningHappiness: runningHappiness
+                runningHappiness: runningHappiness,
+                sprite: updatedPokemon.sprite
             });
         } else if (!trailDone) {
             res.status(400).json({
