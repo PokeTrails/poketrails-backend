@@ -152,7 +152,7 @@ const userLogin = async (req, res, next) => {
 
         // If the user is not found return error
         if (!foundUser) {
-            return res.status(400).json({ message: "Incorrect username" });
+            return res.status(400).json({ message: "Incorrect username or password" });
         }
 
         // Compare the provided password with the stored password
@@ -160,7 +160,7 @@ const userLogin = async (req, res, next) => {
 
         // If the password is incorrect, return an error
         if (!isPasswordCorrect) {
-            return res.status(400).json({ message: "Incorrect password" });
+            return res.status(400).json({ message: "Incorrect username or password" });
         }
 
         // If the password is correct, create a JWT
