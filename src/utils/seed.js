@@ -63,8 +63,8 @@ async function seedUsers() {
             egg = 1;
             hatched = 0;
         } else if (i == 3) {
-            egg = 1;
-            hatched = 0;
+            egg = 6;
+            hatched = 6;
         } else if (i == 4) {
             egg = 1;
             hatched = 0;
@@ -80,7 +80,7 @@ async function seedTrails() {
         title: "Wild Trail",
         buffedTypes: ["Grass", "Bug", "Poison"],
         onTrail: [],
-        length: 300000
+        length: 30000
     };
 
     const trail2 = {
