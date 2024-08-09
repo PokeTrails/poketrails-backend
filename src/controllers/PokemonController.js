@@ -7,38 +7,38 @@ const { PokedexModel } = require("../models/PokedexModel");
 const { registerToPokedex } = require("../utils/pokedexRegistration");
 const { filterPastEntries } = require("../utils/trailLogHelper");
 
-const createPokemon = async (req, res, next) => {
-    try {
-        // Find the user's party
-        const userParty = await PartyModel.findOne({ user: req.userId });
-        // Check if the party has less than the maximum allowed Pokémon
-        if (userParty.slots.length >= 6) {
-            return res.status(400).json({
-                message: "Party already has the maximum number of Pokemon"
-            });
-        }
-        const user = await UserModel.findOne({ _id: req.userId });
-        let shinyMulti = user.shinyMulti;
-        //Fetch pokemon data
-        const pokemonData = await getPokemon(shinyMulti);
+// const createPokemon = async (req, res, next) => {
+//     try {
+//         // Find the user's party
+//         const userParty = await PartyModel.findOne({ user: req.userId });
+//         // Check if the party has less than the maximum allowed Pokémon
+//         if (userParty.slots.length >= 6) {
+//             return res.status(400).json({
+//                 message: "Party already has the maximum number of Pokemon"
+//             });
+//         }
+//         const user = await UserModel.findOne({ _id: req.userId });
+//         let shinyMulti = user.shinyMulti;
+//         //Fetch pokemon data
+//         const pokemonData = await getPokemon(shinyMulti);
 
-        //Create a new Pokemon
-        let newPokemon = new PokemonModel(pokemonData);
-        newPokemon.user = req.userId;
-        let hoursToAdd = newPokemon.is_mythical || newPokemon.is_legendary || newPokemon.isShiny ? 8 : 6;
-        newPokemon.eggHatchETA = Date.now() + hoursToAdd * 60 * 60 * 1000;
-        //SavePokemon
-        const savedPokemon = await newPokemon.save();
-        // Add the new Pokémon to the user's party
-        userParty.slots.push(savedPokemon._id);
-        await userParty.save();
-        res.status(201).json({
-            message: `Pokemon egg accquired with id: ${savedPokemon._id}`
-        });
-    } catch (error) {
-        next(error);
-    }
-};
+//         //Create a new Pokemon
+//         let newPokemon = new PokemonModel(pokemonData);
+//         newPokemon.user = req.userId;
+//         let hoursToAdd = newPokemon.is_mythical || newPokemon.is_legendary || newPokemon.isShiny ? 8 : 6;
+//         newPokemon.eggHatchETA = Date.now() + hoursToAdd * 60 * 60 * 1000;
+//         //SavePokemon
+//         const savedPokemon = await newPokemon.save();
+//         // Add the new Pokémon to the user's party
+//         userParty.slots.push(savedPokemon._id);
+//         await userParty.save();
+//         res.status(201).json({
+//             message: `Pokemon egg accquired with id: ${savedPokemon._id}`
+//         });
+//     } catch (error) {
+//         next(error);
+//     }
+// };
 
 const getAllPokemon = async (req, res, next) => {
     try {
@@ -403,9 +403,9 @@ const pokemonInteractionPlay = async (req, res, next) => {
             Pokemon.current_happiness -= happinessReduced;
             await Pokemon.save();
             return res.status(400).json({
-                message: `${Pokemon.nickname} is exhausted. Please try again after ${(
-                    5 - timeDifference
-                ).toFixed(2)} hrs`,
+                message: `${Pokemon.nickname} is exhausted. Please try again after ${(5 - timeDifference).toFixed(
+                    2
+                )} hrs`,
                 happiness_reduced: happinessReduced,
                 current_happiness: Pokemon.current_happiness
             });
@@ -549,7 +549,7 @@ const evolvePokemonByID = async (req, res, next) => {
     }
 };
 module.exports = {
-    createPokemon,
+    // createPokemon,
     getAllPokemon,
     getPokemonByID,
     editPokemonNicknameByID,
