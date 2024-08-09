@@ -53,6 +53,7 @@ const simulateTrailByID = async (req, res, next) => {
         // Add the trail to the Pokemon if pokemon isn't already on a trail
         if (!pokemon.currentlyOnTrail) {
             pokemon.onTrailP = trail._id;
+            pokemon.onTrailTitle = trail.title;
             pokemon.trailStartTime = new Date();
             pokemon.trailLength = trailLength;
             pokemon.trailFinishTime = new Date(pokemon.trailStartTime.getTime() + pokemon.trailLength);
