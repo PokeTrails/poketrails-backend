@@ -112,7 +112,8 @@ const buyItem = async (req, res, next) => {
             let currentLevel = shopItem.level;
             if (shopItem.isFullyUpgraded) {
                 return res.status(400).json({
-                    message: `${shopItem.itemName} is already at max level and cannot be upgraded`
+                    message: `${shopItem.itemName} is already at max level and cannot be upgraded`,
+                    description: `This item is at its max level and cannot be upgraded any further.`
                 });
             }
             user.balance -= shopItem.price;
