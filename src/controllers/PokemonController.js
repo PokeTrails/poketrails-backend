@@ -114,7 +114,8 @@ const getPokemonByID = async (req, res, next) => {
             }
             return res.status(200).json({
                 eggHatched: pokemon.eggHatched,
-                message: "egg is ready to be hatched"
+                message: "egg is ready to be hatched",
+                timeLeft: 0
             });
         }
     } catch (error) {
