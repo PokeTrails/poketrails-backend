@@ -296,7 +296,7 @@ const pokemonInteractionTalk = async (req, res, next) => {
         if (!Pokemon.lastTalked || timeDifference > 1) {
             if (Pokemon.current_happiness >= Pokemon.target_happiness) {
                 return res.status(200).json({
-                    message: "Max happiness reached",
+                    message: `${pokemon.nickname} adores you as much as it possibly can`,
                     current_happiness: Pokemon.current_happiness
                 });
             }
@@ -341,7 +341,7 @@ const pokemonInteractionTalk = async (req, res, next) => {
             Pokemon.negativeInteractionCount += 1;
             await Pokemon.save();
             return res.status(400).json({
-                message: `${Pokemon.nickname} wants some time by themselves, you should try talking with them later.`,
+                message: `${Pokemon.nickname} wants some time alone, you should try talking with them later.`,
                 current_happiness: Pokemon.current_happiness
             });
         }
@@ -368,7 +368,7 @@ const pokemonInteractionPlay = async (req, res, next) => {
         if (!Pokemon.lastPlayed || timeDifference > 3) {
             if (Pokemon.current_happiness >= Pokemon.target_happiness) {
                 return res.status(200).json({
-                    message: "Max happiness reached",
+                    message: `${pokemon.nickname} adores you as much as it possibly can`,
                     current_happiness: Pokemon.current_happiness
                 });
             }
@@ -387,7 +387,7 @@ const pokemonInteractionPlay = async (req, res, next) => {
                 }
             );
             return res.status(200).json({
-                message: `${Pokemon.nickname} had a great time and cant wait to play again!`,
+                message: `${Pokemon.nickname} jumped around happily!`,
                 happiness_increased: happinessAwarded,
                 current_happiness: Pokemon.current_happiness,
                 userExperienceIncreased: 50
@@ -413,7 +413,7 @@ const pokemonInteractionPlay = async (req, res, next) => {
             Pokemon.negativeInteractionCount += 1;
             await Pokemon.save();
             return res.status(400).json({
-                message: `${Pokemon.nickname} does not feel like playing try later when they have more energy.`,
+                message: `${Pokemon.nickname} does not feel like playing, try later when they have more energy.`,
                 current_happiness: Pokemon.current_happiness
             });
         }
@@ -440,7 +440,7 @@ const pokemonInteractionFeed = async (req, res, next) => {
         if (!Pokemon.lastFeed || timeDifference > 6) {
             if (Pokemon.current_happiness >= Pokemon.target_happiness) {
                 return res.status(200).json({
-                    message: "Max happiness reached",
+                    message: `${pokemon.nickname} adores you as much as it possibly can`,
                     current_happiness: Pokemon.current_happiness
                 });
             }
@@ -459,7 +459,7 @@ const pokemonInteractionFeed = async (req, res, next) => {
                 }
             );
             return res.status(200).json({
-                message: `${Pokemon.species} liked eating`,
+                message: `${Pokemon.nickname} stuffed its face full of berries.`,
                 happiness_increased: happinessAwarded,
                 current_happiness: Pokemon.current_happiness,
                 userExperienceIncreased: 50
@@ -475,7 +475,7 @@ const pokemonInteractionFeed = async (req, res, next) => {
             Pokemon.current_happiness -= happinessReduced;
             await Pokemon.save();
             return res.status(400).json({
-                message: `${Pokemon.nickname} is annoyed, that you keep trying to feed it. Please try again after ${(
+                message: `${Pokemon.nickname} is annoyed that you keep trying to feed it. Please try again after ${(
                     7 - timeDifference
                 ).toFixed(2)} hrs`,
                 happiness_reduced: happinessReduced,
@@ -485,7 +485,7 @@ const pokemonInteractionFeed = async (req, res, next) => {
             Pokemon.negativeInteractionCount += 1;
             await Pokemon.save();
             return res.status(400).json({
-                message: `${Pokemon.nickname} is full.`,
+                message: `${Pokemon.nickname} is completely full and can't eat another bite.`,
                 current_happiness: Pokemon.current_happiness
             });
         }
@@ -539,9 +539,7 @@ const evolvePokemonByID = async (req, res, next) => {
             });
         } else {
             return res.status(400).json({
-                message: `${pokemon.species} has not reached the level of happiness required to evolve. It requires ${
-                    pokemon.target_happiness - pokemon.current_happiness
-                } happiness more to evolve.`,
+                message: `${pokemon.nickname} has not reached the level of happiness required to evolve. Keep taking good care of it.`,
                 required_happiness: pokemon.target_happiness,
                 current_happiness: pokemon.current_happiness
             });
