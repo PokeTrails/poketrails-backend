@@ -1,6 +1,6 @@
 const express = require("express");
 const { UserModel } = require("../models/UserModel");
-const { createJWT } = require("../utils/authHelper");
+const { createJWT, comparePasswords } = require("../utils/authHelper");
 const { PartyModel } = require("../models/PartyModel");
 const { getPokemon } = require("../utils/pokemonHelper");
 const PokemonModel  = require("../models/PokemonModel");
