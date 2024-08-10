@@ -3,7 +3,7 @@ const bcrypt = require("bcryptjs");
 
 const userSchema = mongoose.Schema({
     username: { type: String, required: true, unique: true },
-    admin: { type: Boolean, required: true, default: false},
+    admin: { type: Boolean, required: true, default: false },
     trainerName: { type: String, required: true },
     password: { type: String, required: true, unique: false },
     secretQuestion: { type: String },
@@ -21,32 +21,49 @@ const userSchema = mongoose.Schema({
     shopItems: [
         {
             itemName: { type: String, required: true },
-            price: { type: Number},
-            level: { type: Number},
-            owned: { type: Boolean, default: false},
-            isFullyUpgraded: { type: Boolean, default: false},
+            price: { type: Number },
+            level: { type: Number },
+            owned: { type: Boolean, default: false },
+            isFullyUpgraded: { type: Boolean, default: false },
             description: { type: String },
             isEgg: { type: Boolean, default: false }
         }
     ]
 });
 
+let hapDesc =
+    "The Happiness Share boosts the amount of happiness your party Pokémon receive. Upgrades will further enhance its effectiveness.";
 
-let hapDesc = "Upgrades to this item will increase the happiness gained for all actions allowing for faster training.";
+let shinyDesc =
+    "The Shiny Charm increases the odds of hatching a shiny Pokémon. Upgrades will improve its chances even more.";
 
-let shinyDesc = "Upgrades to this item will increase the rate you will hatch shiny Pokémon.";
+let trainersDesc =
+    "The Pathfinder Trainers reduce the time it takes for Pokémon to return from trails. Upgrades will make them even more efficient.";
 
-let trainersDesc = "Upgrades to improve the speed pokemon come back from trails."
-
-let amuletDesc = "Upgrades to this increase the amount of gold earned from all actions.";
+let amuletDesc =
+    "The Amulet Coin boosts the amount of money earned when donating Pokémon. Upgrades will increase your earnings further.";
 
 const defaultShopItems = [
     { itemName: "Happiness Share", price: 600, level: 0, isFullyUpgraded: false, description: hapDesc },
-    { itemName: "Shiny Charm", price: 600, level: 0, isFullyUpgraded: false, description: shinyDesc },
-    { itemName: "Pathfinder Trainers", price: 600, level: 0, isFullyUpgraded: false, description: trainersDesc },
-    { itemName: "Amulet Coin", price: 600, level: 0, isFullyUpgraded: false, description: amuletDesc },
-    { itemName: "Basic Egg", price: 1, owned: false,  description:" This is a basic egg the professor had found in the wild this could containt anything!", isEgg: true},
-    { itemName: "Special Egg?", price: 5, owned: false,  description:" This is a special egg the professor had found in a legendary pokemons cave, who knows what might come out of it!", isEgg: true}
+    { itemName: "Shiny Charm", price: 800, level: 0, isFullyUpgraded: false, description: shinyDesc },
+    { itemName: "Pathfinder Trainers", price: 300, level: 0, isFullyUpgraded: false, description: trainersDesc },
+    { itemName: "Amulet Coin", price: 1000, level: 0, isFullyUpgraded: false, description: amuletDesc },
+    {
+        itemName: "Basic Egg",
+        price: 1,
+        owned: false,
+        description:
+            "The professor found this egg in the wild and has been looking after it since. Anything could emerge from it.",
+        isEgg: true
+    },
+    {
+        itemName: "Special Egg?",
+        price: 5,
+        owned: false,
+        description:
+            "The professor found this strange egg in the wild which has a peculiar shimmer and glow. This egg has a higher chance of hatching a shiny Pokémon.",
+        isEgg: true
+    }
 ];
 
 userSchema.pre("save", async function (next) {

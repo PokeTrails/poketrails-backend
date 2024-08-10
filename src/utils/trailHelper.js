@@ -43,7 +43,8 @@ async function simulateTrail(trail, pokemonID, start, end) {
     return {
         timeLeft: milliSecondsLeft,
         message: `${pokemon.species} is set on trail`,
-        currentlyOnTrail: pokemon.currentlyOnTrail
+        currentlyOnTrail: pokemon.currentlyOnTrail,
+        sprite: pokemon.sprite
     };
 }
 
@@ -119,6 +120,7 @@ async function resetTrailFields(pokemon) {
     pokemon.currentlyOnTrail = false;
     pokemon.trailStartTime = null;
     pokemon.onTrailP = null;
+    pokemon.onTrailTitle = null;
     pokemon.trailLength = null;
     pokemon.trailFinishTime = null;
     pokemon.trailLog = [];

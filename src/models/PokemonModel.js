@@ -39,6 +39,7 @@ const pokemonSchema = mongoose.Schema(
         ],
         user: { type: mongoose.Schema.Types.ObjectId, ref: "user" },
         onTrailP: { type: mongoose.Schema.Types.ObjectId, ref: "Trail" },
+        onTrailTitle: { type: String },
         wildCompleted: { type: Number, default: 0 },
         rockyCompleted: { type: Number, default: 0 },
         frostyCompleted: { type: Number, default: 0 },
