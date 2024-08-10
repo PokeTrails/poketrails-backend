@@ -8,6 +8,7 @@ const { registerToPokedex } = require("../utils/pokedexRegistration");
 const { filterPastEntries } = require("../utils/trailLogHelper");
 const { handlePokemonNotFound } = require("../utils/pokemonNotfound");
 const { pokemonInteraction } = require("../utils/pokemonInteraction");
+const { checkPokemonStatus, handleDonation } = require("../utils/pokemonDonationHelper");
 
 // Get all Pokémon for the current user
 const getAllPokemon = async (req, res, next) => {

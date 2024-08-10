@@ -6,7 +6,6 @@ const { UserModel } = require("../models/UserModel");
 const { PokedexModel } = require("../models/PokedexModel");
 const { registerToPokedex } = require("../utils/pokedexRegistration");
 const { handlePokemonNotFound } = require("../utils/pokemonNotfound");
-const { checkPokemonStatus, handleDonation } = require("../utils/pokemonDonationHelper");
 
 const checkPokemonStatus = async (pokemonId, userId) => {
     const pokemon = await PokemonModel.findById({ _id: pokemonId, user: userId });
