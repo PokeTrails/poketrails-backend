@@ -12,7 +12,8 @@ async function simulateTrail(trail, pokemonID, start, end) {
     // Simulate the trail and create an event log
     const eventKeys = Object.keys(eventList);
     const eventLog = [];
-    const numberOfEvents = Math.floor(Math.random() * 5) + 1; // Each Pokémon will encounter between 1 and 5 events
+    const trailLength = trail.length;
+    const numberOfEvents = calculateNumberOfEvents(trailLength);
 
     //Generate random dates
     const randomDates = [];
@@ -93,7 +94,7 @@ async function addEventValuesToUserAndPokemon(userId, eventLog, pokemonId) {
             runningVoucher += effect.eggVoucher;
         }
         if (effect.happiness) {
-            let rewardHap = 47; //(effect.happiness * user.happinesMulti);
+            let rewardHap = effect.happiness * user.happinesMulti;
             happinessMax = pokemon.target_happiness - pokemon.current_happiness;
             pokemon.current_happiness += Math.min(rewardHap, happinessMax);
             runningHappiness += effect.happiness * user.happinesMulti;
@@ -142,5 +143,33 @@ const transformTitle = (title) => {
             return null;
     }
 };
+
+function calculateNumberOfEvents(trailLength) {
+    let minEvents, maxEvents;
+
+    switch (trailLength) {
+        case 3600000:
+            minEvents = 1;
+            maxEvents = 3;
+            break;
+        case 10800000:
+            minEvents = 1;
+            maxEvents = 5;
+            break;
+        case 21600000:
+            minEvents = 2;
+            maxEvents = 8;
+            break;
+        case 43200000:
+            minEvents = 3;
+            maxEvents = 12;
+            break;
+    }
+
+        // Calculate a random number of events within the range
+        const numberOfEvents = Math.floor(Math.random() * (maxEvents - minEvents + 1)) + minEvents;
+
+        return numberOfEvents;
+}
 
 module.exports = { simulateTrail, addEventValuesToUserAndPokemon, resetTrailFields, transformTitle };

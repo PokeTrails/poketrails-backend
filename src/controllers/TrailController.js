@@ -41,6 +41,12 @@ const simulateTrailByID = async (req, res, next) => {
                 message: `User does not own a pokemon with id ${pokemon._id}`
             });
         }
+        
+        if (!pokemon.eggHatched) {
+            return res.status(401).json({
+                message: `Cannot send eggs on trails.`
+            });
+        }
 
         const trailLength = trail.length / user.trailMulti;
 
@@ -211,48 +217,63 @@ const getTrails = async (req, res, next) => {
 
 const deleteTrail = async (req, res, next) => {
     try {
-        const urlTitle = req.params.title;
-        const trailTitle = transformTitle(urlTitle);
+        const isAdmin = req.isAdmin;
+        if(isAdmin){
+            const urlTitle = req.params.title 
+            const trailTitle = transformTitle(urlTitle);
 
-        const result = await TrailModel.findOneAndDelete({ title: trailTitle }).exec();
-        if (!result) {
-            res.status(404).json({
-                error: "Trail not found",
+            const result = await TrailModel.findOneAndDelete({ title: trailTitle }).exec()
+            if (!result) {
+                res.status(404).json({
+                    error: "Trail not found",
+                    result: result
+                });
+            }
+
+            res.status(200).json({
+                message: "Trail deleted",
                 result: result
             });
+        } else {
+            res.status(401).json({
+                error: "Not Authorized to delete routes"
+            });
         }
-
-        res.status(200).json({
-            message: "Trail deleted",
-            result: result
-        });
-    } catch (error) {
+    } catch (error){
         next(error);
     }
 };
 
 const editTrail = async (req, res, next) => {
     try {
-        const urlTitle = req.params.title;
-        const trailTitle = transformTitle(urlTitle);
+        const isAdmin = req.isAdmin;
+        if(isAdmin){
+            const urlTitle = req.params.title 
+            const trailTitle = transformTitle(urlTitle);
 
-        const result = await TrailModel.findOneAndUpdate({ title: trailTitle }, req.body, {
-            returnDocument: "after"
-        }).exec();
-        if (!result) {
-            res.status(404).json({
-                error: "Trail not found",
+            const result = await TrailModel.findOneAndUpdate({ title: trailTitle }, req.body, {
+                returnDocument: "after"
+            }).exec()
+            if (!result) {
+                res.status(404).json({
+                    error: "Trail not found",
+                    result: result
+                });
+            }
+            res.status(200).json({
+                message: "Trail edited",
                 result: result
             });
+        } else {
+            res.status(401).json({
+                error: "Not Authorized to edit trails"
+            });
         }
-        res.status(200).json({
-            message: "Trail edited",
-            result: result
-        });
     } catch (error) {
         next(error);
     }
 };
+
 
 const getLogForPokemon = async (req, res, next) => {
     try {
