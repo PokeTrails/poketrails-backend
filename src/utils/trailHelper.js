@@ -93,7 +93,7 @@ async function addEventValuesToUserAndPokemon(userId, eventLog, pokemonId) {
             runningVoucher += effect.eggVoucher;
         }
         if (effect.happiness) {
-            let rewardHap = effect.happiness * user.happinessMulti;
+            let rewardHap = effect.happiness * user.happinesMulti;
             happinessMax = pokemon.target_happiness - pokemon.current_happiness;
             pokemon.current_happiness += Math.min(rewardHap, happinessMax);
             runningHappiness += effect.happiness * user.happinesMulti;
