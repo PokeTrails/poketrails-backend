@@ -5,14 +5,13 @@ const { UserModel } = require("../models/UserModel");
 
 const eventList = events;
 
-async function simulateTrail(trail, pokemonID, start, end) {
+async function simulateTrail(trail, pokemonId, start, end) {
     // Find the specific ID of Pokemon on the trail
-    const pokemonId = trail.onTrail.find((pokemon) => pokemon._id.toString() === pokemonID);
     const pokemon = await PokemonModel.findById(pokemonId);
+    console.log("HELPER POKEMON?" + pokemonId);
     // Simulate the trail and create an event log
     const eventKeys = Object.keys(eventList);
     const eventLog = [];
-    const trailLength = trail.length;
     const numberOfEvents = calculateNumberOfEvents(trail.title);
 
     //Generate random dates

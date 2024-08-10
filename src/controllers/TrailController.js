@@ -9,79 +9,53 @@ const {
 const PokemonModel = require("../models/PokemonModel");
 const { UserModel } = require("../models/UserModel");
 const { filterPastEntries } = require("../utils/trailLogHelper");
+const { handleEverything, handleUnauthorized, handleNotOwnedPokemon, handleNotFound } = require("../utils/globalHelpers");
 
 const simulateTrailByID = async (req, res, next) => {
     try {
+        // Find user
         const user = await UserModel.findById(req.userId).exec();
-        const trailName = req.body.title;
-        const pokemonId = req.body.pokemonId;
-
-        // Select only the trail id from the title of the trail
-        const trailDoc = await TrailModel.findOne({ title: trailName }).select("_id").exec();
-        if (!trailDoc) {
-            return res.status(404).json({ message: "Trail not found" });
-        }
-
-        const trailId = trailDoc._id;
-
-        // Find the trail and pokemon by ID
-        const trail = await TrailModel.findById(trailId).exec();
+        // Find trail and Pokemon ID from body
+        const { title: trailName, pokemonId } = req.body;
+        // Find Pokemon and trail
+        const trail = await TrailModel.findOne({ title: trailName }).exec();
         const pokemon = await PokemonModel.findById(pokemonId).exec();
 
-        if (!trail) {
-            return res.status(404).json({ message: "Trail not found" });
-        }
-
-        if (!pokemon) {
-            return res.status(404).json({ message: "Pokemon not found" });
-        }
-
+        // Error out if not found
+        if (!trail) return handleNotFound(res, "Trail");
+        if (!pokemon) return handleNotFound(res, "Pokemon");
+        // Error out if user doesnt own
         if (pokemon.user.toString() !== req.userId.toString()) {
-            return res.status(401).json({
-                message: `User does not own a pokemon with id ${pokemon._id}`
-            });
+            return handleNotOwnedPokemon(res, pokemon._id);
         }
-        
-        if (!pokemon.eggHatched) {
-            return res.status(401).json({
-                message: `Cannot send eggs on trails.`
-            });
-        }
-
-        const trailLength = trail.length / user.trailMulti;
-
-        // Add the Pokemon to the trail if not already present
-        if (!trail.onTrail.includes(pokemonId)) {
-            trail.onTrail.push(pokemonId);
-            await trail.save();
-        }
-
-        // Add the trail to the Pokemon if pokemon isn't already on a trail
-        if (!pokemon.currentlyOnTrail) {
-            pokemon.onTrailP = trail._id;
-            pokemon.onTrailTitle = trail.title;
-            pokemon.trailStartTime = new Date();
-            pokemon.trailLength = trailLength;
-            pokemon.trailFinishTime = new Date(pokemon.trailStartTime.getTime() + pokemon.trailLength);
-            pokemon.currentlyOnTrail = true;
-            await pokemon.save();
-            // Run the simulation of the Pokémon on the trail
-            const results = await simulateTrail(trail, pokemonId, pokemon.trailStartTime, pokemon.trailFinishTime);
-            return res.status(200).json(results);
-        } else {
-            return res.status(400).json({
-                message: "Pokemon is already on trail",
+        // Error out if attempting to send egg
+        if (!pokemon.eggHatched) return handleEverything(res, 401, "Cannot send eggs on trails.");
+  
+        // Check to see if on trail already
+        if (pokemon.currentlyOnTrail) {
+            return handleEverything(res, 400, "Pokemon is already on trail", {
                 timeLeft: pokemon.trailFinishTime - Date.now(),
-                sprite: pokemon.sprite
+                sprite: pokemon.sprite,
             });
         }
+
+        // Assign trail related variables on doc
+        pokemon.onTrailP = trail._id;
+        pokemon.onTrailTitle = trail.title;
+        pokemon.trailStartTime = new Date();
+        pokemon.trailLength = trail.length / user.trailMulti;
+        pokemon.trailFinishTime = new Date(pokemon.trailStartTime.getTime() + pokemon.trailLength);
+        pokemon.currentlyOnTrail = true;
+        await pokemon.save();
+
+        // Simulate events for trail
+        const results = await simulateTrail(trail, pokemonId, pokemon.trailStartTime, pokemon.trailFinishTime);
+        return handleEverything(res, 200, "Trail simulation completed: ", results);
     } catch (error) {
-        console.log("error: ", error);
+        console.log("Error in simulation: ", error);
         next(error);
     }
 };
-
-module.exports = simulateTrailByID;
 
 const finishTrail = async (req, res, next) => {
     try {
