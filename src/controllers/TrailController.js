@@ -17,7 +17,13 @@ const simulateTrailByID = async (req, res, next) => {
         const user = await UserModel.findById(req.userId).exec();
         // Find trail and Pokemon ID from body
         const { title: trailName, pokemonId } = req.body;
-        // Find Pokemon and trail
+
+        // Error out pokemonId isnt a valid JS object
+        if (!mongoose.Types.ObjectId.isValid(pokemonId)) {
+            return handleNotFound(res, "Pokemon");
+        }
+
+        // Find Pokemon and trail        
         const trail = await TrailModel.findOne({ title: trailName }).exec();
         const pokemon = await PokemonModel.findById(pokemonId).exec();
 
@@ -40,12 +46,13 @@ const simulateTrailByID = async (req, res, next) => {
         }
 
         // Assign trail related variables on doc
-        pokemon.onTrailP = trail._id;
-        pokemon.onTrailTitle = trail.title;
-        pokemon.trailStartTime = new Date();
-        pokemon.trailLength = trail.length / user.trailMulti;
+        pokemon.onTrailP = trail._id; // Assigns trail id
+        pokemon.onTrailTitle = trail.title; // Assigns trail title
+        pokemon.trailStartTime = new Date(); // Assigns trail start time
+        pokemon.trailLength = trail.length / user.trailMulti; // Calculate and assigns trail length
+        // Calculate and assigns trail finish time
         pokemon.trailFinishTime = new Date(pokemon.trailStartTime.getTime() + pokemon.trailLength);
-        pokemon.currentlyOnTrail = true;
+        pokemon.currentlyOnTrail = true; // Changes boolean on doc to true
         await pokemon.save();
 
         // Simulate events for trail
