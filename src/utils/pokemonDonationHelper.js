@@ -1,3 +1,5 @@
+const { registerToPokedex } = require("../utils/pokedexRegistration");
+
 const checkPokemonStatus = async (pokemonId, userId) => {
     // Fetch the Pokémon by ID and user ID
     const pokemon = await PokemonModel.findById({ _id: pokemonId, user: userId });
