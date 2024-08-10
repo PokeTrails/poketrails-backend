@@ -35,7 +35,7 @@ const pokemonInteraction = async (req, res, next, interaction) => {
             lastInteractionField = "lastTalked";
             lastInteraction = Pokemon.lastTalked;
             timeDifference = (Date.now() - lastInteraction) / (1000 * 60 * 60);
-            interactionHappiness = 50;
+            interactionHappiness = 2;
             cooldownHours = 1;
             maxNegativeInteractions = 10;
         } else if (interaction === "play") {
