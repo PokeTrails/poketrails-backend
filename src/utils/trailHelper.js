@@ -13,7 +13,7 @@ async function simulateTrail(trail, pokemonID, start, end) {
     const eventKeys = Object.keys(eventList);
     const eventLog = [];
     const trailLength = trail.length;
-    const numberOfEvents = calculateNumberOfEvents(trailLength);
+    const numberOfEvents = calculateNumberOfEvents(trail.title);
 
     //Generate random dates
     const randomDates = [];
@@ -144,23 +144,23 @@ const transformTitle = (title) => {
     }
 };
 
-function calculateNumberOfEvents(trailLength) {
+function calculateNumberOfEvents(trailTitle) {
     let minEvents, maxEvents;
 
-    switch (trailLength) {
-        case 3600000:
+    switch (trailTitle) {
+        case "Wild Trail":
             minEvents = 1;
             maxEvents = 3;
             break;
-        case 10800000:
+        case "Rocky Trail":
             minEvents = 1;
             maxEvents = 5;
             break;
-        case 21600000:
+        case "Frost Trail":
             minEvents = 2;
             maxEvents = 8;
             break;
-        case 43200000:
+        case "Wet Trail":
             minEvents = 3;
             maxEvents = 12;
             break;
