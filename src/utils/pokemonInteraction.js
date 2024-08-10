@@ -35,7 +35,7 @@ const pokemonInteraction = async (req, res, next, interaction) => {
             lastInteractionField = "lastTalked";
             lastInteraction = Pokemon.lastTalked;
             timeDifference = (Date.now() - lastInteraction) / (1000 * 60 * 60);
-            interactionHappiness = 2;
+            interactionHappiness = 100;
             cooldownHours = 1;
             maxNegativeInteractions = 10;
         } else if (interaction === "play") {
@@ -55,14 +55,14 @@ const pokemonInteraction = async (req, res, next, interaction) => {
         }
 
         // If enough time has passed since the last interaction, allow the interaction
-        if (!lastInteraction || timeDifference > cooldownHours) {
+        if (!lastInteraction || timeDifference > cooldownHours && Pokemon.negativeInteractionCount <= maxNegativeInteractions) {
             // Check if Pokémon's happiness is already at maximum
-            if (Pokemon.current_happiness >= Pokemon.target_happiness) {
-                return res.status(200).json({
-                    message: `${Pokemon.nickname} adores you as much as it possibly can`,
-                    current_happiness: Pokemon.current_happiness
-                });
-            }
+            // if (Pokemon.current_happiness >= Pokemon.target_happiness) {
+            //     return res.status(200).json({
+            //         message: `${Pokemon.nickname} adores you as much as it possibly can`,
+            //         current_happiness: Pokemon.current_happiness
+            //     });
+            // }
 
             // Calculate the happiness increase and update the Pokémon's happiness
             let pointsNeededToMax = Pokemon.target_happiness - Pokemon.current_happiness;
@@ -82,8 +82,16 @@ const pokemonInteraction = async (req, res, next, interaction) => {
                 }
             );
 
+            if (interaction === "talk") {
+                message = `${Pokemon.nickname} loved hearing the stories you had to tell.`;
+            } else if (interaction === "play") {
+                message = `${Pokemon.nickname} jumped around excitedly.`;
+            } else if (interaction === "feed") {
+                message = `${Pokemon.nickname} stuffed its face full of berries.`;
+            }
+
             return res.status(200).json({
-                message: `${Pokemon.nickname} loved ${interaction} with an amazing trainer such as yourself!`,
+                message: message,
                 happiness_increased: happinessAwarded,
                 current_happiness: Pokemon.current_happiness,
                 userExperienceIncreased: 50
