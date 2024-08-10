@@ -4,17 +4,22 @@ const { handlePokemonNotFound } = require("./pokemonNotfound");
 
 const pokemonInteraction = async (req, res, next, interaction) => {
     try {
+        // Find the Pokémon in the database that matches the given ID and belongs to the user
         const Pokemon = await PokemonModel.findOne({ _id: req.params.id, user: req.userId });
+
+        // If the Pokémon is not found, handle the "not found" scenario
         if (!Pokemon) {
             return handlePokemonNotFound(res, req.params.id);
         }
 
+        // If the Pokémon is still an egg, interaction is not allowed
         if (!Pokemon.eggHatched) {
             return res.status(400).json({
                 message: `Interaction cannot be performed with an egg`
             });
         }
 
+        // Fetch the user data to access happiness multiplier
         const user = await UserModel.findOne({ _id: req.userId });
         let happinessMulti = user.happinesMulti;
 
@@ -25,6 +30,7 @@ const pokemonInteraction = async (req, res, next, interaction) => {
         let cooldownHours;
         let maxNegativeInteractions;
 
+        // Determine the interaction type and set the appropriate variables
         if (interaction === "talk") {
             lastInteractionField = "lastTalked";
             lastInteraction = Pokemon.lastTalked;
@@ -48,7 +54,9 @@ const pokemonInteraction = async (req, res, next, interaction) => {
             maxNegativeInteractions = 10;
         }
 
+        // If enough time has passed since the last interaction, allow the interaction
         if (!lastInteraction || timeDifference > cooldownHours) {
+            // Check if Pokémon's happiness is already at maximum
             if (Pokemon.current_happiness >= Pokemon.target_happiness) {
                 return res.status(200).json({
                     message: `${Pokemon.nickname} adores you as much as it possibly can`,
@@ -56,12 +64,15 @@ const pokemonInteraction = async (req, res, next, interaction) => {
                 });
             }
 
+            // Calculate the happiness increase and update the Pokémon's happiness
             let pointsNeededToMax = Pokemon.target_happiness - Pokemon.current_happiness;
             const happinessAwarded = Math.min(pointsNeededToMax, interactionHappiness * happinessMulti);
             Pokemon.current_happiness += happinessAwarded;
             Pokemon.negativeInteractionCount = 0;
             Pokemon[lastInteractionField] = Date.now();
             await Pokemon.save();
+
+            // Award user experience for the successful interaction
             await UserModel.findByIdAndUpdate(
                 { _id: req.userId },
                 {
@@ -77,9 +88,14 @@ const pokemonInteraction = async (req, res, next, interaction) => {
                 current_happiness: Pokemon.current_happiness,
                 userExperienceIncreased: 50
             });
-        } else if (Pokemon.negativeInteractionCount > maxNegativeInteractions) {
+        }
+
+        // If the user interacts too often, apply a penalty to happiness
+        else if (Pokemon.negativeInteractionCount > maxNegativeInteractions) {
             Pokemon.negativeInteractionCount += 1;
             let happinessReduced;
+
+            // Reduce happiness by 5 points, or by the current happiness if it's 5 or less
             if (Pokemon.current_happiness <= 5) {
                 happinessReduced = Pokemon.current_happiness;
             } else {
@@ -87,6 +103,8 @@ const pokemonInteraction = async (req, res, next, interaction) => {
             }
             Pokemon.current_happiness -= happinessReduced;
             await Pokemon.save();
+
+            // Provide a feedback message based on the type of interaction
             let responseMessage;
             if (interaction === "talk") {
                 responseMessage = `${Pokemon.nickname} is visibly upset by your constant pestering. Please try again after ${(
@@ -104,9 +122,14 @@ const pokemonInteraction = async (req, res, next, interaction) => {
                 happiness_reduced: happinessReduced,
                 current_happiness: Pokemon.current_happiness
             });
-        } else {
+        }
+
+        // If interaction is attempted within the cooldown period, increase the negative interaction count
+        else {
             Pokemon.negativeInteractionCount += 1;
             await Pokemon.save();
+
+            // Provide a response message based on the type of interaction
             let responseMessage;
             if (interaction === "talk") {
                 responseMessage = `${Pokemon.nickname} wants some time alone, you should try talking with them later.`;
@@ -121,6 +144,7 @@ const pokemonInteraction = async (req, res, next, interaction) => {
             });
         }
     } catch (error) {
+        // Pass any errors to the next middleware for handling
         next(error);
     }
 };
