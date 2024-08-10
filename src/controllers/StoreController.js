@@ -52,14 +52,15 @@ const viewItem = async (req, res, next) => {
         }
         if (shopItem.isFullyUpgraded) {
             // If the item is fully upgraded, return a special response
+            let maxDescription = `${shopItem.description} \n \n This item is at its max level and cannot be upgraded any further.`;
             return res.status(200).json({
                 itemName: shopItem.itemName,
-                price: "Max",
+                price: 0,
                 level: "Max",
                 owned: shopItem.owned,
                 isFullyUpgraded: shopItem.isFullyUpgraded,
                 _id: shopItem._id,
-                description: "This item is at its max level and cannot be upgraded any further."
+                description: `${maxDescription}`
             });
         }
         // If the item is not fully upgraded, return the item as it is
