@@ -7,38 +7,9 @@ const { PokedexModel } = require("../models/PokedexModel");
 const { registerToPokedex } = require("../utils/pokedexRegistration");
 const { filterPastEntries } = require("../utils/trailLogHelper");
 
-// const createPokemon = async (req, res, next) => {
-//     try {
-//         // Find the user's party
-//         const userParty = await PartyModel.findOne({ user: req.userId });
-//         // Check if the party has less than the maximum allowed Pokémon
-//         if (userParty.slots.length >= 6) {
-//             return res.status(400).json({
-//                 message: "Party already has the maximum number of Pokemon"
-//             });
-//         }
-//         const user = await UserModel.findOne({ _id: req.userId });
-//         let shinyMulti = user.shinyMulti;
-//         //Fetch pokemon data
-//         const pokemonData = await getPokemon(shinyMulti);
-
-//         //Create a new Pokemon
-//         let newPokemon = new PokemonModel(pokemonData);
-//         newPokemon.user = req.userId;
-//         let hoursToAdd = newPokemon.is_mythical || newPokemon.is_legendary || newPokemon.isShiny ? 8 : 6;
-//         newPokemon.eggHatchETA = Date.now() + hoursToAdd * 60 * 60 * 1000;
-//         //SavePokemon
-//         const savedPokemon = await newPokemon.save();
-//         // Add the new Pokémon to the user's party
-//         userParty.slots.push(savedPokemon._id);
-//         await userParty.save();
-//         res.status(201).json({
-//             message: `Pokemon egg accquired with id: ${savedPokemon._id}`
-//         });
-//     } catch (error) {
-//         next(error);
-//     }
-// };
+const handlePokemonNotFound = (res, id) => {
+    return res.status(404).json({ message: `User does not own a pokemon with id ${id}` });
+};
 
 const getAllPokemon = async (req, res, next) => {
     try {
@@ -64,11 +35,10 @@ const getPokemonByID = async (req, res, next) => {
     try {
         const pokemon = await PokemonModel.findOne(
             { _id: req.params.id, user: req.userId },
-            //exclude below items from response
             { evolution: 0, user: 0, updatedAt: 0, __v: 0 }
         );
         if (!pokemon) {
-            return res.status(404).json({ message: `User does not own a pokemon with id ${req.params.id}` });
+            return handlePokemonNotFound(res, req.params.id);
         }
         // If the egg has already hatched, return the details
         if (pokemon.eggHatched && !pokemon.donated) {
@@ -93,14 +63,6 @@ const getPokemonByID = async (req, res, next) => {
                 donated: pokemon.donated
             });
         } else {
-            // let hoursToAdd = pokemon.is_mythical || pokemon.is_legendary || pokemon.isShiny ? 8 : 6;
-            // // Convert the created time to a Date object
-            // let ISO = new Date(pokemon.createdAt);
-            // // Convert the additional hours to milliseconds
-            // let millisecondsToAdd = hoursToAdd * 60 * 60 * 1000;
-            // // Calculate the hatch ETA by adding milliseconds to the creation time
-            // let hatchETA = ISO.getTime() + millisecondsToAdd;
-            // // Get the current time in milliseconds
             let current = Date.now();
             // Check if the hatch ETA has passed
             if (pokemon.eggHatchETA >= current) {
@@ -135,7 +97,7 @@ const editPokemonNicknameByID = async (req, res, next) => {
             { new: true }
         );
         if (!updatedPokemon) {
-            return res.status(404).json({
+            return res.status().json({
                 message: `User does not own a pokemon with id ${req.params.id}`
             });
         }
@@ -145,7 +107,6 @@ const editPokemonNicknameByID = async (req, res, next) => {
     }
 };
 
-//Admin Route - to be nullififed later
 const hatchPokemonByID = async (req, res, next) => {
     try {
         const pokemon = await PokemonModel.findOne(
@@ -154,20 +115,11 @@ const hatchPokemonByID = async (req, res, next) => {
             { evolution: 0, user: 0, updatedAt: 0, __v: 0 }
         );
         if (!pokemon) {
-            return res.status(404).json({ message: `User does not own a pokemon with id ${req.params.id}` });
+            return handlePokemonNotFound(res, req.params.id);
         }
         if (pokemon.eggHatched) {
             return res.status(400).json({ message: `Pokemon with ${req.params.id} is already hatched` });
         }
-        // Determine hours to add based on properties (mythical, legendary, or shiny)
-        // let hoursToAdd = pokemon.is_mythical || pokemon.is_legendary || pokemon.isShiny ? 8 : 6;
-        // // Convert the created time to a Date object
-        // let ISO = new Date(pokemon.createdAt);
-        // // Convert the additional hours to milliseconds
-        // let millisecondsToAdd = hoursToAdd * 60 * 60 * 1000;
-        // // Calculate the hatch ETA by adding milliseconds to the creation time
-        // let hatchETA = ISO.getTime() + millisecondsToAdd;
-        // Get the current time in milliseconds
         let current = Date.now();
         // Check if the hatch ETA has passed
         if (pokemon.eggHatchETA >= current) {
@@ -205,10 +157,9 @@ const donatePokemonByID = async (req, res, next) => {
     try {
         const Pokemon = await PokemonModel.findById({ _id: req.params.id, user: req.userId });
         if (!Pokemon) {
-            return res.status(404).json({
-                message: `User does not own a pokemon with id ${req.params.id}`
-            });
-        } else if (Pokemon.donated) {
+            return handlePokemonNotFound(res, req.params.id);
+        }
+        if (Pokemon.donated) {
             return res.status(400).json({
                 message: `Pokemon with id ${req.params.id} is already donated`
             });
@@ -254,9 +205,7 @@ const donatePreviewPokemonByID = async (req, res, next) => {
     try {
         const Pokemon = await PokemonModel.findById({ _id: req.params.id, user: req.userId });
         if (!Pokemon) {
-            return res.status(404).json({
-                message: `User does not own a pokemon with id ${req.params.id}`
-            });
+            return handlePokemonNotFound(res, req.params.id);
         } else if (Pokemon.donated) {
             return res.status(400).json({
                 message: `Pokemon with id ${req.params.id} is already donated`
@@ -282,9 +231,7 @@ const pokemonInteractionTalk = async (req, res, next) => {
     try {
         const Pokemon = await PokemonModel.findOne({ _id: req.params.id, user: req.userId });
         if (!Pokemon) {
-            return res.status(404).json({
-                message: `User does not own a pokemon with id ${req.params.id}`
-            });
+            return handlePokemonNotFound(res, req.params.id);
         }
         const user = await UserModel.findOne({ _id: req.userId });
         let happinesMulti = user.happinesMulti;
@@ -354,9 +301,7 @@ const pokemonInteractionPlay = async (req, res, next) => {
     try {
         const Pokemon = await PokemonModel.findOne({ _id: req.params.id, user: req.userId });
         if (!Pokemon) {
-            return res.status(404).json({
-                message: `User does not own a pokemon with id ${req.params.id}`
-            });
+            return handlePokemonNotFound(res, req.params.id);
         }
         if (!Pokemon.eggHatched) {
             return res.status(400).json({
@@ -426,9 +371,7 @@ const pokemonInteractionFeed = async (req, res, next) => {
     try {
         const Pokemon = await PokemonModel.findOne({ _id: req.params.id, user: req.userId });
         if (!Pokemon) {
-            return res.status(404).json({
-                message: `User does not own a pokemon with id ${req.params.id}`
-            });
+            return handlePokemonNotFound(res, req.params.id);
         }
         if (!Pokemon.eggHatched) {
             return res.status(400).json({
@@ -499,7 +442,7 @@ const evolvePokemonByID = async (req, res, next) => {
     try {
         const pokemon = await PokemonModel.findOne({ _id: req.params.id, user: req.userId });
         if (!pokemon) {
-            return res.status(404).json({ message: `User does not own a pokemon with id ${req.params.id}` });
+            return handlePokemonNotFound(res, req.params.id);
         }
         if (pokemon.current_level == pokemon.max_level) {
             return res.status(400).json({ message: "Pokemon is maxed out." });
