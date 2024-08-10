@@ -1,3 +1,5 @@
+const { PokedexModel } = require("../models/PokedexModel");
+
 async function registerToPokedex(newPokemon, userId) {
     // Check if the Pokémon species is already registered in the user's Pokédex
     let userPokedexData = await PokedexModel.findOne({ user: userId, species_id: newPokemon.species_id });
@@ -15,3 +17,5 @@ async function registerToPokedex(newPokemon, userId) {
         await userPokedex.save(); // Save the new Pokédex entry to the database
     }
 }
+
+module.exports = { registerToPokedex };
