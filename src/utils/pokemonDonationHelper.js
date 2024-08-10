@@ -1,5 +1,9 @@
 const { registerToPokedex } = require("./pokedexRegistration");
 const PokemonModel = require("../models/PokemonModel");
+const { UserModel } = require("../models/UserModel");
+const { PartyModel } = require("../models/PartyModel");
+const { PokedexModel } = require("../models/PokedexModel");
+const { calculateDonationReward } = require("./pokemonHelper");
 
 const checkPokemonStatus = async (pokemonId, userId) => {
     // Fetch the Pokémon by ID and user ID
