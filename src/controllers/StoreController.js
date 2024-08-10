@@ -47,7 +47,8 @@ const viewItem = async (req, res, next) => {
                 level: "Max",
                 owned: shopItem.owned,
                 isFullyUpgraded: shopItem.isFullyUpgraded,
-                _id: shopItem._id
+                _id: shopItem._id,
+                description: "This item is at its max level and cannot be upgraded any further."
             });
         }
         return res.status(200).json(shopItem);
@@ -74,9 +75,7 @@ const buyItem = async (req, res, next) => {
 
         if (balance < shopItem.price) {
             return res.status(400).json({
-                message: `Insufficent balance, user requires ${shopItem.price - balance} ${
-                    shopItem.isEgg ? "voucher" : "currency"
-                } to buy this item.`
+                message: `Insufficent balance, user requires ${shopItem.price - balance} ${shopItem.isEgg ? "voucher" : "currency"} to buy this item.`
             });
         }
         if (shopItem.isEgg) {
