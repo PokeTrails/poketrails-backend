@@ -48,7 +48,8 @@ async function seedUsers() {
             trainerName: `user${i}`,
             password: `user${i}`,
             trainerSprite: `user${i}`,
-            balance: 100000
+            balance: 100000,
+            eggVoucher: 6
         });
         const party = await PartyModel.create({
             slots: [],
@@ -59,13 +60,13 @@ async function seedUsers() {
             egg = 1;
             hatched = 0;
         } else if (i == 2) {
-            egg = 3;
-            hatched = 3;
+            egg = 1;
+            hatched = 0;
         } else if (i == 3) {
             egg = 6;
-            hatched = 5;
+            hatched = 6;
         } else if (i == 4) {
-            egg = 0;
+            egg = 1;
             hatched = 0;
         }
         await assignPokemon(user, egg, party, hatched);
@@ -80,6 +81,7 @@ async function seedTrails() {
         buffedTypes: ["Grass", "Bug", "Poison"],
         onTrail: [],
         length: 3600000 // 1 HOUR
+
     };
 
     const trail2 = {
@@ -131,7 +133,7 @@ async function assignPokemon(user, egg, party, hatched) {
         }
         let hoursToAdd = newPokemon.is_mythical || newPokemon.is_legendary || newPokemon.isShiny ? 8 : 6;
         // newPokemon.eggHatchETA = Date.now() + hoursToAdd * 60 * 60 * 1000;
-        newPokemon.eggHatchETA = Date.now() + 0.01;
+        newPokemon.eggHatchETA = Date.now() + 0.1;
         //SavePokemon
         const savedPokemon = await newPokemon.save();
         //Register to pokdex

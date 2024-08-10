@@ -59,6 +59,7 @@ const simulateTrailByID = async (req, res, next) => {
         // Add the trail to the Pokemon if pokemon isn't already on a trail
         if (!pokemon.currentlyOnTrail) {
             pokemon.onTrailP = trail._id;
+            pokemon.onTrailTitle = trail.title;
             pokemon.trailStartTime = new Date();
             pokemon.trailLength = trailLength;
             pokemon.trailFinishTime = new Date(pokemon.trailStartTime.getTime() + pokemon.trailLength);
@@ -70,7 +71,8 @@ const simulateTrailByID = async (req, res, next) => {
         } else {
             return res.status(400).json({
                 message: "Pokemon is already on trail",
-                timeLeft: pokemon.trailFinishTime - Date.now()
+                timeLeft: pokemon.trailFinishTime - Date.now(),
+                sprite: pokemon.sprite
             });
         }
     } catch (error) {
@@ -159,7 +161,8 @@ const finishTrail = async (req, res, next) => {
                 happiness: updatedPokemon.current_happiness,
                 runningBalance: runningBalance,
                 runningVoucher: runningVoucher,
-                runningHappiness: runningHappiness
+                runningHappiness: runningHappiness,
+                sprite: updatedPokemon.sprite
             });
         } else if (!trailDone) {
             res.status(400).json({
