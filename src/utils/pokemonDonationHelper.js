@@ -1,4 +1,5 @@
 const { registerToPokedex } = require("./pokedexRegistration");
+const { PokemonModel } = require("../models/PokemonModel");
 
 const checkPokemonStatus = async (pokemonId, userId) => {
     // Fetch the Pokémon by ID and user ID
@@ -62,3 +63,5 @@ const handleDonation = async (pokemon, userId) => {
         sprite: updatedPokemon.sprite
     };
 };
+
+module.exports = { checkPokemonStatus , handleDonation};

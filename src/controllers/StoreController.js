@@ -116,7 +116,7 @@ const buyItem = async (req, res, next) => {
             // Create a new Pokémon with the fetched data
             let newPokemon = new PokemonModel(pokemonData);
             newPokemon.user = req.userId; // Assign the Pokémon to the user
-            let hoursToAdd = newPokemon.is_mythical || newPokemon.is_legendary || newPokemon.isShiny ? 8 : 6; // Set hatch time based on rarity
+            let hoursToAdd = newPokemon.is_mythical || newPokemon.is_legendary || newPokemon.isShiny ? 0 : 6; // Set hatch time based on rarity
             newPokemon.eggHatchETA = Date.now() + hoursToAdd * 60 * 60 * 1000; // Set the egg hatch ETA
             const savedPokemon = await newPokemon.save(); // Save the new Pokémon
             userParty.slots.push(savedPokemon._id); // Add the new Pokémon to the user's party
