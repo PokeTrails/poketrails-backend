@@ -6,38 +6,33 @@ const { UserModel } = require("../models/UserModel");
 const eventList = events;
 
 async function simulateTrail(trail, pokemonId, start, end) {
-    // Find the specific ID of Pokemon on the trail
-    const pokemon = await PokemonModel.findById(pokemonId);
-    console.log("HELPER POKEMON?" + pokemonId);
-    // Simulate the trail and create an event log
+    // Find pokemon
+    const pokemon = await PokemonModel.findById(pokemonId).exec();
+
+    // Initialise events and trail variables
     const eventKeys = Object.keys(eventList);
     const eventLog = [];
     const numberOfEvents = calculateNumberOfEvents(trail.title);
 
-    //Generate random dates
+    // Generate random dates
     const randomDates = [];
     for (let i = 0; i < numberOfEvents; i++) {
         randomDates.push(getRandomDateBetween(start, end));
     }
     randomDates.sort((a, b) => a - b);
     let formattedDates = randomDates.map((date) => formatDate(date) + " \n");
-    console.log(formattedDates);
 
-    // Generate random Keys
+
+    // Generate random events and assign the dates
     for (let i = 0; i < numberOfEvents; i++) {
         const randomEventKey = formattedDates[i] + eventKeys[Math.floor(Math.random() * eventKeys.length)];
         eventLog.push(randomEventKey);
     }
 
-    // Get the values from the keys
-    eventLog.forEach((event) => {
-        const effect = eventList[event];
-        // console.log(`Event: ${event}, Effect: ${JSON.stringify(effect)}`);
-    });
     pokemon.trailLog.push(...eventLog);
     await pokemon.save();
 
-    milliSecondsLeft = pokemon.trailFinishTime - Date.now();
+    const milliSecondsLeft = pokemon.trailFinishTime - Date.now();
 
     return {
         timeLeft: milliSecondsLeft,
@@ -74,13 +69,11 @@ const updateEventLogs = (logs) => {
 async function addEventValuesToUserAndPokemon(userId, eventLog, pokemonId) {
     const user = await UserModel.findById(userId);
     const pokemon = await PokemonModel.findById(pokemonId);
-    console.log(pokemon + " ASDHASDHASDHas");
 
     let runningBalance = 0;
     let runningVoucher = 0;
     let runningHappiness = 0;
     let updatedeventLog = updateEventLogs(eventLog);
-    console.log(updateEventLogs);
 
     updatedeventLog.forEach((event) => {
         const effect = events[event];
