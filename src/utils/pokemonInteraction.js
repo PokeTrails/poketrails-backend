@@ -35,7 +35,7 @@ const pokemonInteraction = async (req, res, next, interaction) => {
             lastInteractionField = "lastTalked";
             lastInteraction = Pokemon.lastTalked;
             timeDifference = (Date.now() - lastInteraction) / (1000 * 60 * 60);
-            interactionHappiness = 100;
+            interactionHappiness = 2;
             cooldownHours = 1;
             maxNegativeInteractions = 10;
         } else if (interaction === "play") {
@@ -67,6 +67,7 @@ const pokemonInteraction = async (req, res, next, interaction) => {
             // Calculate the happiness increase and update the Pokémon's happiness
             let pointsNeededToMax = Pokemon.target_happiness - Pokemon.current_happiness;
             const happinessAwarded = Math.min(pointsNeededToMax, interactionHappiness * happinessMulti);
+
             Pokemon.current_happiness += happinessAwarded;
             Pokemon.negativeInteractionCount = 0;
             Pokemon[lastInteractionField] = Date.now();
