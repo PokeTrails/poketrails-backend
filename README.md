@@ -193,8 +193,31 @@ Supertest is used in our application as an HTTP assertion library to test the AP
 
 (Project management desciption, process, organisation and plannign)
 
-Other planning as well (discord, meetings etc)
+Much like our part A we used Trello as our main way of delgating tasks, tracking progress and setting due dates. We made extensive use of trello and its features to make the planning process simple and streamlined. On each Saturday we would update the trello board for new tasks to do during the coming week. 
 
-Link to trello board
+Meeting had scheduled days on Saturday, Tuesday and Monday with meetings throughout the weeks if we had questions for each other or needed help. Our main way of organising these meetings were through discord, in the discord we then had a stored google meet link where we had conducted all our meetings. Using the discord server we had made was our main way of communicating and ideas or issue we had came accross in the development process.
 
-### Screenshots of Trello Board
+### Link to trello board
+https://trello.com/invite/b/669b18e0faa87fa32c418964/ATTIef84d454f45509425d385b66783bf697737FC9C0/t3a2-fullstack-app-partb
+
+## Screenshots of Trello Board
+#### 21/07
+![21/07 Screenshot](./images/21-07.png)
+
+#### 24/07
+![24/07 Screenshot](./images/24-07.png)
+
+#### 27/07
+![27/07 Screenshot](./images/27-07.png)
+
+#### 30/07
+![30/07 Screenshot](./images/30-07.png)
+
+#### 01/08
+![01/08 Screenshot](./images/01-08.png)
+
+#### 06/08
+![06/08 Screenshot](./images/06-08.png)
+
+#### 11/08
+![11/08 Screenshot](./images/11-08.png)
