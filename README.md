@@ -64,220 +64,70 @@ PASSWORD: user3
 
 ## Endpoints
 
-### Login Route
-
-- URL `http://localhost:8080/login`
-- Method: `POST`
-- Body:`{"username": "abc",  "password": "abc"}`
-
-### Pokemon Route
-
-#### Create a New Pokémon
-
-- URL `http://localhost:8080/pokemon`
-
-- Method: `POST`
-- Access: Protected (requires JWT token)
-
-#### Get All Pokémon for the Authenticated User
-
-- URL `http://localhost:8080/pokemon`
-- Method: `GET`
-- Access: Protected (requires JWT token)
-
-#### Get All donated Pokémon
-
-- URL `http://localhost:8080/pokemon/donated`
-- Method: `GET`
-- Access: Protected (requires JWT token)
-
-#### Get Pokémon by ID
-
-- URL `http://localhost:8080/pokemon/:pokemonID`
-- Method: `GET`
-- Access: Protected (requires JWT token)
-
-#### Set/Edit Pokémon Nickname by Pokémon ID
-
-- URL `http://localhost:8080/pokemon/nickname/:pokemonID`
-- Method: PATCH
-- Access: Protected (requires JWT token)
-- Body: `{"nickname": "<NewNickname>"}`
-
-#### Hatch Pokémon Nickname by Pokémon ID
-
-- URL `http://localhost:8080/pokemon/hatch/:pokemonID`
-- Method: PATCH
-- Access: Protected (requires JWT token)
-
-#### Donate Pokémon Nickname by Pokémon ID
-
-- URL `http://localhost:8080/pokemon/donate/:pokemonID`
-- Method: PATCH
-- Access: Protected (requires JWT token)
-
-#### View Donation reward of Pokémon by Pokémon ID
-
-- URL `http://localhost:8080/pokemon/donate/reward/:pokemonID`
-- Method: GET
-- Access: Protected (requires JWT token)
-
-#### Talk with Pokémon by Pokémon ID
-
-- URL `http://localhost:8080/pokemon/talk/:pokemonID`
-- Method: PATCH
-- Access: Protected (requires JWT token)
-
-#### Play with Pokémon by Pokémon ID
-
-- URL `http://localhost:8080/pokemon/play/:pokemonID`
-- Method: PATCH
-- Access: Protected (requires JWT token)
-
-#### Feed with Pokémon by Pokémon ID
-
-- URL `http://localhost:8080/pokemon/feed/:pokemonID`
-- Method: PATCH
-- Access: Protected (requires JWT token)
-
-#### Evolve with Pokémon by Pokémon ID
-
-- URL `http://localhost:8080/pokemon/evolve/:pokemonID`
-- Method: PATCH
-- Access: Protected (requires JWT token)
-
-### Pokedex Route
-
-- URL `http://localhost:8080/pokedex`
-- Method: GET
-- Access: Protected (requires JWT token)
-
-### Party Route
-
-#### Get party details for the Authenticated User
-
-- URL `http://localhost:8080/party`
-- Method: `GET`
-- Access: Protected (requires JWT token)
-
-### Store Route
-
-#### Get all items in the store
-
-- URL `http://localhost:8080/store`
-- Method: `GET`
-- Access: Protected (requires JWT token)
-
-#### View individual items in the store by id
-
-- URL `http://localhost:8080/store/view/:id`
-- Method: `GET`
-- Access: Protected (requires JWT token)
-
-#### Buy individual items in the store by id
-
-- URL `http://localhost:8080/store/buy/:id`
-- Method: `PATCH`
-- Access: Protected (requires JWT token)
-
-### User Route
-
-#### Create a New user
-
-- URL `http://localhost:8080/user/signup`
-
-- Method: `POST`
-
-- Body `{username: "James", trainerName: "James3", sprite: "boySprite", password: "password"}`
-
-#### Login a User
-
-- URL `http://localhost:8080/user/login`
-
-- Method: `POST`
-
-- Body `{username: "James", password: "password"}`
-
-#### Delete a User
-
-- URL `http://localhost:8080/user/delete/(userID)`
-
-- Method: `DELETE`
-
-- Access: Protected (requires JWT token)
-
-#### Edit a User
-
-- URL `http://localhost:8080/user/patch/(userID)`
-
-- Method: `PATCH`
-
-- Access: Protected (requires JWT token)
-
-#### Find a User
-
-- URL `http://localhost:8080/user/find/(userID)`
-
-- Method: `GET`
-
-- Access: Protected (requires JWT token)
-
-#### Find all Users
-
-- URL `http://localhost:8080/user`
-
-- Method: `GET`
-
-- Access: Protected (requires JWT token)
-
-### Trail Route
-
-
-#### Send on Trail
-
-- URL `http://localhost:8080/trail/simulate`
-
-- Method: `POST`
-
-- Body:`{"title": "Wild Trail",  "pokemonId": "12123123aseasdasda"}`
-
-- Access: Protected (requires JWT token)
-
-#### Finish Trail
-
-- URL `http://localhost:8080/trail/finish`
-
-- Method: `POST`
-
-- Body:`{"pokemonId": "12123123aseasdasda"}`
-
-- Access: Protected (requires JWT token)
-
-#### Find a Trail
-
-- URL `http://localhost:8080/trail/:trailtitle` (Wet Trail = wettrail)
-
-- Method: `GET`
-
-#### Get all trails
-
-- URL `http://localhost:8080/trail/`
-
-- Method: `GET`
-
-#### Delete Trail
-
-- URL `http://localhost:8080/trail/:trailtitle` (Wet Trail = wettrail)
-
-- Method: `DELETE`
-
-#### Patch Trail
-
-- URL `http://localhost:8080/trail/:trailtitle` (Wet Trail = wettrail)
-
-- Method: `PATCH`
-
-- Body: Any of the fields present on Trail Model e.g `{"length": "12030"}`
+### Authentication
+
+| **Operation** | **URL**                | **Method** | **Body**                                   | **Access**           |
+|---------------|------------------------|------------|--------------------------------------------|----------------------|
+| Login          | `/login`                | POST       | `{"username": "abc", "password": "abc"}`   | Public               |
+
+### Pokémon
+
+| **Operation**                       | **URL**                                | **Method** | **Body**                      | **Access**           |
+|-------------------------------------|----------------------------------------|------------|-------------------------------|----------------------|
+| Create a New Pokémon                | `/pokemon`                             | POST       | -                             | Protected (JWT)      |
+| Get All Pokémon                     | `/pokemon`                             | GET        | -                             | Protected (JWT)      |
+| Get All Donated Pokémon             | `/pokemon/donated`                     | GET        | -                             | Protected (JWT)      |
+| Get Pokémon by ID                   | `/pokemon/:pokemonID`                  | GET        | -                             | Protected (JWT)      |
+| Set/Edit Pokémon Nickname           | `/pokemon/nickname/:pokemonID`         | PATCH      | `{"nickname": "<NewNickname>"}` | Protected (JWT)      |
+| Hatch Pokémon                       | `/pokemon/hatch/:pokemonID`            | PATCH      | -                             | Protected (JWT)      |
+| Donate Pokémon                      | `/pokemon/donate/:pokemonID`           | PATCH      | -                             | Protected (JWT)      |
+| View Donation Reward                | `/pokemon/donate/reward/:pokemonID`    | GET        | -                             | Protected (JWT)      |
+| Talk with Pokémon                   | `/pokemon/talk/:pokemonID`             | PATCH      | -                             | Protected (JWT)      |
+| Play with Pokémon                   | `/pokemon/play/:pokemonID`             | PATCH      | -                             | Protected (JWT)      |
+| Feed Pokémon                        | `/pokemon/feed/:pokemonID`             | PATCH      | -                             | Protected (JWT)      |
+| Evolve Pokémon                      | `/pokemon/evolve/:pokemonID`           | PATCH      | -                             | Protected (JWT)      |
+
+### Pokedex
+
+| **Operation**       | **URL**            | **Method** | **Body** | **Access**           |
+|---------------------|--------------------|------------|----------|----------------------|
+| Get Pokedex Data    | `/pokedex`         | GET        | -        | Protected (JWT)      |
+
+### Party
+
+| **Operation**                      | **URL**           | **Method** | **Body** | **Access**           |
+|------------------------------------|-------------------|------------|----------|----------------------|
+| Get Party Details                  | `/party`          | GET        | -        | Protected (JWT)      |
+
+### Store
+
+| **Operation**           | **URL**                   | **Method** | **Body** | **Access**           |
+|-------------------------|---------------------------|------------|----------|----------------------|
+| Get All Items           | `/store`                  | GET        | -        | Protected (JWT)      |
+| View Item by ID         | `/store/view/:id`         | GET        | -        | Protected (JWT)      |
+| Buy Item by ID          | `/store/buy/:id`          | PATCH      | -        | Protected (JWT)      |
+
+### User
+
+| **Operation**         | **URL**                 | **Method** | **Body**                                                       | **Access**           |
+|-----------------------|-------------------------|------------|----------------------------------------------------------------|----------------------|
+| Create a New User     | `/user/signup`          | POST       | `{"username": "James", "trainerName": "James3", "sprite": "boySprite", "password": "password"}` | Public               |
+| Login a User          | `/user/login`           | POST       | `{"username": "James", "password": "password"}`               | Public               |
+| Delete a User         | `/user/delete/:userID`  | DELETE     | -                                                              | Protected (JWT)      |
+| Edit a User           | `/user/patch/:userID`   | PATCH      | -                                                              | Protected (JWT)      |
+| Find a User by ID     | `/user/find/:userID`    | GET        | -                                                              | Protected (JWT)      |
+| Find All Users        | `/user`                 | GET        | -                                                              | Protected (JWT)      |
+
+### Trail
+
+| **Operation**         | **URL**                          | **Method** | **Body**                                             | **Access**           |
+|-----------------------|----------------------------------|------------|------------------------------------------------------|----------------------|
+| Send on Trail         | `/trail/simulate`                 | POST       | `{"title": "Wild Trail", "pokemonId": "12123123aseasdasda"}` | Protected (JWT)      |
+| Finish Trail          | `/trail/finish`                  | POST       | `{"pokemonId": "12123123aseasdasda"}`                | Protected (JWT)      |
+| Find a Trail by Title | `/trail/:trailtitle` (e.g., `wettrail`) | GET        | -                                                    | -                    |
+| Get All Trails        | `/trail/`                        | GET        | -                                                    | -                    |
+| Delete a Trail by Title | `/trail/:trailtitle` (e.g., `wettrail`) | DELETE     | -                                                    | -                    |
+| Patch a Trail by Title | `/trail/:trailtitle` (e.g., `wettrail`) | PATCH      | Any fields present on Trail Model (e.g., `{"length": "12030"}`) | -                    |
 
 ## Libaries Used
 
