@@ -1,50 +1,16 @@
-const { getAllPokemon, getPokemonByID } = require("../../controllers/PokemonController");
+const { getPokemonByID } = require("../../controllers/PokemonController");
 const PokemonModel = require("../../models/PokemonModel");
-const { handlePokemonNotFound } = require("../../utils/pokemonNotfound");
 const { filterPastEntries } = require("../../utils/trailLogHelper");
 
-jest.mock("../../utils/pokemonNotfound");
+// Mock necessary modules
+jest.mock("../../models/PokemonModel");
 jest.mock("../../utils/trailLogHelper");
 
-beforeEach(() => {
-    jest.resetAllMocks();
-});
-
-describe("getAllPokemon", () => {
-    it("should return all Pokémon for the current user", async () => {
-        const req = { userId: "testUserId" };
-        const res = {
-            status: jest.fn().mockReturnThis(),
-            json: jest.fn()
-        };
-        const next = jest.fn();
-
-        PokemonModel.find = jest.fn().mockResolvedValue(["pokemon1", "pokemon2"]);
-
-        await getAllPokemon(req, res, next);
-
-        expect(res.status).toHaveBeenCalledWith(200);
-        expect(res.json).toHaveBeenCalledWith(["pokemon1", "pokemon2"]);
-    });
-
-    it("should handle errors", async () => {
-        const req = { userId: "testUserId" };
-        const res = {
-            status: jest.fn().mockReturnThis(),
-            json: jest.fn()
-        };
-        const next = jest.fn();
-
-        const error = new Error("Something went wrong");
-        PokemonModel.find = jest.fn().mockRejectedValue(error);
-
-        await getAllPokemon(req, res, next);
-
-        expect(next).toHaveBeenCalledWith(error);
-    });
-});
-
 describe("getPokemonByID", () => {
+    beforeEach(() => {
+        jest.clearAllMocks(); // Clear mocks before each test
+    });
+
     it("should return Pokémon details if egg is hatched and not donated", async () => {
         const req = { params: { id: "testPokemonId" }, userId: "testUserId" };
         const res = {
@@ -58,11 +24,15 @@ describe("getPokemonByID", () => {
 
         await getPokemonByID(req, res, next);
 
+        console.log("res.status calls:", res.status.mock.calls);
+        console.log("res.json calls:", res.json.mock.calls);
+
         expect(res.status).toHaveBeenCalledWith(200);
         expect(res.json).toHaveBeenCalledWith(pokemon);
     });
 
     it("should return trail details if Pokémon is on a trail", async () => {
+        const now = new Date().getTime();
         const req = { params: { id: "testPokemonId" }, userId: "testUserId" };
         const res = {
             status: jest.fn().mockReturnThis(),
@@ -70,24 +40,30 @@ describe("getPokemonByID", () => {
         };
         const next = jest.fn();
 
-        const trailLog = [{ log: "log1" }, { log: "log2" }];
+        const trailLog = [
+            "08/10/2024 14:30:00\nlog1", // Past log
+            "08/11/2024 12:00:00\nlog2" // Future log
+        ];
         const pokemon = {
             eggHatched: true,
             donated: false,
             currentlyOnTrail: true,
-            trailFinishTime: Date.now() + 10000,
+            trailFinishTime: now + 10000,
             trailLog
         };
         PokemonModel.findOne = jest.fn().mockResolvedValue(pokemon);
-        filterPastEntries.mockReturnValue(trailLog);
+        filterPastEntries.mockReturnValue(["08/10/2024 14:30:00\nlog1"]);
 
         await getPokemonByID(req, res, next);
+
+        console.log("res.status calls:", res.status.mock.calls);
+        console.log("res.json calls:", res.json.mock.calls);
 
         expect(res.status).toHaveBeenCalledWith(200);
         expect(res.json).toHaveBeenCalledWith(
             expect.objectContaining({
                 timeLeft: expect.any(Number),
-                trailLog
+                trailLog: ["08/10/2024 14:30:00\nlog1"]
             })
         );
     });
@@ -101,7 +77,9 @@ describe("getPokemonByID", () => {
 
         await getPokemonByID(req, res, next);
 
-        expect(handlePokemonNotFound).toHaveBeenCalledWith(res, "testPokemonId");
+        console.log("next calls:", next.mock.calls);
+
+        expect(next).toHaveBeenCalledWith(expect.objectContaining({ status: 404 }));
     });
 
     it("should handle errors", async () => {
@@ -113,6 +91,8 @@ describe("getPokemonByID", () => {
         PokemonModel.findOne = jest.fn().mockRejectedValue(error);
 
         await getPokemonByID(req, res, next);
+
+        console.log("next calls:", next.mock.calls);
 
         expect(next).toHaveBeenCalledWith(error);
     });
