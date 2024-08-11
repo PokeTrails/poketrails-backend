@@ -183,4 +183,4 @@ const config = {
     // watchman: true,
 };
 
-module.exports = config;
+module.exports = { config };
