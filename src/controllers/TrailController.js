@@ -79,7 +79,7 @@ const simulateTrailByID = async (req, res, next) => {
         pokemon.onTrailP = trail._id; // Assigns trail id
         pokemon.onTrailTitle = trail.title; // Assigns trail title
         pokemon.trailStartTime = new Date(); // Assigns trail start time
-        pokemon.trailLength = trail.length / 3600000 // user.trailMulti; // Calculate and assigns trail length
+        pokemon.trailLength = trail.length / user.trailMulti; // Calculate and assigns trail length
         // Calculate and assigns trail finish time
         pokemon.trailFinishTime = new Date(pokemon.trailStartTime.getTime() + pokemon.trailLength);
         pokemon.currentlyOnTrail = true; // Changes boolean on doc to true
