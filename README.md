@@ -265,15 +265,32 @@ For additional context and visualization, screenshots of the testing processes a
 
 ### Back-end Testing
 
-(Suraj)
+![Server Testing](./docs/testing/ServerTesting.png)
 
-## Screenshots of Live Application (Suraj)
+## Trello Project Management (Part B)
 
-## Project Management
+Much like our Part A, we utilized Trello as our primary tool for delegating tasks, tracking progress, and setting due dates. Trello's intuitive interface allowed us to effectively organize our workflow and ensure that every team member was aware of their responsibilities. We made extensive use of Trello’s features, such as labels, checklists, and due dates, to streamline the planning process and keep everything on track. On each Saturday, we would review and update the Trello board with new tasks and priorities for the upcoming week, ensuring that everyone was aligned with the project's goals and deadlines.
 
-Much like our part A we used Trello as our main way of delgating tasks, tracking progress and setting due dates. We made extensive use of trello and its features to make the planning process simple and streamlined. On each Saturday we would update the trello board for new tasks to do during the coming week. 
+To complement our use of Trello, we scheduled regular meetings on Saturdays, Tuesdays, and Mondays to discuss progress, address any blockers, and plan the next steps. These meetings provided a structured opportunity to collaborate, share updates, and ensure that the project was progressing smoothly. In addition to our scheduled meetings, we remained flexible and arranged ad hoc meetings throughout the week whenever we encountered questions, needed assistance, or had new ideas to discuss.
 
-Meeting had scheduled days on Saturday, Tuesday and Monday with meetings throughout the weeks if we had questions for each other or needed help. Our main way of organising these meetings were through discord, in the discord we then had a stored google meet link where we had conducted all our meetings. Using the discord server we had made was our main way of communicating and ideas or issue we had came accross in the development process.
+Our primary communication tool was Discord, where we created a dedicated server for the project. This server served as the central hub for all project related discussions, file sharing, and meeting coordination. Within the Discord server, we stored a Google Meet link, which we used for all our virtual meetings. This setup allowed us to quickly jump into meetings and collaborate effectively, regardless of where team members were located. The combination of Trello for task management and Discord for communication created a seamless workflow.
+
+When reviewing the Trello board, you'll notice that each card is marked with the first initial of the team member responsible for that task, making it clear who is accountable for its completion. We've utilized color coded labels to convey essential information about each task.
+
+- Priority levels are indicated by:
+    - Red for high priority,
+    - Orange for medium priority, and
+    - Dark Green for low priority.
+  
+- Task type is identified by:
+    - Light Green for front-end work, and
+    - Dark Blue for back-end tasks.
+
+- Feature classification is denoted by:
+    - Purple for core functionality, and
+    - Blue for optional features.
+
+This system allowed us to easily manage and prioritize tasks, ensuring that everyone was on the same page and that the most critical work received the attention it needed.
 
 ### [Link to trello board](https://trello.com/b/sKn4uEWQ/t3a2-fullstack-app-partb)
 
