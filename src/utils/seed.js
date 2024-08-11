@@ -80,8 +80,7 @@ async function seedTrails() {
         title: "Wild Trail",
         buffedTypes: ["Grass", "Bug", "Poison"],
         onTrail: [],
-        length: 3600000 // 1 HOUR
-
+        length: 0 // 1 HOUR
     };
 
     const trail2 = {
