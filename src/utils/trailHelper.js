@@ -252,8 +252,8 @@ const transformTitle = (title) => {
  *
  * Note: This function assumes that the `pokemon` object is in scope and properly initialized before calling.
  */
-const updateTrailCompletion = (trailTitle) => {
-    switch (trail.title) {
+const updateTrailCompletion = (trailTitle, pokemon) => {
+    switch (trailTitle) {
         case "Wet Trail":
             pokemon.wetCompleted += 1;
             console.log("Wet Completed");
