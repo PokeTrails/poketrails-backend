@@ -1,20 +1,70 @@
-# poketrails-backend
+![PokeTrails App Logo](./docs//images/app_logo.png)
 
-Backend React repository for the PokéTrails web application
+# PokéTrails Web Application
 
-## Install dependencies
+**Developed by Rahal Abeyrathna, Suraj Shrestha, and Talie Hodge**
+
+---
+
+## 🚀 Deployed Applications
+
+- **Front End:** [https://poketrails.com](https://poketrails.com)
+- **Back End:** [https://api.poketrails.com](https://api.poketrails.com)
+
+## 📂 Repositories
+
+- **Part A Docs:** [PokeTrailsDocs](https://github.com/PokeTrails/PokeTrailsDocs)
+- **Client:** [poketrails-frontend](https://github.com/PokeTrails/poketrails-frontend)
+- **Server:** [poketrails-backend](https://github.com/PokeTrails/poketrails-backend)
+
+## 📄 Documentation
+
+## Frontend Install Instrcutions
+
+1. **Clone the Front-End Repository**:
+   - Use the following command to clone the repository:
+
+     ```bash
+     git clone git@github.com:PokeTrails/poketrails-frontend.git
+     ```
+
+2. **Install Dependencies**:
+   - Navigate to the project directory and install the required npm dependencies:
+
+     ```bash
+     npm install
+     ```
+
+3. **Start the Application**:
+   - Launch the application with the following command:
+
+     ```bash
+     npm start
+     ```
+
+4. **Access the Application**:
+   - Open your browser and go to [localhost:5173](http://localhost:5173/)
+
+5. **Verify Backend Server Is Running**:
+   - Ensure the backend server is running on port 8080 using the instructions provided below.
+
+## Backend Install Instructions (fix this suraj)
+
+### Install dependencies
 
 ```sh
 npm install
 ```
 
-## Create a .env file in the root directory of the project and add the following
+### Create a .env file in the root directory of the project and add the following
 
 ```sh
 PORT=8080
+DATABASE_URL="YOUR URL HERE"
+JWT_KEY="YOUR JWT KEY HERE"
 ```
 
-## Start MongoDB (WSL Users)
+### Start MongoDB (WSL Users)
 
 If you're using Windows Subsystem for Linux (WSL), you need to start MongoDB with the following command:
 
@@ -22,7 +72,7 @@ If you're using Windows Subsystem for Linux (WSL), you need to start MongoDB wit
 sudo systemctl start mongod
 ```
 
-## Start the server in development mode
+### Start the server in development mode
 
 ```sh
 npm run dev
@@ -34,207 +84,222 @@ npm run dev
 npm run seed
 ```
 
-# Endpoints
+Login Details For a User:
 
-## Login Route
+```sh
+USERNAME: user3
+PASSWORD: user3
+```
 
-- URL `http://localhost:8080/login`
-- Method: `POST`
-- Body:`{"username": "abc",  "password": "abc"}`
+## Endpoints
 
-## Pokemon Route
+### Authentication
 
-### Create a New Pokémon
+| **Operation** | **URL**                | **Method** | **Body**                                   | **Access**           |
+|---------------|------------------------|------------|--------------------------------------------|----------------------|
+| Login          | `/login`                | POST       | `{"username": "abc", "password": "abc"}`   | Public               |
 
-- URL `http://localhost:8080/pokemon`
+### Pokémon
 
-- Method: `POST`
-- Access: Protected (requires JWT token)
+| **Operation**                       | **URL**                                | **Method** | **Body**                      | **Access**           |
+|-------------------------------------|----------------------------------------|------------|-------------------------------|----------------------|
+| Create a New Pokémon                | `/pokemon`                             | POST       | -                             | Protected (JWT)      |
+| Get All Pokémon                     | `/pokemon`                             | GET        | -                             | Protected (JWT)      |
+| Get All Donated Pokémon             | `/pokemon/donated`                     | GET        | -                             | Protected (JWT)      |
+| Get Pokémon by ID                   | `/pokemon/:pokemonID`                  | GET        | -                             | Protected (JWT)      |
+| Set/Edit Pokémon Nickname           | `/pokemon/nickname/:pokemonID`         | PATCH      | `{"nickname": "<NewNickname>"}` | Protected (JWT)      |
+| Hatch Pokémon                       | `/pokemon/hatch/:pokemonID`            | PATCH      | -                             | Protected (JWT)      |
+| Donate Pokémon                      | `/pokemon/donate/:pokemonID`           | PATCH      | -                             | Protected (JWT)      |
+| View Donation Reward                | `/pokemon/donate/reward/:pokemonID`    | GET        | -                             | Protected (JWT)      |
+| Talk with Pokémon                   | `/pokemon/talk/:pokemonID`             | PATCH      | -                             | Protected (JWT)      |
+| Play with Pokémon                   | `/pokemon/play/:pokemonID`             | PATCH      | -                             | Protected (JWT)      |
+| Feed Pokémon                        | `/pokemon/feed/:pokemonID`             | PATCH      | -                             | Protected (JWT)      |
+| Evolve Pokémon                      | `/pokemon/evolve/:pokemonID`           | PATCH      | -                             | Protected (JWT)      |
 
-### Get All Pokémon for the Authenticated User
+### Pokedex
 
-- URL `http://localhost:8080/pokemon`
-- Method: `GET`
-- Access: Protected (requires JWT token)
+| **Operation**       | **URL**            | **Method** | **Body** | **Access**           |
+|---------------------|--------------------|------------|----------|----------------------|
+| Get Pokedex Data    | `/pokedex`         | GET        | -        | Protected (JWT)      |
 
-### Get All donated Pokémon
+### Party
 
-- URL `http://localhost:8080/pokemon/donated`
-- Method: `GET`
-- Access: Protected (requires JWT token)
+| **Operation**                      | **URL**           | **Method** | **Body** | **Access**           |
+|------------------------------------|-------------------|------------|----------|----------------------|
+| Get Party Details                  | `/party`          | GET        | -        | Protected (JWT)      |
 
-### Get Pokémon by ID
+### Store
 
-- URL `http://localhost:8080/pokemon/:pokemonID`
-- Method: `GET`
-- Access: Protected (requires JWT token)
+| **Operation**           | **URL**                   | **Method** | **Body** | **Access**           |
+|-------------------------|---------------------------|------------|----------|----------------------|
+| Get All Items           | `/store`                  | GET        | -        | Protected (JWT)      |
+| View Item by ID         | `/store/view/:id`         | GET        | -        | Protected (JWT)      |
+| Buy Item by ID          | `/store/buy/:id`          | PATCH      | -        | Protected (JWT)      |
 
-### set/edit Pokémon Nickname by Pokémon ID
+### User
 
-- URL `http://localhost:8080/pokemon/nickname/:pokemonID`
-- Method: PATCH
-- Access: Protected (requires JWT token)
-- Body: `{"nickname": "<NewNickname>"}`
+| **Operation**         | **URL**                 | **Method** | **Body**                                                       | **Access**           |
+|-----------------------|-------------------------|------------|----------------------------------------------------------------|----------------------|
+| Create a New User     | `/user/signup`          | POST       | `{"username": "James", "trainerName": "James3", "sprite": "boySprite", "password": "password"}` | Public               |
+| Login a User          | `/user/login`           | POST       | `{"username": "James", "password": "password"}`               | Public               |
+| Delete a User         | `/user/delete/:userID`  | DELETE     | -                                                              | Protected (JWT)      |
+| Edit a User           | `/user/patch/:userID`   | PATCH      | -                                                              | Protected (JWT)      |
+| Find a User by ID     | `/user/find/:userID`    | GET        | -                                                              | Protected (JWT)      |
+| Find All Users        | `/user`                 | GET        | -                                                              | Protected (JWT)      |
 
-### Hatch Pokémon Nickname by Pokémon ID
+### Trail
 
-- URL `http://localhost:8080/pokemon/hatch/:pokemonID`
-- Method: PATCH
-- Access: Protected (requires JWT token)
+| **Operation**         | **URL**                          | **Method** | **Body**                                             | **Access**           |
+|-----------------------|----------------------------------|------------|------------------------------------------------------|----------------------|
+| Send on Trail         | `/trail/simulate`                 | POST       | `{"title": "Wild Trail", "pokemonId": "12123123aseasdasda"}` | Protected (JWT)      |
+| Finish Trail          | `/trail/finish`                  | POST       | `{"pokemonId": "12123123aseasdasda"}`                | Protected (JWT)      |
+| Find a Trail by Title | `/trail/:trailtitle` (e.g., `wettrail`) | GET        | -                                                    | -                    |
+| Get All Trails        | `/trail/`                        | GET        | -                                                    | -                    |
+| Delete a Trail by Title | `/trail/:trailtitle` (e.g., `wettrail`) | DELETE     | -                                                    | -                    |
+| Patch a Trail by Title | `/trail/:trailtitle` (e.g., `wettrail`) | PATCH      | Any fields present on Trail Model (e.g., `{"length": "12030"}`) | -                    |
 
-### Donate Pokémon Nickname by Pokémon ID
+## Libaries Used
 
-- URL `http://localhost:8080/pokemon/donate/:pokemonID`
-- Method: PATCH
-- Access: Protected (requires JWT token)
+### Front-end
 
-### View Donation reward of Pokémon by Pokémon ID
+- **`react` (v18.3.1)**: The core library for building user interfaces. React's component-based architecture allows for the creation of reusable UI components, ensuring a modular and maintainable codebase.
 
-- URL `http://localhost:8080/pokemon/donate/reward/:pokemonID`
-- Method: GET
-- Access: Protected (requires JWT token)
+- **`react-dom` (v18.3.1)**: Provides DOM-specific methods that are used by React to render components into the DOM. This is essential for managing updates to the UI.
 
-### Talk with Pokémon by Pokémon ID
+- **`react-router-dom` (v6.25.1)**: Facilitates routing and navigation in the application. It allows the creation of a dynamic, single-page application with client-side routing capabilities.
 
-- URL `http://localhost:8080/pokemon/talk/:pokemonID`
-- Method: PATCH
-- Access: Protected (requires JWT token)
+### Styling and UI
 
-### Play with Pokémon by Pokémon ID
+- **`@mui/material` (v5.16.4)**: A popular React UI framework that provides a comprehensive set of components and styles based on Material Design principles. This library is used for building a responsive and visually appealing user interface.
 
-- URL `http://localhost:8080/pokemon/play/:pokemonID`
-- Method: PATCH
-- Access: Protected (requires JWT token)
+- **`@mui/icons-material` (v5.16.4)**: Includes a set of Material Design icons that can be used in the application to enhance the visual representation and user interaction.
 
-### Feed with Pokémon by Pokémon ID
+- **`@emotion/react` (v11.13.0) and `@emotion/styled` (v11.13.0)**: Used for writing CSS styles with JavaScript. Emotion provides a flexible and efficient way to style components in React, with support for dynamic styling and theming.
 
-- URL `http://localhost:8080/pokemon/feed/:pokemonID`
-- Method: PATCH
-- Access: Protected (requires JWT token)
+- **`@fontsource/roboto` (v5.0.13) and `@fontsource/saira` (v5.0.28)**: Custom font loading library to include Roboto and Saira fonts in the application, ensuring a consistent and modern typography. Roboto is used as a backup font, Saira is used as the main font in the application.
 
-### Evolve with Pokémon by Pokémon ID
+### Development and Build Tools
 
-- URL `http://localhost:8080/pokemon/evolve/:pokemonID`
-- Method: PATCH
-- Access: Protected (requires JWT token)
+- **`vite` (v5.3.4)**: A fast and modern build tool that provides an optimized development experience with features such as hot module replacement (HMR) and efficient bundling.
 
-## Pokedex Route
+- **`@vitejs/plugin-react` (v4.3.1)**: A Vite plugin that provides React-specific features such as fast refresh and automatic JSX transformation, optimizing the development workflow.
 
-- URL `http://localhost:8080/pokedex`
-- Method: GET
-- Access: Protected (requires JWT token)
+### State Management and Data Handling
 
-## Party Route
+- **`axios` (v1.7.2)**: A promise-based HTTP client for making API requests. It simplifies data fetching and error handling, making it easier to interact with backend services.
 
-### Get party details for the Authenticated User
+- **`dotenv` (v16.4.5)**: Loads environment variables from a `.env` file into `process.env`, allowing for configuration and secrets management outside of the codebase.
 
-- URL `http://localhost:8080/party`
-- Method: `GET`
-- Access: Protected (requires JWT token)
+### Testing
 
-## Store Route
+- **`cypress` (v13.13.2)**: An end-to-end testing framework that provides a reliable way to write and run tests for the application's UI, ensuring that user interactions and workflows function as expected.
 
-### Get all items in the store
+- **`mocha` (v10.7.3)**: A test framework for writing unit and integration tests. Mocha provides a flexible and extensible testing environment.
 
-- URL `http://localhost:8080/store`
-- Method: `GET`
-- Access: Protected (requires JWT token)
+- **`mochawesome` (v7.1.3) and `mochawesome-merge` (v4.3.0)**: Reporters for Mocha that generate detailed and visually appealing test reports, which can be used to analyze test results and coverage.
 
-### View individual items in the store by id
+### Additional Features
 
-- URL `http://localhost:8080/store/view/:id`
-- Method: `GET`
-- Access: Protected (requires JWT token)
+- **`howler` (v2.2.4)**: A library for managing audio in the application, providing support for features like sound playback, control, and customization. Used to play Pokémon cry sounds.
 
-### Buy individual items in the store by id
+- **`react-confetti` (v6.1.0)**: A lightweight React component for rendering confetti animations, adding visual effects to celebrate events or interactions in the application. Used in the Pokémon hatching pop up to add a bit more style and interaction for the user.
 
-- URL `http://localhost:8080/store/buy/:id`
-- Method: `PATCH`
-- Access: Protected (requires JWT token)
+### Back-end
 
-## User Route
+- **bcryptjs**: Used for securing user passwords by hashing them before storing them in the database. It also provides a method to verify hashed passwords against plain text inputs, enhancing application security by ensuring safe user authentication.
 
-### Create a New user
+- **cors**: Manages and controls access to resources from different domains. It allows or restricts requests from external origins, ensuring that only authorized domains can interact with the API, thus preventing unauthorized access while enabling legitimate cross-origin requests.
 
-- URL `http://localhost:8080/user/create`
+- **dotenv**: Facilitates secure management of environment variables by loading configurations from a `.env` file into `process.env`. This keeps sensitive information like API keys and database credentials out of the source code, improving security and making it easier to manage different environments (development, testing, production).
 
-- Method: `POST`
+- **express**: A web framework used to build server-side logic and manage HTTP requests and responses. It provides robust features for routing, middleware support, and integration with various templating engines, simplifying the definition of routes and processing of requests.
 
-### Delete a User
+- **jsonwebtoken**: Manages user authentication by generating a token that encodes user information (e.g., user ID) using a secret key. This token is sent to the client and used for authenticating subsequent requests, ensuring secure access by verifying the token's authenticity.
 
-- URL `http://localhost:8080/user/(userID)`
+- **mongoose**: An Object Data Modeling (ODM) library for interacting with MongoDB. It offers a schema-based solution to model application data, allowing easy creation, reading, updating, and deletion of database records. Mongoose also provides data validation, middleware support, and complex querying capabilities.
 
-- Method: `DELETE`
+- **nodemon**: A development tool that automatically monitors project files for changes and restarts the server when code changes are detected. This ensures that the application reflects the latest updates without needing manual server restarts.
 
-- Access: Protected (requires JWT token)
+- **jest**: A testing framework designed to ensure code reliability and correctness. It offers a suite of utilities for writing unit and integration tests, verifying that the application functions as expected.
 
-### Edit a User
+- **supertest**: An HTTP assertion library used for testing API endpoints. It simulates HTTP requests to Express routes, allowing verification of the API's behavior in different scenarios and ensuring that endpoints operate correctly.
 
-- URL `http://localhost:8080/user/(userID)`
+## Testing
 
-- Method: `PATCH`
+### Front-end Testing
 
-- Access: Protected (requires JWT token)
+Front-end testing was conducted through multiple stages to ensure the application met our quality standards and functioned as intended across various environments.
 
-### Find a User
+#### Local Development Testing
 
-- URL `http://localhost:8080/user/(userID)`
+Each feature was developed locally and thoroughly tested in a local development environment. This initial testing phase involved verifying the functionality of individual functions, components, and pages.
 
-- Method: `GET`
+#### Public Development Testing
 
-### Find all Users
+Once features were deemed stable in the local environment, they were pushed to a development branch. Here, testing was conducted using a public development database to simulate real-world usage and ensure compatibility with production settings. This phase also included testing on different devices and screen sizes, such as tablets and smartphones, to ensure the application’s accessibility and responsiveness.
 
-- URL `http://localhost:8080/user`
+#### Production User Testing
 
-- Method: `GET`
+Features were then tested in a staging environment that closely mirrored the production setup. This phase involved gathering feedback from real users to validate the usability and functionality of the application in a near-production environment.
 
-## Trail Route
+#### Automated Testing with Cypress
 
+Automated tests were run using Cypress to validate the overall functionality and performance of the application. Cypress testing included various scenarios to ensure comprehensive coverage and identify any potential issues early in the development process.
 
-### Send on Trail
+Detailed results from user testing, including feedback and observations related to the login and sign-up workflows, are documented in a spreadsheet available in the GitHub repository. Additionally, a screenshot capturing further notes from the user testing is also provided in the same directory.
 
-- URL `http://localhost:8080/trail/simulate`
+The results of the automated testing conducted with Cypress can be found in the Output.html file.
 
-- Method: `POST`
+For additional context and visualization, screenshots of the testing processes and results are provided below:
 
-- Body:`{"title": "Wild Trail",  "pokemonId": "12123123aseasdasda"}`
+![Development Testing](./docs/testing/development_testing.png)
 
-- Access: Protected (requires JWT token)
+![User Testing](./docs/testing/user_testing.png)
 
+![User Testing Notes](./docs/testing/user_testing_notes.png)
 
-### Finish Trail
+![Cypress Testing](./docs/testing/cypress_testing.png)
 
-- URL `http://localhost:8080/trail/finish`
+### Back-end Testing
 
-- Method: `POST`
+(Suraj)
 
-- Body:`{"pokemonId": "12123123aseasdasda"}`
+## Screenshots of Live Application (Suraj)
 
-- Access: Protected (requires JWT token)
+## Project Management (SURAJ)
 
+Much like our part A we used Trello as our main way of delgating tasks, tracking progress and setting due dates. We made extensive use of trello and its features to make the planning process simple and streamlined. On each Saturday we would update the trello board for new tasks to do during the coming week.
 
-### Find a Trail
+Meeting had scheduled days on Saturday, Tuesday and Monday with meetings throughout the weeks if we had questions for each other or needed help. Our main way of organising these meetings were through discord, in the discord we then had a stored google meet link where we had conducted all our meetings. Using the discord server we had made was our main way of communicating and ideas or issue we had came accross in the development process.
 
-- URL `http://localhost:8080/trail/:trailtitle` (Wet Trail = wettrail)
+### [Link to trello board](https://trello.com/b/sKn4uEWQ/t3a2-fullstack-app-partb)
 
-- Method: `GET`
+## Screenshots of Trello Board
 
-### Get all trails
+#### 21/07
 
-- URL `http://localhost:8080/trail/`
+![21/07 Screenshot](./docs/trello/21-07.png)
 
-- Method: `GET`
+#### 24/07
 
-### Delete Trail
+![24/07 Screenshot](./docs/trello/24-07.png)
 
-- URL `http://localhost:8080/trail/:trailtitle` (Wet Trail = wettrail)
+#### 27/07
 
-- Method: `DELETE`
+![27/07 Screenshot](./docs/trello/27-07.png)
 
-### Patch Trail
+#### 30/07
 
-- URL `http://localhost:8080/trail/:trailtitle` (Wet Trail = wettrail)
+![30/07 Screenshot](./docs/trello/30-07.png)
 
-- Method: `PATCH`
+#### 01/08
 
-- Body: Any of the fields present on Trail Model e.g `{"length": "12030"}`
+![01/08 Screenshot](./docs/trello/01-08.png)
+
+#### 06/08
+
+![06/08 Screenshot](./docs/trello/06-08.png)
+
+#### 11/08
+
+![11/08 Screenshot](./docs/trello/11-08.png)
