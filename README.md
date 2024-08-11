@@ -265,6 +265,22 @@ For additional context and visualization, screenshots of the testing processes a
 
 ### Back-end Testing
 
+## Overview
+
+Backend testing was carried out meticulously to ensure the robustness, security, and accuracy of API endpoints as outlined in the project specifications. The testing process was comprehensive, covering all aspects from data validation to performance under load, and ensuring secure access through proper authentication mechanisms. The testing was divided into several phases, including local, staging, and production environments, each designed to thoroughly validate each feature under various conditions and scenarios, from typical use cases to potential edge cases. This approach ensured that the API was not only functional but also resilient and scalable.
+
+### Local Development Testing
+
+Initial testing of the backend API routes was conducted in a local environment using Postman. Each route was subjected to detailed scrutiny, ensuring correct HTTP status codes, response bodies, and JWT token authentication where applicable. The testing process involved various scenarios, including valid and invalid inputs, boundary conditions, and error responses. Special attention was given to edge cases, such as handling of malformed requests, rate limiting, and ensuring proper data validation rules were enforced. Logging and error reporting mechanisms were also verified to ensure that they provided sufficient information for debugging and monitoring. This phase focused on verifying the basic functionality and ensuring that the API could handle different input cases reliably, preparing it for more rigorous testing in later stages.
+
+### Production Environment Testing
+
+Final testing was conducted in the production environment using the live API. This testing phase was critical to validate that all endpoints functioned as expected in a real-world setting with actual user data. In addition to functional testing, this phase included performance and stress testing to evaluate the API's behavior under heavy load, ensuring that it could scale appropriately without degradation of service. Security testing was also a key focus, with JWT authentication being rigorously tested for vulnerabilities such as token expiration, revocation handling, and protection against unauthorized access. The overall API performance, including response times, was measured to ensure it met the required standards. Monitoring tools were employed to track the API's health and performance metrics, ensuring that any issues could be quickly identified and addressed.
+
+### Summary
+
+The backend testing process was comprehensive and covered all possible scenarios, from normal operation to potential edge cases. Each endpoint was tested rigorously across different environments, ensuring not only correct functionality but also security, scalability, and resilience. Automated tests were implemented to facilitate continuous integration and catch regressions early in the development process. All tests passed successfully, and the API was deemed ready for production deployment. The detailed logs and results from the testing phases are stored in the project repository for further reference, providing a clear audit trail and insights for future development and maintenance.
+
 ![Server Testing](./docs/testing/ServerTesting.png)
 
 ## Trello Project Management (Part B)
