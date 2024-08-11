@@ -252,7 +252,7 @@ The results of the automated testing conducted with Cypress can be found in the 
 
 For additional context and visualization, screenshots of the testing processes and results are provided below:
 
-![Development Testing](./docs//images/development_testing.png)
+![Development Testing](./docs/testing/development_testing.png)
 
 ![User Testing](./docs/testing/user_testing.png)
 
@@ -268,7 +268,7 @@ For additional context and visualization, screenshots of the testing processes a
 
 ## Project Management (SURAJ)
 
-Much like our part A we used Trello as our main way of delgating tasks, tracking progress and setting due dates. We made extensive use of trello and its features to make the planning process simple and streamlined. On each Saturday we would update the trello board for new tasks to do during the coming week. 
+Much like our part A we used Trello as our main way of delgating tasks, tracking progress and setting due dates. We made extensive use of trello and its features to make the planning process simple and streamlined. On each Saturday we would update the trello board for new tasks to do during the coming week.
 
 Meeting had scheduled days on Saturday, Tuesday and Monday with meetings throughout the weeks if we had questions for each other or needed help. Our main way of organising these meetings were through discord, in the discord we then had a stored google meet link where we had conducted all our meetings. Using the discord server we had made was our main way of communicating and ideas or issue we had came accross in the development process.
 
