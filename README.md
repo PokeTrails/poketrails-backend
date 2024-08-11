@@ -13,7 +13,7 @@
 
 ## 📂 Repositories
 
-- **Part A Docs:** [PokeTrailsDocs](https://github.com/PokeTrails/PokeTrailsDocs)
+- **Documentation:** [PokeTrailsDocs](https://github.com/PokeTrails/PokeTrailsDocs)
 - **Client:** [poketrails-frontend](https://github.com/PokeTrails/poketrails-frontend)
 - **Server:** [poketrails-backend](https://github.com/PokeTrails/poketrails-backend)
 
