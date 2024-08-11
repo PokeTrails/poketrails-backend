@@ -255,7 +255,7 @@ The results of the automated testing conducted with Cypress can be found in the 
 
 For additional context and visualization, screenshots of the testing processes and results are provided below:
 
-![Development Testing](./docs//images/development_testing.png)
+![Development Testing](./docs/images/development_testing.png)
 
 ![User Testing](./docs/testing/user_testing.png)
 
