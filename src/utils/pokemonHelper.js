@@ -10,7 +10,7 @@ async function getPokemon(shinyMulti) {
     let types = await pokemontype(detailURL); // Get the type information for the base Pokemon
     const chanceShiny = Math.floor(Math.random() * 100) + 1;
     // Shiny %
-    let shinyChance = 10 * parseInt(shinyMulti);
+    let shinyChance = 5 * parseInt(shinyMulti);
     // Level 2
     let levelTwoPath = (await selectPath(pokemon.chain.evolves_to)) || 0; // Select a random evolution path for level 2
 
