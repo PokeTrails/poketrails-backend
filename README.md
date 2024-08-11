@@ -1,4 +1,4 @@
-![PokeTrails App Logo](./src/assets/app_logo.png)
+![PokeTrails App Logo](./docs//images/app_logo.png)
 
 # PokéTrails Web Application
 
@@ -18,6 +18,35 @@
 - **Server:** [poketrails-backend](https://github.com/PokeTrails/poketrails-backend)
 
 ## 📄 Documentation
+
+## Frontend Install Instrcutions
+
+1. **Clone the Front-End Repository**:
+   - Use the following command to clone the repository:
+
+     ```bash
+     git clone git@github.com:PokeTrails/poketrails-frontend.git
+     ```
+
+2. **Install Dependencies**:
+   - Navigate to the project directory and install the required npm dependencies:
+
+     ```bash
+     npm install
+     ```
+
+3. **Start the Application**:
+   - Launch the application with the following command:
+
+     ```bash
+     npm start
+     ```
+
+4. **Access the Application**:
+   - Open your browser and go to [localhost:5173](http://localhost:5173/)
+
+5. **Verify Backend Server Is Running**:
+   - Ensure the backend server is running on port 8080 using the instructions provided below.
 
 ## Backend Install Instructions
 
@@ -199,51 +228,78 @@ PASSWORD: user3
 
 ### Front-end Testing
 
-Front-end testing was conducted in several layers, including local development testing, public development testing, production user testing and automated Cypress testing to ensure that the application worked as we intended it to without any errors.
+Front-end testing was conducted through multiple stages to ensure the application met our quality standards and functioned as intended across various environments.
 
-Front-end features were scoped and planned to be completed by a specific due date, and so during development of each feature, each function, component and page was developed locally and tested on a local instance. This would then be pushed up to a development branch to test using the public database to ensure it would work not only in a production setting, but to also test it working on different devices to ensure it is accessible on a range of screen sizes such as on tablets and phones. 
+#### Local Development Testing
 
-A spreadsheet of the results from user testing can be found in the Github repository, detailing development and user testing for the login-sign-up workflows. Further notes can also be found in a screenshot in the same directory.
+Each feature was developed locally and thoroughly tested in a local development environment. This initial testing phase involved verifying the functionality of individual functions, components, and pages.
 
-A report of the automated testing from Cypress can be found in the Output.html file.
+#### Public Development Testing
 
-For ease of access, screenshots of the testing and results can be viewed below:
+Once features were deemed stable in the local environment, they were pushed to a development branch. Here, testing was conducted using a public development database to simulate real-world usage and ensure compatibility with production settings. This phase also included testing on different devices and screen sizes, such as tablets and smartphones, to ensure the application’s accessibility and responsiveness.
+
+#### Production User Testing
+
+Features were then tested in a staging environment that closely mirrored the production setup. This phase involved gathering feedback from real users to validate the usability and functionality of the application in a near-production environment.
+
+#### Automated Testing with Cypress
+
+Automated tests were run using Cypress to validate the overall functionality and performance of the application. Cypress testing included various scenarios to ensure comprehensive coverage and identify any potential issues early in the development process.
+
+Detailed results from user testing, including feedback and observations related to the login and sign-up workflows, are documented in a spreadsheet available in the GitHub repository. Additionally, a screenshot capturing further notes from the user testing is also provided in the same directory.
+
+The results of the automated testing conducted with Cypress can be found in the Output.html file.
+
+For additional context and visualization, screenshots of the testing processes and results are provided below:
+
+![Development Testing](./docs//images/development_testing.png)
+
+![User Testing](./docs/testing/user_testing.png)
+
+![User Testing Notes](./docs/testing/user_testing_notes.png)
+
+![Cypress Testing](./docs/testing/cypress_testing.png)
 
 ### Back-end Testing
 
 (Suraj)
 
-## Screenshots of Live Application
+## Screenshots of Live Application (Suraj)
 
-## Project Management
-
-(Project management desciption, process, organisation and plannign)
+## Project Management (SURAJ)
 
 Much like our part A we used Trello as our main way of delgating tasks, tracking progress and setting due dates. We made extensive use of trello and its features to make the planning process simple and streamlined. On each Saturday we would update the trello board for new tasks to do during the coming week. 
 
 Meeting had scheduled days on Saturday, Tuesday and Monday with meetings throughout the weeks if we had questions for each other or needed help. Our main way of organising these meetings were through discord, in the discord we then had a stored google meet link where we had conducted all our meetings. Using the discord server we had made was our main way of communicating and ideas or issue we had came accross in the development process.
 
-### Link to trello board
-https://trello.com/invite/b/669b18e0faa87fa32c418964/ATTIef84d454f45509425d385b66783bf697737FC9C0/t3a2-fullstack-app-partb
+### [Link to trello board](https://trello.com/b/sKn4uEWQ/t3a2-fullstack-app-partb)
 
 ## Screenshots of Trello Board
+
 #### 21/07
-![21/07 Screenshot](./images/21-07.png)
+
+![21/07 Screenshot](./docs/trello/21-07.png)
 
 #### 24/07
-![24/07 Screenshot](./images/24-07.png)
+
+![24/07 Screenshot](./docs/trello/24-07.png)
 
 #### 27/07
-![27/07 Screenshot](./images/27-07.png)
+
+![27/07 Screenshot](./docs/trello/27-07.png)
 
 #### 30/07
-![30/07 Screenshot](./images/30-07.png)
+
+![30/07 Screenshot](./docs/trello/30-07.png)
 
 #### 01/08
-![01/08 Screenshot](./images/01-08.png)
+
+![01/08 Screenshot](./docs/trello/01-08.png)
 
 #### 06/08
-![06/08 Screenshot](./images/06-08.png)
+
+![06/08 Screenshot](./docs/trello/06-08.png)
 
 #### 11/08
-![11/08 Screenshot](./images/11-08.png)
+
+![11/08 Screenshot](./docs/trello/11-08.png)
