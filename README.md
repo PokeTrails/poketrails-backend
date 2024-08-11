@@ -1,4 +1,4 @@
-![PokeTrails App Logo](./docs//images/app_logo.png)
+![PokeTrails App Logo](./docs/app_logo.png)
 
 # PokéTrails Web Application
 
@@ -48,48 +48,51 @@
 5. **Verify Backend Server Is Running**:
    - Ensure the backend server is running on port 8080 using the instructions provided below.
 
-## Backend Install Instructions (fix this suraj)
+## Backend Install Instructions
 
-### Install dependencies
+1. **Create a `.env` File**:
+   - In the root directory of the project, create a `.env` file and add the following configuration:
 
-```sh
-npm install
-```
+     ```sh
+     PORT=8080
+     DATABASE_URL="YOUR URL HERE"
+     JWT_KEY="YOUR JWT KEY HERE"
+     ```
 
-### Create a .env file in the root directory of the project and add the following
+2. **Start MongoDB (WSL Users)**:
+   - If you are using Windows Subsystem for Linux (WSL), start MongoDB with:
 
-```sh
-PORT=8080
-DATABASE_URL="YOUR URL HERE"
-JWT_KEY="YOUR JWT KEY HERE"
-```
+     ```sh
+     sudo systemctl start mongod
+     ```
 
-### Start MongoDB (WSL Users)
+3. **Start the Server in Development Mode**:
+   - Install the packages needed for the app
 
-If you're using Windows Subsystem for Linux (WSL), you need to start MongoDB with the following command:
+     ```sh
+     npm run dev
+     ```
 
-```sh
-sudo systemctl start mongod
-```
+   - Use the following command to start the server:
 
-### Start the server in development mode
+     ```sh
+     npm run dev
+     ```
 
-```sh
-npm run dev
-```
+4. **Seed Data to the Database**:
+   - Populate the database with initial data by running:
 
-## Seed data to the db
+     ```sh
+     npm run seed
+     ```
 
-```sh
-npm run seed
-```
+5. **Login Details**:
+   - For user login, use the following credentials:
 
-Login Details For a User:
-
-```sh
-USERNAME: user3
-PASSWORD: user3
-```
+     ```sh
+     USERNAME: user3
+     PASSWORD: user3
+     ```
 
 ## Endpoints
 
@@ -252,7 +255,7 @@ The results of the automated testing conducted with Cypress can be found in the 
 
 For additional context and visualization, screenshots of the testing processes and results are provided below:
 
-![Development Testing](./docs/testing/development_testing.png)
+![Development Testing](./docs//images/development_testing.png)
 
 ![User Testing](./docs/testing/user_testing.png)
 
@@ -266,9 +269,9 @@ For additional context and visualization, screenshots of the testing processes a
 
 ## Screenshots of Live Application (Suraj)
 
-## Project Management (SURAJ)
+## Project Management
 
-Much like our part A we used Trello as our main way of delgating tasks, tracking progress and setting due dates. We made extensive use of trello and its features to make the planning process simple and streamlined. On each Saturday we would update the trello board for new tasks to do during the coming week.
+Much like our part A we used Trello as our main way of delgating tasks, tracking progress and setting due dates. We made extensive use of trello and its features to make the planning process simple and streamlined. On each Saturday we would update the trello board for new tasks to do during the coming week. 
 
 Meeting had scheduled days on Saturday, Tuesday and Monday with meetings throughout the weeks if we had questions for each other or needed help. Our main way of organising these meetings were through discord, in the discord we then had a stored google meet link where we had conducted all our meetings. Using the discord server we had made was our main way of communicating and ideas or issue we had came accross in the development process.
 
@@ -276,30 +279,30 @@ Meeting had scheduled days on Saturday, Tuesday and Monday with meetings through
 
 ## Screenshots of Trello Board
 
-#### 21/07
+### 21/07
 
 ![21/07 Screenshot](./docs/trello/21-07.png)
 
-#### 24/07
+### 24/07
 
 ![24/07 Screenshot](./docs/trello/24-07.png)
 
-#### 27/07
+### 27/07
 
 ![27/07 Screenshot](./docs/trello/27-07.png)
 
-#### 30/07
+### 30/07
 
 ![30/07 Screenshot](./docs/trello/30-07.png)
 
-#### 01/08
+### 01/08
 
 ![01/08 Screenshot](./docs/trello/01-08.png)
 
-#### 06/08
+### 06/08
 
 ![06/08 Screenshot](./docs/trello/06-08.png)
 
-#### 11/08
+### 11/08
 
 ![11/08 Screenshot](./docs/trello/11-08.png)
