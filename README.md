@@ -253,15 +253,17 @@ Detailed results from user testing, including feedback and observations related 
 
 The results of the automated testing conducted with Cypress can be found in the Output.html file.
 
-For additional context and visualization, screenshots of the testing processes and results are provided below:
+For additional context and visualization, screenshots of the testing processes and results are provided below, including commits and pushes to the dev branch:
 
-![Development Testing](./docs/images/development_testing.png)
+![Development Testing](./docs/testing/development_testing.png)
 
 ![User Testing](./docs/testing/user_testing.png)
 
 ![User Testing Notes](./docs/testing/user_testing_notes.png)
 
 ![Cypress Testing](./docs/testing/cypress_testing.png)
+
+![Dev Branch](./docs/testing/dev_branch.png)
 
 ### Back-end Testing
 
