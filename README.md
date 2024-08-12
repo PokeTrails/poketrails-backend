@@ -36,17 +36,24 @@
      npm install
      ```
 
-3. **Start the Application**:
+3. **Create .env file**:
+   - In the root directory of the project, create a `.env` file and add the following configuration:
+
+     ```sh
+     DATABASE_URL="YOUR URL HERE"
+     ```
+
+4. **Start the Application**:
    - Launch the application with the following command:
 
      ```bash
      npm start
      ```
 
-4. **Access the Application**:
-   - Open your browser and go to [localhost:5173](http://localhost:5173/)
+5. **Access the Application**:
+   - Open your browser and go to [localhost:5173](http://localhost:5173/)  
 
-5. **Verify Backend Server Is Running**:
+6. **Verify Backend Server Is Running**:
    - Ensure the backend server is running on port 8080 using the instructions provided below.
 
 ## Backend Install Instructions
