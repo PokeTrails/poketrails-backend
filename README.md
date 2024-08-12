@@ -8,8 +8,9 @@
 
 ## 🚀 Deployed Applications
 
-- **Front End:** [https://poketrails.com](https://poketrails.com)
-- **Back End:** [https://api.poketrails.com](https://api.poketrails.com)
+- **Front End Deployed App Site:** [https://poketrails.com](https://poketrails.com)
+- **Front End Development Site:** [https://dev.poketrails.com](https://dev.poketrails.com)
+- **Back End API:** [https://api.poketrails.com](https://api.poketrails.com)
 
 ## 📂 Repositories
 
@@ -285,9 +286,73 @@ The backend testing process was comprehensive and covered all possible scenarios
 
 ![Server Testing](./docs/testing/ServerTesting.png)
 
+### Deployed Application Screenshots
+
+#### Main Menu
+
+![Main Menu](./docs/screenshots/Main%20Menu.png)
+
+#### Login
+
+![Login](./docs/screenshots/Login.png)
+
+#### Sign Up
+
+![Sign Up](./docs/screenshots/SignUp.png)
+
+#### Store Menu
+
+![Store Menu](./docs/screenshots/Store%20Menu.png)
+
+#### Store Donate Pokémon
+
+![Store Donate Pokemon](./docs/screenshots/Store%20Donate%20Pokemon.png)
+
+#### Store Item Upgrade
+
+![Store Item Upgrade](./docs/screenshots/Store%20Item%20Upgrade.png)
+
+#### Trails Menu
+
+![Trails Menu](./docs/screenshots/Trails%20Menu.png)
+
+#### Trails Pokémon Return
+
+![Trails Pokémon Return](./docs/screenshots/Trails%20Pokemon%20Return.png)
+
+#### Rocky Trails
+
+![Rocky Trails](./docs/screenshots/Rocky%20Trails.png)
+
+#### Frosty Trails
+
+![Frosty Trails](./docs/screenshots/Frosty%20Trails.png)
+
+#### Wet Trails
+
+![Wet Trails](./docs/screenshots/Wet%20Trails.png)
+
+#### Wild Trails
+
+![Wild Trails](./docs/screenshots/Wild%20Trails.png)
+
+#### Party
+
+![Party](./docs/screenshots/Party.png)
+
+#### Pokedex
+
+![Pokedex](./docs/screenshots/Pokedex.png)
+
+#### Donation Reward
+
+![Donation Reward](./docs/screenshots/Donation%20Reward.png)
+
 ## Trello Project Management (Part B)
 
 Much like our Part A, we utilized Trello as our primary tool for delegating tasks, tracking progress, and setting due dates. Trello's intuitive interface allowed us to effectively organize our workflow and ensure that every team member was aware of their responsibilities. We made extensive use of Trello’s features, such as labels, checklists, and due dates, to streamline the planning process and keep everything on track. On each Saturday, we would review and update the Trello board with new tasks and priorities for the upcoming week, ensuring that everyone was aligned with the project's goals and deadlines.
+
+We decided to split the project into back-end and front-end development, and delegated our tasks and deliverables according to each members strengths and weaknesses. As a result, Rahal was given the front-end to work on as he had more experience working with frameworks such as Material UI which would help him get the website up and running faster, and because he created the wireframes and so would be most comfortable designing the pages. Suraj and Talie were then given back-end to work on, as they were much more comfortable and familiar with MongoDB and working with databases. This led us to complete our tasks and goals in a timely fashion which may not have been possible if we did not take these factors into account.
 
 To complement our use of Trello, we scheduled regular meetings on Saturdays, Tuesdays, and Mondays to discuss progress, address any blockers, and plan the next steps. These meetings provided a structured opportunity to collaborate, share updates, and ensure that the project was progressing smoothly. In addition to our scheduled meetings, we remained flexible and arranged ad hoc meetings throughout the week whenever we encountered questions, needed assistance, or had new ideas to discuss.
 
